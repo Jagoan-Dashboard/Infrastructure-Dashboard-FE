@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { assets } from '@/assets/assets';
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Loader2, Shield } from 'lucide-react';
 import { cn } from "@/lib/utils";
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema } from './service/validation';
+// import { useForm } from 'react-hook-form';
+// import { zodResolver } from '@hookform/resolvers/zod';
+// import { loginSchema } from './service/validation';
 import { useLogin } from './hooks/useLogin';
 
 

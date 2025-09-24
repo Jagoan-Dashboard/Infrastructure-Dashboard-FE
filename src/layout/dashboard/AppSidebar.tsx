@@ -4,18 +4,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { LuLayoutDashboard } from "react-icons/lu";
-import { FaChevronDown, FaRegChartBar } from "react-icons/fa6";
-import { PiFarm } from "react-icons/pi";
-// import { confirmDialog } from "primereact/confirmdialog";
+import { FaChevronDown } from "react-icons/fa6";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { useAuth } from "@/context/AuthContext";
 import { useSidebar } from "@/context/SidebarContext";
-import { RxExit } from "react-icons/rx";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 import { assets } from "@/assets/assets";
-import { Button } from "@/components/ui/button";
 
 type SubMenuItem = {
   name: string;
@@ -132,7 +127,7 @@ const AppSidebar: React.FC = () => {
       //   },
       // });
     },
-    [logout]
+    []
   );
 
   useEffect(() => {

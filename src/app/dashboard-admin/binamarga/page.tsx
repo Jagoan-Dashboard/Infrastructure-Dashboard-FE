@@ -14,40 +14,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { StatsType } from "../types/stats";
+import { StatsType } from "./components/CardStats";
 import { Home } from "lucide-react";
 import { MapSection } from "../components/MapSection";
 import { ChartPieDonut } from "../components/DonutChart";
-import CardStats from "../components/CardStats";
+import CardStats from "./components/CardStats";
 import { CommodityChartSection } from "../components/ComodityChartSection";
 
 // app/dashboard-admin/page.tsx
-export default function SumberDayaAirPage() {
+export default function DashboardPage() {
   // Sample data
   const statsData: StatsType[] = [
     {
       id: 1,
-      title: "Perkiraan Volume Kerusakan",
-      value: "11.444",
-      unit: "(m2)",
+      title: "Rata-rata Panjang Segmen Diperiksa",
+      value: "1.597,83",
+      unit: "(m)",
+      change: 50,
       isPositive: true,
       icon: "lets-icons:road-fill",
       color: "text-blue-600",
     },
     {
       id: 2,
-      title: "Area Sawah Terdampak",
-      value: "22.710",
-      unit: "(m)",
+      title: "Rata-rata Luas Kerusakan",
+      value: "241,63",
+      unit: "(m2)",
+      change: 100,
       isPositive: false,
       icon: "fa6-solid:road-circle-xmark",
       color: "text-blue-500",
     },
     {
       id: 3,
-      title: "Banyak Laporan SDA Rusak",
+      title: "Rata-rata Volume Lalu Lintas",
+      value: "7.622,93",
+      unit: "(kendaraan/hari)",
+      change: 0,
+      isPositive: true,
+      icon: "mdi:users",
+      color: "text-blue-600",
+    },
+    {
+      id: 4,
+      title: "Banyak Laporan Infrastruktur Rusak",
       value: "100",
       unit: "Laporan",
+      change: 0,
       isPositive: true,
       icon: "mdi:users",
       color: "text-blue-600",
@@ -95,7 +108,12 @@ export default function SumberDayaAirPage() {
 
   const urgensiData = [
     { label: "Rutin", value: 38.2, fill: "#3355FF" },
-    { label: "Mendesak", value: 33.3, fill: "#F0417E", detail: "(potensi gagal panen/banjir)" },
+    {
+      label: "Mendesak",
+      value: 33.3,
+      fill: "#F0417E",
+      detail: "(potensi gagal panen/banjir)",
+    },
   ];
 
   const pelanggaranKawasanData = [
@@ -119,6 +137,34 @@ export default function SumberDayaAirPage() {
     },
   ];
 
+  const jenisJalanData = [
+    {
+      name: "Jalan Arteri",
+      value: 85,
+      fullName: "Jalan Arteri",
+    },
+    {
+      name: "Jalan Kolektor",
+      value: 70,
+      fullName: "Jalan Kolektor",
+    },
+    {
+      name: "Jalan Lokal",
+      value: 45,
+      fullName: "Jalan Lokal",
+    },
+    {
+      name: "Jalan Lingkungan",
+      value: 30,
+      fullName: "Jalan Lingkungan",
+    },
+    {
+      name: "Jalan Tol",
+      value: 15,
+      fullName: "Jalan Tol",
+    },
+  ];
+
   return (
     <div className="container mx-auto max-w-7xl">
       <div className=" bg-gray-50 rounded-lg p-4 lg:p-6">
@@ -133,7 +179,7 @@ export default function SumberDayaAirPage() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Sumber Daya Air</BreadcrumbPage>
+                <BreadcrumbPage>Binamarga</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -143,7 +189,7 @@ export default function SumberDayaAirPage() {
             <div>
               <p className="text-sm text-gray-600">Kabupaten Ngawi</p>
               <h1 className="text-xl lg:text-2xl font-bold text-gray-900">
-                Dashboard Sumber Daya Air
+                Dashboard Binamarga
               </h1>
             </div>
 
@@ -164,21 +210,33 @@ export default function SumberDayaAirPage() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <CardStats statsData={statsData} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
+              <CardStats statsData={statsData} />
+            </div>
+            <div className="grid grid-cols-1">
+              <ChartPieDonut
+                title="Kategori Urgensi Penanganan"
+                data={urgensiData}
+                showLegend={true}
+              />
+            </div>
           </div>
 
           {/* Main Content Grid */}
           {/* Main Content Grid - Masonry Layout */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 grid-auto-flow-dense">
             {/* Map Section - Bisa tinggi besar */}
-            <div className="lg:col-span-2 flex flex-col gap-6">
+            <div className="lg:col-span-2 flex flex-col gap-4">
               <MapSection nama="SDA Rusak" />
-              <CommodityChartSection commodityData={kerusakanData} title="Jenis Kerusakan Paling Banyak" />
+              <CommodityChartSection
+                commodityData={kerusakanData}
+                title="Jenis Kerusakan Paling Banyak"
+              />
             </div>
 
             {/* Aspirations Section - Tinggi normal */}
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
               {/* <AspirationsSection data={aspirasiData} /> */}
               <ChartPieDonut
                 title="Kategori Urgensi Penanganan"
@@ -192,8 +250,13 @@ export default function SumberDayaAirPage() {
               />
             </div>
           </div>
+
+          {/* Additional Chart Section */}
           <div className="grid grid-cols-1">
-            <CommodityChartSection commodityData={kerusakanData} title="Jenis Kerusakan Paling Banyak" />
+            <CommodityChartSection
+              commodityData={jenisJalanData}
+              title="Kondisi Berdasarkan Jenis Jalan"
+            />
           </div>
         </div>
       </div>

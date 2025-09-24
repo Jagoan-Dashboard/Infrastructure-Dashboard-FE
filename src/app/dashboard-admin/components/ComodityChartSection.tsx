@@ -4,7 +4,21 @@ import { BarChart, Bar, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import { CommodityChartSectionProps } from '../types/stats';
 
 // Custom tooltip component
-const CustomTooltip = ({ active, payload, label }: any) => {
+interface TooltipPayload {
+  value: number;
+  payload: {
+    name: string;
+    value: number;
+  };
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayload[];
+  label?: string;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
@@ -84,7 +98,7 @@ export const CommodityChartSection = ({ commodityData, title }: CommodityChartSe
                 }}
               />
               <YAxis
-                domain={[0, 12]}
+                domain={[0, maxValue + (maxValue * 0.1)]}
                 tick={{ fontSize: 11, fill: '#6B7280', textAnchor: 'end' }}
                 axisLine={{ stroke: '#E5E7EB' }}
                 tickCount={7}

@@ -14,12 +14,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { StatsType } from "./types/stats";
+import { StatsType } from "../types/stats";
 import { Home } from "lucide-react";
-import { MapSection } from "./components/MapSection";
-import { ChartPieDonut } from "./components/DonutChart";
-import CardStats from "./components/CardStats";
-import { CommodityChartSection } from "./components/ComodityChartSection";
+import { MapSection } from "../components/MapSection";
+import { ChartPieDonut } from "../components/DonutChart";
+import CardStats from "../components/CardStats";
+import { CommodityChartSection } from "../components/ComodityChartSection";
 
 // app/dashboard-admin/page.tsx
 export default function DashboardPage() {
@@ -27,8 +27,8 @@ export default function DashboardPage() {
   const statsData: StatsType[] = [
     {
       id: 1,
-      title: "Rata-rata Luas Bangunan Dilaporkan",
-      value: "1658",
+      title: "Perkiraan Volume Kerusakan",
+      value: "11.444",
       unit: "(m2)",
       isPositive: true,
       icon: "lets-icons:road-fill",
@@ -36,16 +36,16 @@ export default function DashboardPage() {
     },
     {
       id: 2,
-      title: "Rata-rata Jumlah Lantai Bangunan Dilaporkan",
-      value: "3",
-      unit: "Laporan",
+      title: "Area Sawah Terdampak",
+      value: "22.710",
+      unit: "(m)",
       isPositive: false,
       icon: "fa6-solid:road-circle-xmark",
       color: "text-blue-500",
     },
     {
       id: 3,
-      title: "Total Laporan Bangunan Rusak",
+      title: "Banyak Laporan SDA Rusak",
       value: "100",
       unit: "Laporan",
       isPositive: true,
@@ -54,26 +54,69 @@ export default function DashboardPage() {
     },
   ];
 
-  const perbaikanData = [
-    { name: "Sanitasi/MCK", value: 6, fullName: "Sanitasi/MCK" },
-    { name: "Atap", value: 11, fullName: "Atap" },
-    { name: "Pintu/Jendela", value: 7, fullName: "Pintu/Jendela" },
-    { name: "Lantai", value: 7, fullName: "Lantai" },
-    { name: "Dinding/cat", value: 9, fullName: "Dinding/cat" },
-    { name: "Lainnya", value: 7, fullName: "Lainnya" },
-    { name: "Listrik/Air", value: 10, fullName: "Listrik/Air" },
+  const kerusakanData = [
+    {
+      name: "Tanggul Jebol",
+      value: 100,
+      fullName: "Tanggul Jebol",
+    },
+    { name: "Sedimentasi Tinggi", value: 80, fullName: "Sedimentasi Tinggi" },
+    {
+      name: "Retak / Bocor",
+      value: 60,
+      fullName: "Retak / Bocor",
+    },
+    {
+      name: "Struktur Beton Rusak",
+      value: 40,
+      fullName: "Struktur Beton Rusak",
+    },
+    {
+      name: "Lainnya",
+      value: 20,
+      fullName: "Lainnya",
+    },
+    {
+      name: "Longsor / Ambrol",
+      value: 10,
+      fullName: "Longsor / Ambrol",
+    },
+    {
+      name: "Tersumbat Sampah",
+      value: 5,
+      fullName: "Tersumbat Sampah",
+    },
+    {
+      name: "Pintu Air Macet/Tidak Befungsi",
+      value: 1,
+      fullName: "Pintu Air Macet/Tidak Befungsi",
+    },
   ];
 
-  const laporanData = [
-    { label: "Rehabilitasi / Perbaikan", value: 38.2, fill: "#3355FF" },
-    { label: "Pembangunan Baru", value: 33.3, fill: "#FFD633" },
-    { label: "Lainnya", value: 23.5, fill: "#FF9933" },
+  const urgensiData = [
+    { label: "Rutin", value: 38.2, fill: "#3355FF" },
+    { label: "Mendesak", value: 33.3, fill: "#F0417E", detail: "(potensi gagal panen/banjir)" },
   ];
 
-  const rehabilitasiData = [
-    { label: "Baik / Siap Pakai", value: 76.9, fill: "#33AD5C" },
-    { label: "Masih Membutuhkan Perbaikan Tambahan", value: 7.7, fill: "#FFD633" },
-    { label: "Lainnya", value: 15.4, fill: "#FF9933" },
+  const pelanggaranKawasanData = [
+    {
+      label: "Ringan",
+      value: 76.9,
+      fill: "#FFD633",
+      detail: "(fungsi masih berjalan)",
+    },
+    {
+      label: "Sedang",
+      value: 7.7,
+      fill: "#FF9933",
+      detail: "(fungsi terganggu sebagian)",
+    },
+    {
+      label: "Berat",
+      value: 15.4,
+      fill: "#F0417E",
+      detail: "(tidak bisa difungsikan sama sekali)",
+    },
   ];
 
   return (
@@ -90,7 +133,7 @@ export default function DashboardPage() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Tata Bangunan</BreadcrumbPage>
+                <BreadcrumbPage>Sumber Daya Air</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -100,7 +143,7 @@ export default function DashboardPage() {
             <div>
               <p className="text-sm text-gray-600">Kabupaten Ngawi</p>
               <h1 className="text-xl lg:text-2xl font-bold text-gray-900">
-                Dashboard Tata Bangunan
+                Dashboard Sumber Daya Air
               </h1>
             </div>
 
@@ -108,18 +151,13 @@ export default function DashboardPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Select>
                 <SelectTrigger className="">
-                  <SelectValue placeholder="Jenis Bangunan" />
+                  <SelectValue placeholder="Jenis Irigasi" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="system">Sekolah</SelectItem>
-                  <SelectItem value="system">
-                    Sarana Olahraga / Gedung Serbaguna
-                  </SelectItem>
-                  <SelectItem value="system">Puskesmas / Posyandu</SelectItem>
-                  <SelectItem value="system">Pasar</SelectItem>
-                  <SelectItem value="system">Kantor Pemerintahan</SelectItem>
-                  <SelectItem value="system">Fasilitas Umum Lainnya</SelectItem>
-                  <SelectItem value="system">Lainnya</SelectItem>
+                  <SelectItem value="system">Saluran Sekunder</SelectItem>
+                  <SelectItem value="system">Pintu Air</SelectItem>
+                  <SelectItem value="system">Embung/Dam</SelectItem>
+                  <SelectItem value="system">Bendung</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -135,21 +173,21 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 grid-auto-flow-dense">
             {/* Map Section - Bisa tinggi besar */}
             <div className="lg:col-span-2 flex flex-col gap-6">
-              <MapSection nama="Bangunan Rusak" />
-              <CommodityChartSection commodityData={perbaikanData} title="Jenis Perbaikan yang Dibutuhkan" />
+              <MapSection nama="SDA Rusak" />
+              <CommodityChartSection commodityData={kerusakanData} title="Jenis Kerusakan Paling Banyak" />
             </div>
 
             {/* Aspirations Section - Tinggi normal */}
             <div className="flex flex-col gap-6">
               {/* <AspirationsSection data={aspirasiData} /> */}
               <ChartPieDonut
-                title="Banyak Status Laporan"
-                data={laporanData}
+                title="Kategori Urgensi Penanganan"
+                data={urgensiData}
                 showLegend={true}
               />
               <ChartPieDonut
-                title="Kondisi Setelah Rehabilitasi"
-                data={rehabilitasiData}
+                title="Tingkat Kerusakan Paling Banyak"
+                data={pelanggaranKawasanData}
                 showLegend={true}
               />
             </div>

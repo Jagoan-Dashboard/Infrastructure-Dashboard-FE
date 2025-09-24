@@ -135,7 +135,7 @@ export default function DashboardPage() {
             {/* Map Section - Bisa tinggi besar */}
             <div className="lg:col-span-2 flex flex-col gap-6">
               <MapSection nama="Pelanggaran Kawasan" />
-              <CommodityChartSection commodityData={pelanggaranData} />
+              <CommodityChartSection commodityData={pelanggaranData} title="Jenis Pelanggaran yang Terjadi"/>
             </div>
 
             {/* Aspirations Section - Tinggi normal */}

@@ -26,7 +26,7 @@ const getBarColor = (value: number, maxValue: number) => {
   return '#A5B4FC'; // Lighter blue for other values
 };
 
-export const CommodityChartSection = ({ commodityData }: CommodityChartSectionProps) => {
+export const CommodityChartSection = ({ commodityData, title }: CommodityChartSectionProps) => {
   const maxValue = Math.max(...commodityData?.map(item => item.value) || []);
 
   return (
@@ -38,7 +38,7 @@ export const CommodityChartSection = ({ commodityData }: CommodityChartSectionPr
             <Icon icon="material-symbols:bar-chart" className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Jenis Perbaikan Yang Dibutuhkan</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
           </div>
         </div>
       </div>

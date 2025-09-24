@@ -44,4 +44,5 @@ interface CommodityData {
 
 interface CommodityChartSectionProps {
   commodityData?: CommodityData[];
+  title: string;
 }

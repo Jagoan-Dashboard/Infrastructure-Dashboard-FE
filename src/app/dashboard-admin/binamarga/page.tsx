@@ -7,19 +7,13 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { StatsType } from "./components/CardStats";
 import { Home } from "lucide-react";
 import { MapSection } from "../components/MapSection";
 import { ChartPieDonut } from "../components/DonutChart";
 import CardStats from "./components/CardStats";
-import { CommodityChartSection } from "../components/ComodityChartSection";
+import { CommodityChartSection } from "../components/BarChartSection";
+import { PieChartComponent } from '../components/PieChart';
 
 // app/dashboard-admin/page.tsx
 export default function DashboardPage() {
@@ -67,7 +61,7 @@ export default function DashboardPage() {
     },
   ];
 
-  const kerusakanData = [
+  const kerusakanJembatanData = [
     {
       name: "Tanggul Jebol",
       value: 100,
@@ -83,26 +77,6 @@ export default function DashboardPage() {
       name: "Struktur Beton Rusak",
       value: 40,
       fullName: "Struktur Beton Rusak",
-    },
-    {
-      name: "Lainnya",
-      value: 20,
-      fullName: "Lainnya",
-    },
-    {
-      name: "Longsor / Ambrol",
-      value: 10,
-      fullName: "Longsor / Ambrol",
-    },
-    {
-      name: "Tersumbat Sampah",
-      value: 5,
-      fullName: "Tersumbat Sampah",
-    },
-    {
-      name: "Pintu Air Macet/Tidak Befungsi",
-      value: 1,
-      fullName: "Pintu Air Macet/Tidak Befungsi",
     },
   ];
 
@@ -137,7 +111,7 @@ export default function DashboardPage() {
     },
   ];
 
-  const jenisJalanData = [
+  const kerusakanJalanData = [
     {
       name: "Jalan Arteri",
       value: 85,
@@ -164,6 +138,29 @@ export default function DashboardPage() {
       fullName: "Jalan Tol",
     },
   ];
+
+  const prioritasData = [
+    {
+      name: "Baik",
+      value: 45,
+      color: "#5C77FF"
+    },
+    {
+      name: "Rusak Ringan",
+      value: 20,
+      color: "#FFD633"
+    },
+    {
+      name: "Rusak Sedang",
+      value: 25,
+      color: "#FF9933"
+    },
+    {
+      name: "Rusak Berat",
+      value: 15,
+      color: "#F0417E"
+    }
+  ]
 
   return (
     <div className="container mx-auto max-w-7xl">
@@ -193,50 +190,32 @@ export default function DashboardPage() {
               </h1>
             </div>
 
-            {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Select>
-                <SelectTrigger className="">
-                  <SelectValue placeholder="Jenis Irigasi" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="system">Saluran Sekunder</SelectItem>
-                  <SelectItem value="system">Pintu Air</SelectItem>
-                  <SelectItem value="system">Embung/Dam</SelectItem>
-                  <SelectItem value="system">Bendung</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
             <div className="grid grid-cols-2 gap-4">
               <CardStats statsData={statsData} />
             </div>
             <div className="grid grid-cols-1">
-              <ChartPieDonut
-                title="Kategori Urgensi Penanganan"
-                data={urgensiData}
-                showLegend={true}
-              />
+              <PieChartComponent statusData={prioritasData} />
             </div>
           </div>
 
           {/* Main Content Grid */}
           {/* Main Content Grid - Masonry Layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 grid-auto-flow-dense">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Map Section - Bisa tinggi besar */}
-            <div className="lg:col-span-2 flex flex-col gap-4">
+            <div className="lg:col-span-2 flex flex-col gap-6 h-full">
               <MapSection nama="SDA Rusak" />
               <CommodityChartSection
-                commodityData={kerusakanData}
-                title="Jenis Kerusakan Paling Banyak"
+                commodityData={kerusakanJembatanData}
+                title="Jenis Kerusakan Jembatan Paling Banyak"
               />
             </div>
 
             {/* Aspirations Section - Tinggi normal */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-6 h-full">
               {/* <AspirationsSection data={aspirasiData} /> */}
               <ChartPieDonut
                 title="Kategori Urgensi Penanganan"
@@ -250,12 +229,11 @@ export default function DashboardPage() {
               />
             </div>
           </div>
-
           {/* Additional Chart Section */}
           <div className="grid grid-cols-1">
             <CommodityChartSection
-              commodityData={jenisJalanData}
-              title="Kondisi Berdasarkan Jenis Jalan"
+              commodityData={kerusakanJalanData}
+              title="Jenis Kerusakan Jalan Paling Banyak"
             />
           </div>
         </div>

@@ -38,7 +38,7 @@ export const useLogin = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       // Handle successful login
-      router.push('/dashboard');
+      router.push('/dashboard-admin');
       
     } catch (error) {
       console.error('Login error:', error);

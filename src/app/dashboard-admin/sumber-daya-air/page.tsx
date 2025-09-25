@@ -19,7 +19,7 @@ import { Home } from "lucide-react";
 import { MapSection } from "../components/MapSection";
 import { ChartPieDonut } from "../components/DonutChart";
 import CardStats from "../components/CardStats";
-import { CommodityChartSection } from "../components/ComodityChartSection";
+import { CommodityChartSection } from "../components/BarChartSection";
 
 // app/dashboard-admin/page.tsx
 export default function SumberDayaAirPage() {
@@ -191,9 +191,6 @@ export default function SumberDayaAirPage() {
                 showLegend={true}
               />
             </div>
-          </div>
-          <div className="grid grid-cols-1">
-            <CommodityChartSection commodityData={kerusakanData} title="Jenis Kerusakan Paling Banyak" />
           </div>
         </div>
       </div>

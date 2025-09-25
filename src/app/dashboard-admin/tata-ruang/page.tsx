@@ -19,7 +19,7 @@ import { Home } from "lucide-react";
 import { MapSection } from "../components/MapSection";
 import { ChartPieDonut } from "../components/DonutChart";
 import CardStats from "../components/CardStats";
-import { CommodityChartSection } from "../components/ComodityChartSection";
+import { CommodityChartSection } from "../components/BarChartSection";
 
 // app/dashboard-admin/page.tsx
 export default function DashboardPage() {

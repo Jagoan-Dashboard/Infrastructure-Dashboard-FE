@@ -16,26 +16,6 @@ export interface StatsType {
   color: string;
 }
 
-
-interface AspirationItem {
-  id: number;
-  title: string;
-  value: number;
-  percentage: number;
-  color: 'blue' | 'pink';
-}
-
-interface AspirationCategory {
-  title: string;
-  color: 'blue' | 'pink';
-  items: AspirationItem[];
-}
-
-interface AspirationsData {
-  categories: AspirationCategory[];
-}
-
-
 interface CommodityData {
   name: string;
   value: number;

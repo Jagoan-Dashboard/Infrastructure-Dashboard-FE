@@ -10,7 +10,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
   ChartTooltip,
 } from "@/components/ui/chart";
 
@@ -51,24 +50,33 @@ const defaultData = [
 ];
 
 // Create chart config dynamically
-const createChartConfig = (data: ChartData[]): ChartConfig => {
-  const config: ChartConfig = {
-    value: {
-      label: "Value",
-    },
-  };
+// const createChartConfig = (data: ChartData[]): ChartConfig => {
+//   const config: ChartConfig = {
+//     value: {
+//       label: "Value",
+//     },
+//   };
 
-  data.forEach((item, index) => {
-    config[item.label.toLowerCase()] = {
-      label: item.label,
-      color: item.fill,
-    };
-  });
+//   data.forEach((item) => {
+//     config[item.label.toLowerCase()] = {
+//       label: item.label,
+//       color: item.fill,
+//     };
+//   });
 
-  return config;
-};
+//   return config;
+// };
 
 const RADIAN = Math.PI / 180;
+
+interface LabelProps {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percent: number;
+}
 
 const renderCustomizedLabel = ({
   cx,
@@ -77,7 +85,7 @@ const renderCustomizedLabel = ({
   innerRadius,
   outerRadius,
   percent,
-}: any) => {
+}: LabelProps) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-(midAngle ?? 0) * RADIAN);
   const y = cy + radius * Math.sin(-(midAngle ?? 0) * RADIAN);
@@ -100,9 +108,14 @@ export function ChartPieDonut({
   data = defaultData,
   showLegend = true,
 }: ChartProps) {
-  const chartConfig = createChartConfig(data);
+  interface TooltipProps {
+    active?: boolean;
+    payload?: Array<{
+      payload: ChartData;
+    }>;
+  }
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: TooltipProps) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

@@ -40,7 +40,7 @@ const AppHeader: React.FC = () => {
 
   return (
     <div className="relative top-0 right-0  w-full p-5 ">
-      <div className="bg-white rounded-xl flex justify-center items-center z-30 ">
+      <div className="bg-white max-w-7xl container mx-auto rounded-xl flex justify-center items-center z-30 ">
         <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6">
           <div className={`flex items-center justify-between w-full gap-2 px-3 py-3 ${isApplicationMenuOpen ? 'border-b border-gray-200' : ''} sm:gap-4 lg:justify-normal lg:px-0 lg:py-4`}>
             <button

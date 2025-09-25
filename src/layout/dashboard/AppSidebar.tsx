@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { FaChevronDown } from "react-icons/fa6";
 import { HiDotsHorizontal } from "react-icons/hi";
-import { useAuth } from "@/context/AuthContext";
+// import { useAuth } from "@/context/AuthContext";
 import { useSidebar } from "@/context/SidebarContext";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
@@ -32,7 +32,7 @@ type NavItem = {
   // permissions?: PermissionType[];
 };
 
-const navItems: NavItem[] = [
+const mainNavItems: NavItem[] = [
   {
     icon: (
       <Icon icon="mynaui:building" width="20" height="20" color="#3355FF" />
@@ -80,6 +80,9 @@ const navItems: NavItem[] = [
     path: "/dashboard-admin/binamarga",
     // permission: PERMISSIONS.DASHBOARD_INDEX,
   },
+];
+
+const bottomNavItems: NavItem[] = [
   {
     name: "Bantuan",
     isHelp: true, // Menandai sebagai menu bantuan
@@ -96,9 +99,9 @@ const navItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
-  const { logout } = useAuth();
+  // const { logout } = useAuth();
   const [openSubmenu, setOpenSubmenu] = useState<{
-    type: "main" | "others";
+    type: "main" | "others" | "bottom";
     index: number;
   } | null>(null);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
@@ -108,27 +111,24 @@ const AppSidebar: React.FC = () => {
 
   const isActive = useCallback((path: string) => pathname === path, [pathname]);
 
-  const handleLogout = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      // confirmDialog({
-      //   message: "Apakah kamu yakin ingin logout?",
-      //   header: "Konfirmasi Logout",
-      //   icon: "pi pi-exclamation-triangle",
-      //   acceptLabel: "Ya, Logout",
-      //   rejectLabel: "Batal",
-      //   acceptClassName: "p-button-danger",
-      //   accept: async () => {
-      //     try {
-      //       await logout();
-      //     } catch (error) {
-      //       console.error("Logout gagal", error);
-      //     }
-      //   },
-      // });
-    },
-    []
-  );
+  const handleLogout = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    // confirmDialog({
+    //   message: "Apakah kamu yakin ingin logout?",
+    //   header: "Konfirmasi Logout",
+    //   icon: "pi pi-exclamation-triangle",
+    //   acceptLabel: "Ya, Logout",
+    //   rejectLabel: "Batal",
+    //   acceptClassName: "p-button-danger",
+    //   accept: async () => {
+    //     try {
+    //       await logout();
+    //     } catch (error) {
+    //       console.error("Logout gagal", error);
+    //     }
+    //   },
+    // });
+  }, []);
 
   useEffect(() => {
     if (openSubmenu !== null) {
@@ -142,7 +142,7 @@ const AppSidebar: React.FC = () => {
     }
   }, [openSubmenu]);
 
-  const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
+  const handleSubmenuToggle = (index: number, menuType: "main" | "others" | "bottom") => {
     setOpenSubmenu((prevOpenSubmenu) => {
       if (
         prevOpenSubmenu &&
@@ -159,7 +159,7 @@ const AppSidebar: React.FC = () => {
     return subItem?.icon || <HiDotsHorizontal className="w-4 h-4" />;
   };
 
-  const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
+  const renderMenuItems = (items: NavItem[], menuType: "main" | "others" | "bottom") => (
     <ul className="flex flex-col gap-2">
       {items.map((nav, index) => {
         const accessibleSubItems =
@@ -419,7 +419,7 @@ const AppSidebar: React.FC = () => {
             )}
           </Link>
         </div>
-        <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
+        <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar flex-1">
           <nav className="mb-6">
             <div className="flex flex-col gap-4">
               <div>
@@ -436,10 +436,15 @@ const AppSidebar: React.FC = () => {
                     <HiDotsHorizontal className="size-6" />
                   )}
                 </h2>
-                {renderMenuItems(navItems, "main")}
+                {renderMenuItems(mainNavItems, "main")}
               </div>
             </div>
           </nav>
+        </div>
+
+        {/* Bottom navigation items */}
+        <div className="mt-auto pb-4">
+          <nav>{renderMenuItems(bottomNavItems, "bottom")}</nav>
         </div>
       </aside>
     </div>

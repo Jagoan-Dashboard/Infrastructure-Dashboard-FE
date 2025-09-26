@@ -7,22 +7,30 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { StatsType } from "../types/stats";
 import { Home } from "lucide-react";
 import { MapSection } from "../components/MapSection";
 import { ChartPieDonut } from "../components/DonutChart";
 import CardStats from "../components/CardStats";
 import { CommodityChartSection } from "../components/BarChartSection";
+import { MultiSelect, Option } from "@/components/ui/multi-select";
+import { useState } from "react";
 
 // app/dashboard-admin/page.tsx
 export default function DashboardPage() {
+  // State for multi-select
+  const [selectedJenisKawasan, setSelectedJenisKawasan] = useState<string[]>(
+    []
+  );
+
+  // Options for multi-select
+  const jenisKawasanOptions: Option[] = [
+    { value: "Kawasan Transportasi", label: "Kawasan Transportasi" },
+    { value: "Kawasan Peruntukan Pertambangan Buatan", label: "Kawasan Peruntukan Pertambangan Buatan" },
+    { value: "Kawasan Peruntukan Industri", label: "Kawasan Peruntukan Industri" },
+    { value: "Kawasan Pertahanan & Keamanan", label: "Kawasan Pertahanan & Keamanan" },
+    { value: "Kawasan Hutan", label: "Kawasan Hutan" },
+  ];
   // Sample data
   const statsData: StatsType[] = [
     {
@@ -55,28 +63,58 @@ export default function DashboardPage() {
   ];
 
   const pelanggaranData = [
-    { name: "Pembangunan Tanpa Izin Pemanfaatan Ruang", value: 38.2, fullName: "Pembangunan Tanpa Izin Pemanfaatan Ruang" },
+    {
+      name: "Pembangunan Tanpa Izin Pemanfaatan Ruang",
+      value: 38.2,
+      fullName: "Pembangunan Tanpa Izin Pemanfaatan Ruang",
+    },
     { name: "Lainnya", value: 38.2, fullName: "Lainnya" },
-    { name: "Bangunan di Sempadan Jalan", value: 38.2, fullName: "Bangunan di Sempadan Jalan" },
-    { name: "Alih Fungsi Ruang Terbuka Hijau", value: 38.2, fullName: "Alih Fungsi Ruang Terbuka Hijau" },
-    { name: "Bangunan di Sempadan Sungai/Waduk/Bendungan", value: 38.2, fullName: "Bangunan di Sempadan Sungai/Waduk/Bendungan" },
-    { name: "Alih Fungsi Lahan Pertanian", value: 38.2, fullName: "Alih Fungsi Lahan Pertanian" },
+    {
+      name: "Bangunan di Sempadan Jalan",
+      value: 38.2,
+      fullName: "Bangunan di Sempadan Jalan",
+    },
+    {
+      name: "Alih Fungsi Ruang Terbuka Hijau",
+      value: 38.2,
+      fullName: "Alih Fungsi Ruang Terbuka Hijau",
+    },
+    {
+      name: "Bangunan di Sempadan Sungai/Waduk/Bendungan",
+      value: 38.2,
+      fullName: "Bangunan di Sempadan Sungai/Waduk/Bendungan",
+    },
+    {
+      name: "Alih Fungsi Lahan Pertanian",
+      value: 38.2,
+      fullName: "Alih Fungsi Lahan Pertanian",
+    },
   ];
 
   const urgensiData = [
-    { label: "Biasa", value: 38.2, fill: "#3355FF"},
+    { label: "Biasa", value: 38.2, fill: "#3355FF" },
     { label: "Mendesak", value: 33.3, fill: "#F0417E" },
   ];
 
   const pelanggaranKawasanData = [
-    { label: "Ringan", value: 76.9, fill: "#FFD633", detail: "(dapat diperbaiki cepat, fungsi kawasan masih berjalan)"},
+    {
+      label: "Ringan",
+      value: 76.9,
+      fill: "#FFD633",
+      detail: "(dapat diperbaiki cepat, fungsi kawasan masih berjalan)",
+    },
     {
       label: "Sedang",
       value: 7.7,
       fill: "#FF9933",
-      detail: "(fungsi kawasan terganggu sebagian)"
+      detail: "(fungsi kawasan terganggu sebagian)",
     },
-    { label: "Berat", value: 15.4, fill: "#F0417E", detail: "(Fungsi kawasan hilang / tidak sesuai peruntukan)" },
+    {
+      label: "Berat",
+      value: 15.4,
+      fill: "#F0417E",
+      detail: "(Fungsi kawasan hilang / tidak sesuai peruntukan)",
+    },
   ];
 
   return (
@@ -109,18 +147,14 @@ export default function DashboardPage() {
 
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Select>
-                <SelectTrigger className="">
-                  <SelectValue placeholder="Kategori Kawasan" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="system">Kawasan Transportasi</SelectItem>
-                  <SelectItem value="system">Kawasan Peruntukan Pertambangan Buatan</SelectItem>
-                  <SelectItem value="system">Kawasan Peruntukan Industri</SelectItem>
-                  <SelectItem value="system">Kawasan Pertahanan & Keamanan</SelectItem>
-                  <SelectItem value="system">Kawasan Hutan</SelectItem>
-                </SelectContent>
-              </Select>
+              <MultiSelect
+                options={jenisKawasanOptions}
+                selected={selectedJenisKawasan}
+                onChange={setSelectedJenisKawasan}
+                placeholder="Kategori Kawasan"
+                className="min-w-[250px]"
+                label="Jenis Kawasan"
+              />
             </div>
           </div>
 
@@ -129,29 +163,27 @@ export default function DashboardPage() {
             <CardStats statsData={statsData} />
           </div>
 
-          {/* Main Content Grid */}
-          {/* Main Content Grid - Masonry Layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 grid-auto-flow-dense">
-            {/* Map Section - Bisa tinggi besar */}
-            <div className="lg:col-span-2 flex flex-col gap-6">
-              <MapSection nama="Pelanggaran Kawasan" />
-              <CommodityChartSection commodityData={pelanggaranData} title="Jenis Pelanggaran yang Terjadi"/>
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <MapSection nama="Pelanggaran Kawasan" />
+            <ChartPieDonut
+              title="Kategori Urgensi Penanganan"
+              data={urgensiData}
+              showLegend={true}
+            />
+          </div>
 
-            {/* Aspirations Section - Tinggi normal */}
-            <div className="flex flex-col gap-6">
-              {/* <AspirationsSection data={aspirasiData} /> */}
-              <ChartPieDonut
-                title="Kategori Urgensi Penanganan"
-                data={urgensiData}
-                showLegend={true}
-              />
-              <ChartPieDonut
-                title="Tingkat Kerusakan Paling Banyak"
-                data={pelanggaranKawasanData}
-                showLegend={true}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className=" lg:col-span-2">
+              <CommodityChartSection
+                commodityData={pelanggaranData}
+                title="Jenis Pelanggaran yang Terjadi"
               />
             </div>
+            <ChartPieDonut
+              title="Tingkat Kerusakan Paling Banyak"
+              data={pelanggaranKawasanData}
+              showLegend={true}
+            />
           </div>
         </div>
       </div>

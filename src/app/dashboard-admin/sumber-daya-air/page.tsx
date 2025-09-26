@@ -7,22 +7,28 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { StatsType } from "../types/stats";
 import { Home } from "lucide-react";
 import { MapSection } from "../components/MapSection";
 import { ChartPieDonut } from "../components/DonutChart";
 import CardStats from "../components/CardStats";
 import { CommodityChartSection } from "../components/BarChartSection";
+import { MultiSelect, Option } from "@/components/ui/multi-select";
+import { useState } from "react";
 
 // app/dashboard-admin/page.tsx
 export default function SumberDayaAirPage() {
+  const [selectedJenisIrigasi, setSelectedJenisIrigasi] = useState<string[]>(
+    []
+  );
+
+  // Options for multi-select
+  const jenisIrigasiOptions: Option[] = [
+    { value: "Saluran Sekunder", label: "Saluran Sekunder" },
+    { value: "Pintu Air", label: "Pintu Air" },
+    { value: "Embung/Dam", label: "Embung/Dam" },
+    { value: "Bendung", label: "Bendung" },
+  ];
   // Sample data
   const statsData: StatsType[] = [
     {
@@ -95,7 +101,12 @@ export default function SumberDayaAirPage() {
 
   const urgensiData = [
     { label: "Rutin", value: 38.2, fill: "#3355FF" },
-    { label: "Mendesak", value: 33.3, fill: "#F0417E", detail: "(potensi gagal panen/banjir)" },
+    {
+      label: "Mendesak",
+      value: 33.3,
+      fill: "#F0417E",
+      detail: "(potensi gagal panen/banjir)",
+    },
   ];
 
   const pelanggaranKawasanData = [
@@ -148,18 +159,16 @@ export default function SumberDayaAirPage() {
             </div>
 
             {/* Filters */}
+            {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Select>
-                <SelectTrigger className="">
-                  <SelectValue placeholder="Jenis Irigasi" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="system">Saluran Sekunder</SelectItem>
-                  <SelectItem value="system">Pintu Air</SelectItem>
-                  <SelectItem value="system">Embung/Dam</SelectItem>
-                  <SelectItem value="system">Bendung</SelectItem>
-                </SelectContent>
-              </Select>
+              <MultiSelect
+                options={jenisIrigasiOptions}
+                selected={selectedJenisIrigasi}
+                onChange={setSelectedJenisIrigasi}
+                placeholder="Jenis Irigasi"
+                className="min-w-[250px]"
+                label="Jenis Irigasi"
+              />
             </div>
           </div>
 
@@ -168,29 +177,27 @@ export default function SumberDayaAirPage() {
             <CardStats statsData={statsData} />
           </div>
 
-          {/* Main Content Grid */}
-          {/* Main Content Grid - Masonry Layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 grid-auto-flow-dense">
-            {/* Map Section - Bisa tinggi besar */}
-            <div className="lg:col-span-2 flex flex-col gap-6">
-              <MapSection nama="SDA Rusak" />
-              <CommodityChartSection commodityData={kerusakanData} title="Jenis Kerusakan Paling Banyak" />
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <MapSection nama="SDA Rusak" />
+            <ChartPieDonut
+              title="Kategori Urgensi Penanganan"
+              data={urgensiData}
+              showLegend={true}
+            />
+          </div>
 
-            {/* Aspirations Section - Tinggi normal */}
-            <div className="flex flex-col gap-6">
-              {/* <AspirationsSection data={aspirasiData} /> */}
-              <ChartPieDonut
-                title="Kategori Urgensi Penanganan"
-                data={urgensiData}
-                showLegend={true}
-              />
-              <ChartPieDonut
-                title="Tingkat Kerusakan Paling Banyak"
-                data={pelanggaranKawasanData}
-                showLegend={true}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <CommodityChartSection
+                commodityData={kerusakanData}
+                title="Jenis Kerusakan Paling Banyak"
               />
             </div>
+            <ChartPieDonut
+              title="Tingkat Kerusakan Paling Banyak"
+              data={pelanggaranKawasanData}
+              showLegend={true}
+            />
           </div>
         </div>
       </div>

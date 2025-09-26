@@ -7,22 +7,31 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { MultiSelect, Option } from "@/components/ui/multi-select";
 import { StatsType } from "./types/stats";
 import { Home } from "lucide-react";
 import { MapSection } from "./components/MapSection";
 import { ChartPieDonut } from "./components/DonutChart";
 import CardStats from "./components/CardStats";
 import { CommodityChartSection } from "./components/BarChartSection";
+import { useState } from "react";
 
 // app/dashboard-admin/page.tsx
 export default function DashboardPage() {
+  // State for multi-select
+  const [selectedJenisBangunan, setSelectedJenisBangunan] = useState<string[]>([]);
+
+  // Options for multi-select
+  const jenisBangunanOptions: Option[] = [
+    { value: "sekolah", label: "Sekolah" },
+    { value: "olahraga", label: "Sarana Olahraga / Gedung Serbaguna" },
+    { value: "puskesmas", label: "Puskesmas / Posyandu" },
+    { value: "pasar", label: "Pasar" },
+    { value: "kantor", label: "Kantor Pemerintahan" },
+    { value: "fasilitas", label: "Fasilitas Umum Lainnya" },
+    { value: "lainnya", label: "Lainnya" },
+  ];
+
   // Sample data
   const statsData: StatsType[] = [
     {
@@ -72,7 +81,11 @@ export default function DashboardPage() {
 
   const rehabilitasiData = [
     { label: "Baik / Siap Pakai", value: 76.9, fill: "#33AD5C" },
-    { label: "Masih Membutuhkan Perbaikan Tambahan", value: 7.7, fill: "#FFD633" },
+    {
+      label: "Masih Membutuhkan Perbaikan Tambahan",
+      value: 7.7,
+      fill: "#FFD633",
+    },
     { label: "Lainnya", value: 15.4, fill: "#FF9933" },
   ];
 
@@ -106,53 +119,47 @@ export default function DashboardPage() {
 
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Select>
-                <SelectTrigger className="">
-                  <SelectValue placeholder="Jenis Bangunan" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="system">Sekolah</SelectItem>
-                  <SelectItem value="system">
-                    Sarana Olahraga / Gedung Serbaguna
-                  </SelectItem>
-                  <SelectItem value="system">Puskesmas / Posyandu</SelectItem>
-                  <SelectItem value="system">Pasar</SelectItem>
-                  <SelectItem value="system">Kantor Pemerintahan</SelectItem>
-                  <SelectItem value="system">Fasilitas Umum Lainnya</SelectItem>
-                  <SelectItem value="system">Lainnya</SelectItem>
-                </SelectContent>
-              </Select>
+              <MultiSelect
+                options={jenisBangunanOptions}
+                selected={selectedJenisBangunan}
+                onChange={setSelectedJenisBangunan}
+                placeholder="Pilih Jenis Bangunan"
+                className="min-w-[250px]"
+                label="Jenis Bangunan"
+              />
             </div>
           </div>
 
           {/* Stats Cards */}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <CardStats statsData={statsData} />
           </div>
 
           {/* Main Content Grid */}
           {/* Main Content Grid - Masonry Layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 grid-auto-flow-dense">
-            {/* Map Section - Bisa tinggi besar */}
-            <div className="lg:col-span-2 flex flex-col gap-6">
-              <MapSection nama="Bangunan Rusak" />
-              <CommodityChartSection commodityData={perbaikanData} title="Jenis Perbaikan yang Dibutuhkan" />
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <MapSection nama="Bangunan Rusak" />
+            <ChartPieDonut
+              title="Kondisi Setelah Rehabilitasi"
+              data={rehabilitasiData}
+              showLegend={true}
+            />
+          </div>
 
-            {/* Aspirations Section - Tinggi normal */}
-            <div className="flex flex-col gap-6">
-              {/* <AspirationsSection data={aspirasiData} /> */}
-              <ChartPieDonut
-                title="Banyak Status Laporan"
-                data={laporanData}
-                showLegend={true}
-              />
-              <ChartPieDonut
-                title="Kondisi Setelah Rehabilitasi"
-                data={rehabilitasiData}
-                showLegend={true}
+          {/* Aspirations Section - Tinggi normal */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className=" lg:col-span-2">
+              <CommodityChartSection
+                commodityData={perbaikanData}
+                title="Jenis Perbaikan yang Dibutuhkan"
               />
             </div>
+            <ChartPieDonut
+              title="Banyak Status Laporan"
+              data={laporanData}
+              showLegend={true}
+            />
           </div>
         </div>
       </div>

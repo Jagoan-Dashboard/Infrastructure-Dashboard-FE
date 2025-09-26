@@ -10,14 +10,14 @@ import Image from "next/image";
 import { assets } from "@/assets/assets";
 
 // Interface for dropdown menu items
-interface DropdownMenuItem {
-  label: string;
-  href?: string;
-  icon?: React.ReactNode;
-  action?: () => void;
-  type?: 'link' | 'button';
-  className?: string;
-}
+// interface DropdownMenuItem {
+//   label: string;
+//   href?: string;
+//   icon?: React.ReactNode;
+//   action?: () => void;
+//   type?: 'link' | 'button';
+//   className?: string;
+// }
 
 // const userDropdownMenu: DropdownMenuItem[] = [
 //   { 
@@ -103,9 +103,9 @@ export default function UserDropdown() {
     setIsOpen(!isOpen);
   }
 
-  function closeDropdown() {
-    setIsOpen(false);
-  }
+  // function closeDropdown() {
+  //   setIsOpen(false);
+  // }
 
   const handleLogout = async () => {
     try {

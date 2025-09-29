@@ -1,20 +1,20 @@
-// src/app/dashboard-admin/tata-ruang/hooks/useTata-ruang.ts
+
 import { useState, useEffect, useCallback } from "react";
-import { TataRuangService } from "../service/tata-ruang-service";
-import { TataRuangOverview, AreaCategory } from "../types/tata-ruang-types";
+import { TataBangunanService } from "../service/tata-bangunan-service";
+import { TataBangunanOverview, BuildingType } from "../types/tata-bangunan-types";
 import { toast } from "sonner";
 
-export const useTataRuang = (initialAreaCategory: AreaCategory = AreaCategory.ALL) => {
-  const [data, setData] = useState<TataRuangOverview | null>(null);
+export const useTataBangunan = (initialBuildingType: BuildingType = BuildingType.ALL) => {
+  const [data, setData] = useState<TataBangunanOverview | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [areaCategory, setAreaCategory] = useState<AreaCategory>(initialAreaCategory);
+  const [buildingType, setBuildingType] = useState<BuildingType>(initialBuildingType);
 
   const fetchOverview = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await TataRuangService.getOverview(areaCategory);
+      const response = await TataBangunanService.getOverview(buildingType);
 
       if (response.success) {
         setData(response.data);
@@ -30,7 +30,7 @@ export const useTataRuang = (initialAreaCategory: AreaCategory = AreaCategory.AL
     } finally {
       setIsLoading(false);
     }
-  }, [areaCategory]);
+  }, [buildingType]);
 
   useEffect(() => {
     fetchOverview();
@@ -40,8 +40,8 @@ export const useTataRuang = (initialAreaCategory: AreaCategory = AreaCategory.AL
     data,
     isLoading,
     error,
-    areaCategory,
-    setAreaCategory,
+    buildingType,
+    setBuildingType,
     refetch: fetchOverview,
   };
 };

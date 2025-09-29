@@ -7,4 +7,10 @@ export class ENDPOINTS{
     static BINA_MARGA = {
         OVERVIEW: "/api/v1/bina-marga/overview",
     };
+    static TATA_RUANG = {
+        OVERVIEW: "/api/v1/spatial-planning/tata-ruang/overview",
+    };
+    static TATA_BANGUNAN = {
+        OVERVIEW: "/api/v1/reports/tata-bangunan/overview",
+    };
 }

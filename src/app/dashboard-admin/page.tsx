@@ -1,3 +1,4 @@
+// src/app/dashboard-admin/page.tsx
 "use client";
 import {
   Breadcrumb,
@@ -14,84 +15,240 @@ import { MapSection } from "./components/MapSection";
 import { ChartPieDonut } from "./components/DonutChart";
 import CardStats from "./components/CardStats";
 import { CommodityChartSection } from "./components/BarChartSection";
-import { useState } from "react";
+import { useMemo } from "react";
+import { useTataBangunan } from "./hooks/useTata-bangunan";
+import { BuildingType, BuildingTypeLabels } from "./types/tata-bangunan-types";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
-// app/dashboard-admin/page.tsx
 export default function DashboardPage() {
-  // State for multi-select
-  const [selectedJenisBangunan, setSelectedJenisBangunan] = useState<string[]>([]);
+  const { data, isLoading, error, buildingType, setBuildingType } = useTataBangunan(BuildingType.ALL);
 
-  // Options for multi-select
-  const jenisBangunanOptions: Option[] = [
-    { value: "sekolah", label: "Sekolah" },
-    { value: "olahraga", label: "Sarana Olahraga / Gedung Serbaguna" },
-    { value: "puskesmas", label: "Puskesmas / Posyandu" },
-    { value: "pasar", label: "Pasar" },
-    { value: "kantor", label: "Kantor Pemerintahan" },
-    { value: "fasilitas", label: "Fasilitas Umum Lainnya" },
-    { value: "lainnya", label: "Lainnya" },
-  ];
+  // Options untuk multi-select
+  const jenisBangunanOptions: Option[] = useMemo(() => {
+    return Object.entries(BuildingTypeLabels)
+      .filter(([key]) => key !== BuildingType.ALL)
+      .map(([value, label]) => ({
+        value,
+        label,
+      }));
+  }, []);
 
-  // Sample data
-  const statsData: StatsType[] = [
-    {
-      id: 1,
-      title: "Rata-rata Luas Bangunan Dilaporkan",
-      value: "1658",
-      unit: "(m2)",
-      isPositive: true,
-      icon: "lets-icons:road-fill",
-      color: "text-blue-600",
-    },
-    {
-      id: 2,
-      title: "Rata-rata Jumlah Lantai Bangunan Dilaporkan",
-      value: "3",
-      unit: "Laporan",
-      isPositive: false,
-      icon: "fa6-solid:road-circle-xmark",
-      color: "text-blue-500",
-    },
-    {
-      id: 3,
-      title: "Total Laporan Bangunan Rusak",
-      value: "100",
-      unit: "Laporan",
-      isPositive: true,
-      icon: "mdi:users",
-      color: "text-blue-600",
-    },
-  ];
+  // Helper function untuk translate work types
+  const translateWorkType = (type: string): string => {
+    const translations: Record<string, string> = {
+      "NOT_SET": "Belum Ditentukan",
+      "Perbaikan Atap": "Perbaikan Atap",
+      "Perbaikan Dinding": "Perbaikan Dinding/Cat",
+      "Perbaikan Lantai": "Perbaikan Lantai",
+      "Perbaikan Pintu/Jendela": "Perbaikan Pintu/Jendela",
+      "Perbaikan Listrik/Air": "Perbaikan Listrik/Air",
+      "Perbaikan Sanitasi/MCK": "Perbaikan Sanitasi/MCK",
+      "LAINNYA": "Lainnya",
+    };
+    return translations[type] || type;
+  };
 
-  const perbaikanData = [
-    { name: "Sanitasi/MCK", value: 6, fullName: "Sanitasi/MCK" },
-    { name: "Atap", value: 11, fullName: "Atap" },
-    { name: "Pintu/Jendela", value: 7, fullName: "Pintu/Jendela" },
-    { name: "Lantai", value: 7, fullName: "Lantai" },
-    { name: "Dinding/cat", value: 9, fullName: "Dinding/cat" },
-    { name: "Lainnya", value: 7, fullName: "Lainnya" },
-    { name: "Listrik/Air", value: 10, fullName: "Listrik/Air" },
-  ];
+  // Helper function untuk translate condition
+  const translateCondition = (condition: string): string => {
+    const translations: Record<string, string> = {
+      "NOT_SET": "Belum Ditentukan",
+      "Baik & Siap Pakai": "Baik / Siap Pakai",
+      "Masih Membutuhkan Perbaikan": "Masih Membutuhkan Perbaikan Tambahan",
+      "LAINNYA": "Lainnya",
+    };
+    return translations[condition] || condition;
+  };
 
-  const laporanData = [
-    { label: "Rehabilitasi / Perbaikan", value: 38.2, fill: "#3355FF" },
-    { label: "Pembangunan Baru", value: 33.3, fill: "#FFD633" },
-    { label: "Lainnya", value: 23.5, fill: "#FF9933" },
-  ];
+  // Helper function untuk translate status
+  const translateStatus = (status: string): string => {
+    const translations: Record<string, string> = {
+      "Good": "Rehabilitasi / Perbaikan",
+      "New Construction": "Pembangunan Baru",
+      "LAINNYA": "Lainnya",
+    };
+    return translations[status] || status;
+  };
 
-  const rehabilitasiData = [
-    { label: "Baik / Siap Pakai", value: 76.9, fill: "#33AD5C" },
-    {
-      label: "Masih Membutuhkan Perbaikan Tambahan",
-      value: 7.7,
-      fill: "#FFD633",
-    },
-    { label: "Lainnya", value: 15.4, fill: "#FF9933" },
-  ];
+  // Transform API data to stats format
+  const statsData: StatsType[] = useMemo(() => {
+    if (!data) return [];
+
+    return [
+      {
+        id: 1,
+        title: "Rata-rata Luas Bangunan Dilaporkan",
+        value: data.basic_stats.average_floor_area.toLocaleString("id-ID", {
+          maximumFractionDigits: 2,
+        }),
+        unit: "(m²)",
+        isPositive: true,
+        icon: "lets-icons:road-fill",
+        color: "text-blue-600",
+      },
+      {
+        id: 2,
+        title: "Rata-rata Jumlah Lantai Bangunan Dilaporkan",
+        value: Math.round(data.basic_stats.average_floor_count).toString(),
+        unit: "Lantai",
+        isPositive: false,
+        icon: "fa6-solid:road-circle-xmark",
+        color: "text-blue-500",
+      },
+      {
+        id: 3,
+        title: "Total Laporan Bangunan Rusak",
+        value: data.basic_stats.total_reports.toString(),
+        unit: "Laporan",
+        isPositive: true,
+        icon: "mdi:users",
+        color: "text-blue-600",
+      },
+    ];
+  }, [data]);
+
+  // Transform work type distribution for chart
+  const perbaikanData = useMemo(() => {
+    if (!data?.work_type_distribution || data.work_type_distribution.length === 0) {
+      return [
+        { name: "Tidak ada data", value: 0, fullName: "Tidak ada data perbaikan" },
+      ];
+    }
+
+    // Filter out NOT_SET and sort by count
+    return data.work_type_distribution
+      .filter((item) => item.work_type !== "NOT_SET")
+      .sort((a, b) => b.count - a.count)
+      .map((item) => ({
+        name: translateWorkType(item.work_type),
+        value: item.count,
+        fullName: translateWorkType(item.work_type),
+      }));
+  }, [data]);
+
+  // Transform status distribution for chart
+  const laporanData = useMemo(() => {
+    if (!data?.status_distribution || data.basic_stats.total_reports === 0) {
+      return [];
+    }
+
+    const colorMap: Record<string, string> = {
+      "Good": "#3355FF",
+      "New Construction": "#FFD633",
+      "LAINNYA": "#FF9933",
+    };
+
+    return data.status_distribution.map((item) => ({
+      label: translateStatus(item.report_status),
+      value: (item.count / data.basic_stats.total_reports) * 100,
+      fill: colorMap[item.report_status] || "#999999",
+    }));
+  }, [data]);
+
+  // Transform condition distribution for chart
+  const rehabilitasiData = useMemo(() => {
+    if (!data?.condition_distribution || data.basic_stats.total_reports === 0) {
+      return [];
+    }
+
+    const colorMap: Record<string, string> = {
+      "Baik & Siap Pakai": "#33AD5C",
+      "Masih Membutuhkan Perbaikan": "#FFD633",
+      "NOT_SET": "#FF9933",
+      "LAINNYA": "#F0417E",
+    };
+
+    // Filter out NOT_SET
+    return data.condition_distribution
+      .filter((item) => item.condition_after_rehab !== "NOT_SET")
+      .map((item) => ({
+        label: translateCondition(item.condition_after_rehab),
+        value: (item.count / data.basic_stats.total_reports) * 100,
+        fill: colorMap[item.condition_after_rehab] || "#999999",
+      }));
+  }, [data]);
+
+  // Handle multi-select change
+  const handleJenisBangunanChange = (selected: string[]) => {
+    if (selected.length === 0) {
+      setBuildingType(BuildingType.ALL);
+    } else if (selected.length === 1) {
+      setBuildingType(selected[0] as BuildingType);
+    } else {
+      setBuildingType(selected[0] as BuildingType);
+    }
+  };
+
+  // Get selected values for multi-select
+  const selectedJenisBangunan = useMemo(() => {
+    if (buildingType === BuildingType.ALL) {
+      return [];
+    }
+    return [buildingType];
+  }, [buildingType]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="container mx-auto max-w-7xl">
+        <div className="bg-gray-50 rounded-lg p-4 lg:p-6">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <Spinner variant="circle" size={48} className="mx-auto mb-4 text-blue-600" />
+              <p className="text-gray-600">Memuat data...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="container mx-auto max-w-7xl">
+        <div className="bg-gray-50 rounded-lg p-4 lg:p-6">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="text-red-500 mb-4">
+                <svg
+                  className="w-16 h-16 mx-auto"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <p className="text-gray-600 mb-2">Gagal memuat data</p>
+              <p className="text-sm text-gray-500">{error.message}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // No data state
+  if (!data) {
+    return (
+      <div className="container mx-auto max-w-7xl">
+        <div className="bg-gray-50 rounded-lg p-4 lg:p-6">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <p className="text-gray-600">Tidak ada data tersedia</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto max-w-7xl">
-      <div className=" bg-gray-50 rounded-lg p-4 lg:p-6">
+      <div className="bg-gray-50 rounded-lg p-4 lg:p-6">
         <div className="w-full space-y-6">
           {/* Breadcrumb */}
           <Breadcrumb>
@@ -122,7 +279,7 @@ export default function DashboardPage() {
               <MultiSelect
                 options={jenisBangunanOptions}
                 selected={selectedJenisBangunan}
-                onChange={setSelectedJenisBangunan}
+                onChange={handleJenisBangunanChange}
                 placeholder="Pilih Jenis Bangunan"
                 className="min-w-[250px]"
                 label="Jenis Bangunan"
@@ -131,35 +288,51 @@ export default function DashboardPage() {
           </div>
 
           {/* Stats Cards */}
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <CardStats statsData={statsData} />
           </div>
 
           {/* Main Content Grid */}
-          {/* Main Content Grid - Masonry Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <MapSection nama="Bangunan Rusak" />
-            <ChartPieDonut
-              title="Kondisi Setelah Rehabilitasi"
-              data={rehabilitasiData}
-              showLegend={true}
-            />
+            {rehabilitasiData.length > 0 ? (
+              <ChartPieDonut
+                title="Kondisi Setelah Rehabilitasi"
+                data={rehabilitasiData}
+                showLegend={true}
+              />
+            ) : (
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
+                <p className="text-gray-500">Tidak ada data rehabilitasi</p>
+              </div>
+            )}
           </div>
 
-          {/* Aspirations Section - Tinggi normal */}
+          {/* Aspirations Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className=" lg:col-span-2">
-              <CommodityChartSection
-                commodityData={perbaikanData}
-                title="Jenis Perbaikan yang Dibutuhkan"
-              />
+            <div className="lg:col-span-2">
+              {perbaikanData.length > 0 && perbaikanData[0].value > 0 ? (
+                <CommodityChartSection
+                  commodityData={perbaikanData}
+                  title="Jenis Perbaikan yang Dibutuhkan"
+                />
+              ) : (
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center min-h-[300px]">
+                  <p className="text-gray-500">Tidak ada data perbaikan</p>
+                </div>
+              )}
             </div>
-            <ChartPieDonut
-              title="Banyak Status Laporan"
-              data={laporanData}
-              showLegend={true}
-            />
+            {laporanData.length > 0 ? (
+              <ChartPieDonut
+                title="Banyak Status Laporan"
+                data={laporanData}
+                showLegend={true}
+              />
+            ) : (
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
+                <p className="text-gray-500">Tidak ada data status laporan</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

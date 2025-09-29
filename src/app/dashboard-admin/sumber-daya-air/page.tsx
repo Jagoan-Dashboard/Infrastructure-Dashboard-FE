@@ -1,3 +1,4 @@
+
 "use client";
 import {
   Breadcrumb,
@@ -14,125 +15,175 @@ import { ChartPieDonut } from "../components/DonutChart";
 import CardStats from "../components/CardStats";
 import { CommodityChartSection } from "../components/BarChartSection";
 import { MultiSelect, Option } from "@/components/ui/multi-select";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useSumberDayaAir } from "./hooks/useSumber-daya-air";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
-// app/dashboard-admin/page.tsx
 export default function SumberDayaAirPage() {
-  const [selectedJenisIrigasi, setSelectedJenisIrigasi] = useState<string[]>(
-    []
-  );
+  const { data, isLoading, error } = useSumberDayaAir();
+  const [selectedJenisIrigasi, setSelectedJenisIrigasi] = useState<string[]>([]);
 
-  // Options for multi-select
+  
   const jenisIrigasiOptions: Option[] = [
     { value: "Saluran Sekunder", label: "Saluran Sekunder" },
     { value: "Pintu Air", label: "Pintu Air" },
     { value: "Embung/Dam", label: "Embung/Dam" },
     { value: "Bendung", label: "Bendung" },
   ];
-  // Sample data
-  const statsData: StatsType[] = [
-    {
-      id: 1,
-      title: "Perkiraan Volume Kerusakan",
-      value: "11.444",
-      unit: "(m2)",
-      isPositive: true,
-      icon: "lets-icons:road-fill",
-      color: "text-blue-600",
-    },
-    {
-      id: 2,
-      title: "Area Sawah Terdampak",
-      value: "22.710",
-      unit: "(m)",
-      isPositive: false,
-      icon: "fa6-solid:road-circle-xmark",
-      color: "text-blue-500",
-    },
-    {
-      id: 3,
-      title: "Banyak Laporan SDA Rusak",
-      value: "100",
-      unit: "Laporan",
-      isPositive: true,
-      icon: "mdi:users",
-      color: "text-blue-600",
-    },
-  ];
 
-  const kerusakanData = [
-    {
-      name: "Tanggul Jebol",
-      value: 100,
-      fullName: "Tanggul Jebol",
-    },
-    { name: "Sedimentasi Tinggi", value: 80, fullName: "Sedimentasi Tinggi" },
-    {
-      name: "Retak / Bocor",
-      value: 60,
-      fullName: "Retak / Bocor",
-    },
-    {
-      name: "Struktur Beton Rusak",
-      value: 40,
-      fullName: "Struktur Beton Rusak",
-    },
-    {
-      name: "Lainnya",
-      value: 20,
-      fullName: "Lainnya",
-    },
-    {
-      name: "Longsor / Ambrol",
-      value: 10,
-      fullName: "Longsor / Ambrol",
-    },
-    {
-      name: "Tersumbat Sampah",
-      value: 5,
-      fullName: "Tersumbat Sampah",
-    },
-    {
-      name: "Pintu Air Macet/Tidak Befungsi",
-      value: 1,
-      fullName: "Pintu Air Macet/Tidak Befungsi",
-    },
-  ];
+  
+  const statsData: StatsType[] = useMemo(() => {
+    if (!data) return [];
 
-  const urgensiData = [
-    { label: "Rutin", value: 38.2, fill: "#3355FF" },
-    {
-      label: "Mendesak",
-      value: 33.3,
-      fill: "#F0417E",
-      detail: "(potensi gagal panen/banjir)",
-    },
-  ];
+    return [
+      {
+        id: 1,
+        title: "Perkiraan Volume Kerusakan",
+        value: data.basic_stats.total_damage_volume_m2.toLocaleString("id-ID"),
+        unit: "(m²)",
+        isPositive: false,
+        icon: "lets-icons:road-fill",
+        color: "text-blue-600",
+      },
+      {
+        id: 2,
+        title: "Area Sawah Terdampak",
+        value: data.basic_stats.total_rice_field_area_ha.toLocaleString("id-ID"),
+        unit: "(ha)",
+        isPositive: false,
+        icon: "fa6-solid:road-circle-xmark",
+        color: "text-blue-500",
+      },
+      {
+        id: 3,
+        title: "Banyak Laporan SDA Rusak",
+        value: data.basic_stats.total_damaged_reports.toString(),
+        unit: "Laporan",
+        isPositive: true,
+        icon: "mdi:users",
+        color: "text-blue-600",
+      },
+    ];
+  }, [data]);
 
-  const pelanggaranKawasanData = [
-    {
-      label: "Ringan",
-      value: 76.9,
-      fill: "#FFD633",
-      detail: "(fungsi masih berjalan)",
-    },
-    {
-      label: "Sedang",
-      value: 7.7,
-      fill: "#FF9933",
-      detail: "(fungsi terganggu sebagian)",
-    },
-    {
-      label: "Berat",
-      value: 15.4,
-      fill: "#F0417E",
-      detail: "(tidak bisa difungsikan sama sekali)",
-    },
-  ];
+  
+  const kerusakanData = useMemo(() => {
+    if (!data?.damage_type_distribution) return [];
+
+    return data.damage_type_distribution.map((item) => ({
+      name: item.damage_type,
+      value: item.count,
+      fullName: item.damage_type,
+    }));
+  }, [data]);
+
+  
+  const urgensiData = useMemo(() => {
+    if (!data?.urgency_distribution) return [];
+
+    const colorMap: Record<string, string> = {
+      RUTIN: "#3355FF",
+      MENDESAK: "#F0417E",
+    };
+
+    return data.urgency_distribution.map((item) => ({
+      label: item.urgency_category,
+      value: (item.count / data.basic_stats.total_damaged_reports) * 100,
+      fill: colorMap[item.urgency_category] || "#999999",
+      detail:
+        item.urgency_category === "MENDESAK"
+          ? "(potensi gagal panen/banjir)"
+          : undefined,
+    }));
+  }, [data]);
+
+  
+  const pelanggaranKawasanData = useMemo(() => {
+    if (!data?.damage_level_distribution) return [];
+
+    const colorMap: Record<string, string> = {
+      RINGAN: "#FFD633",
+      SEDANG: "#FF9933",
+      BERAT: "#F0417E",
+    };
+
+    const detailMap: Record<string, string> = {
+      RINGAN: "(fungsi masih berjalan)",
+      SEDANG: "(fungsi terganggu sebagian)",
+      BERAT: "(tidak bisa difungsikan sama sekali)",
+    };
+
+    return data.damage_level_distribution.map((item) => ({
+      label: item.damage_level,
+      value: (item.count / data.basic_stats.total_damaged_reports) * 100,
+      fill: colorMap[item.damage_level] || "#999999",
+      detail: detailMap[item.damage_level],
+    }));
+  }, [data]);
+
+  
+  if (isLoading) {
+    return (
+      <div className="container mx-auto max-w-7xl">
+        <div className="bg-gray-50 rounded-lg p-4 lg:p-6">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <Spinner variant="circle" size={48} className="mx-auto mb-4 text-blue-600" />
+              <p className="text-gray-600">Memuat data...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  
+  if (error) {
+    return (
+      <div className="container mx-auto max-w-7xl">
+        <div className="bg-gray-50 rounded-lg p-4 lg:p-6">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="text-red-500 mb-4">
+                <svg
+                  className="w-16 h-16 mx-auto"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <p className="text-gray-600 mb-2">Gagal memuat data</p>
+              <p className="text-sm text-gray-500">{error.message}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  
+  if (!data) {
+    return (
+      <div className="container mx-auto max-w-7xl">
+        <div className="bg-gray-50 rounded-lg p-4 lg:p-6">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <p className="text-gray-600">Tidak ada data tersedia</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto max-w-7xl">
-      <div className=" bg-gray-50 rounded-lg p-4 lg:p-6">
+      <div className="bg-gray-50 rounded-lg p-4 lg:p-6">
         <div className="w-full space-y-6">
           {/* Breadcrumb */}
           <Breadcrumb>
@@ -158,7 +209,6 @@ export default function SumberDayaAirPage() {
               </h1>
             </div>
 
-            {/* Filters */}
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
               <MultiSelect

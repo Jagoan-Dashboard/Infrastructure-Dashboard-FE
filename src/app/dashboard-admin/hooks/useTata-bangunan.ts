@@ -1,20 +1,21 @@
+
 import { useState, useEffect, useCallback } from "react";
-import { BinamargaService } from "../service/binamarga-service";
-import { BinamargaOverview, RoadType } from "../types/binamarga-types";
+import { TataBangunanService } from "../service/tata-bangunan-service";
+import { TataBangunanOverview, BuildingType } from "../types/tata-bangunan-types";
 import { toast } from "sonner";
 
-export const useBinamarga = (initialRoadType: RoadType = RoadType.ALL) => {
-  const [data, setData] = useState<BinamargaOverview | null>(null);
+export const useTataBangunan = (initialBuildingType: BuildingType = BuildingType.ALL) => {
+  const [data, setData] = useState<TataBangunanOverview | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [roadType, setRoadType] = useState<RoadType>(initialRoadType);
+  const [buildingType, setBuildingType] = useState<BuildingType>(initialBuildingType);
 
   const fetchOverview = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await BinamargaService.getOverview(roadType);
-      
+      const response = await TataBangunanService.getOverview(buildingType);
+
       if (response.success) {
         setData(response.data);
       } else {
@@ -24,12 +25,12 @@ export const useBinamarga = (initialRoadType: RoadType = RoadType.ALL) => {
       const error = err as Error;
       setError(error);
       toast.error("Gagal memuat data", {
-        description: error.message || "Terjadi kesalahan saat memuat data"
+        description: error.message || "Terjadi kesalahan saat memuat data",
       });
     } finally {
       setIsLoading(false);
     }
-  }, [roadType]);
+  }, [buildingType]);
 
   useEffect(() => {
     fetchOverview();
@@ -39,8 +40,8 @@ export const useBinamarga = (initialRoadType: RoadType = RoadType.ALL) => {
     data,
     isLoading,
     error,
-    roadType,
-    setRoadType,
-    refetch: fetchOverview
+    buildingType,
+    setBuildingType,
+    refetch: fetchOverview,
   };
 };

@@ -1,8 +1,10 @@
+
 import type { Metadata } from "next";
 import { Poppins, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { Toaster } from "sonner"; 
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -53,6 +55,12 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             {children}
+            <Toaster 
+              position="top-right" 
+              richColors 
+              closeButton 
+              duration={3000}
+            /> 
           </AuthProvider>
         </ThemeProvider>
       </body>

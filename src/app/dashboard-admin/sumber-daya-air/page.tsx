@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import { StatsType } from "../types/stats";
 import { Home } from "lucide-react";
-import { MapSection } from "../components/MapSection";
 import { ChartPieDonut } from "../components/DonutChart";
 import CardStats from "../components/CardStats";
 import { CommodityChartSection } from "../components/BarChartSection";
@@ -18,10 +17,14 @@ import { MultiSelect, Option } from "@/components/ui/multi-select";
 import { useState, useMemo } from "react";
 import { useSumberDayaAir } from "./hooks/useSumber-daya-air";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { WaterResourceMapSection } from "./components/WaterResourceMapSection";
+import { WaterResourceReportDetailView } from "./components/WaterResourceReportDetailView";
+import { WaterResourceReport } from "./types/sumber-daya-air-types";
 
 export default function SumberDayaAirPage() {
-  const { data, isLoading, error } = useSumberDayaAir();
+  const { data, reports, isLoading, error } = useSumberDayaAir();
   const [selectedJenisIrigasi, setSelectedJenisIrigasi] = useState<string[]>([]);
+  const [selectedReport, setSelectedReport] = useState<WaterResourceReport | null>(null);
 
   
   const jenisIrigasiOptions: Option[] = [
@@ -120,6 +123,22 @@ export default function SumberDayaAirPage() {
       detail: detailMap[item.damage_level],
     }));
   }, [data]);
+
+  // Handle report click
+  const handleReportClick = (report: WaterResourceReport) => {
+    setSelectedReport(report);
+    // Scroll to detail view
+    setTimeout(() => {
+      const detailElement = document.getElementById('report-detail');
+      if (detailElement) {
+        detailElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedReport(null);
+  };
 
   
   if (isLoading) {
@@ -228,12 +247,21 @@ export default function SumberDayaAirPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <MapSection nama="SDA Rusak" />
+            <WaterResourceMapSection
+              nama="Kerusakan SDA"
+              reports={reports}
+              onReportClick={handleReportClick}
+            />
             <ChartPieDonut
               title="Kategori Urgensi Penanganan"
               data={urgensiData}
               showLegend={true}
             />
+          </div>
+
+          {/* Report Detail View */}
+          <div id="report-detail">
+            <WaterResourceReportDetailView report={selectedReport} onClose={handleCloseDetail} />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

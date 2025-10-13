@@ -1,6 +1,6 @@
 
 import apiClient from "@/lib/api-client";
-import { WaterResourcesResponse } from "../types/sumber-daya-air-types";
+import { WaterResourcesResponse, WaterResourcesReportsResponse } from "../types/sumber-daya-air-types";
 
 export class WaterResourcesService {
   private static BASE_URL = "/api/v1/water-resources";
@@ -13,6 +13,18 @@ export class WaterResourcesService {
       return response.data;
     } catch (error) {
       console.error("Error fetching water resources overview:", error);
+      throw error;
+    }
+  }
+
+  static async getReports(): Promise<WaterResourcesReportsResponse> {
+    try {
+      const response = await apiClient.get<WaterResourcesReportsResponse>(
+        `/api/v1/water-resources`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching water resources reports:", error);
       throw error;
     }
   }

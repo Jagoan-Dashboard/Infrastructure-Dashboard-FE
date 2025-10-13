@@ -1,24 +1,36 @@
 
 import { useState, useEffect } from "react";
 import { WaterResourcesService } from "../service/sumber-daya-air-service";
-import { WaterResourcesOverview } from "../types/sumber-daya-air-types";
+import { WaterResourcesOverview, WaterResourceReport } from "../types/sumber-daya-air-types";
 import { toast } from "sonner";
 
 export const useSumberDayaAir = () => {
   const [data, setData] = useState<WaterResourcesOverview | null>(null);
+  const [reports, setReports] = useState<WaterResourceReport[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchOverview = async () => {
+  const fetchData = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await WaterResourcesService.getOverview();
-      
-      if (response.success) {
-        setData(response.data);
+
+      // Fetch both overview and reports in parallel
+      const [overviewResponse, reportsResponse] = await Promise.all([
+        WaterResourcesService.getOverview(),
+        WaterResourcesService.getReports()
+      ]);
+
+      if (overviewResponse.success) {
+        setData(overviewResponse.data);
       } else {
-        throw new Error(response.message);
+        throw new Error(overviewResponse.message);
+      }
+
+      if (reportsResponse.success) {
+        setReports(reportsResponse.data.reports);
+      } else {
+        throw new Error(reportsResponse.message);
       }
     } catch (err) {
       const error = err as Error;
@@ -32,13 +44,14 @@ export const useSumberDayaAir = () => {
   };
 
   useEffect(() => {
-    fetchOverview();
+    fetchData();
   }, []);
 
   return {
     data,
+    reports,
     isLoading,
     error,
-    refetch: fetchOverview
+    refetch: fetchData
   };
 };

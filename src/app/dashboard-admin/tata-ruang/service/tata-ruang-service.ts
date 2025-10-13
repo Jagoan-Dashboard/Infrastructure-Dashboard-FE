@@ -29,7 +29,7 @@ export class TataRuangService {
     areaCategory?: AreaCategory
   ): Promise<TataRuangReportsResponse> {
     try {
-      const params: any = {};
+      const params: { area_category?: AreaCategory } = {};
       if (areaCategory && areaCategory !== AreaCategory.ALL) {
         params.area_category = areaCategory;
       }

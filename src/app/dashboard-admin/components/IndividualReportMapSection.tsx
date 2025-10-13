@@ -2,6 +2,7 @@
 import { Icon } from '@iconify/react';
 import React, { useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { TataBangunanReport } from '../types/tata-bangunan-types';
 
 // Lazy load map components
 const MapContainer = dynamic(
@@ -36,8 +37,8 @@ const Tooltip = dynamic(
 
 interface IndividualReportMapSectionProps {
   nama: string;
-  reports: any[];
-  onReportClick: (report: any) => void;
+  reports: TataBangunanReport[];
+  onReportClick: (report: TataBangunanReport) => void;
 }
 
 export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProps> = ({
@@ -47,12 +48,9 @@ export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProp
 }) => {
   const [mapLoaded, setMapLoaded] = useState(false);
 
-  // Ngawi center coordinates
-  const NGAWI_CENTER: [number, number] = [-7.4098, 111.4461];
-
   // Calculate map center - always use Ngawi center for consistent view
   const mapCenter: [number, number] = useMemo(() => {
-    return NGAWI_CENTER;
+    return [-7.4098, 111.4461];
   }, []);
 
   // Show empty state if no data

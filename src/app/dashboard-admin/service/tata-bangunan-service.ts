@@ -29,7 +29,7 @@ export class TataBangunanService {
   ): Promise<TataBangunanReportsResponse> {
     try {
       const endpoint = `/api/v1/reports`;
-      const params: any = {
+      const params: { category: 'tata-bangunan'; building_type?: BuildingType } = {
         category: 'tata-bangunan'
       };
 

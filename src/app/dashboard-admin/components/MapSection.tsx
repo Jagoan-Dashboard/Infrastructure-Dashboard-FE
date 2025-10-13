@@ -81,7 +81,7 @@ export interface GenericReport {
   longitude: number;
   district: string;
   village: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface MapSectionProps {
@@ -110,7 +110,8 @@ export const MapSection: React.FC<MapSectionProps> = ({
     }
 
     // Group reports by district/village
-    const grouped = reports.reduce((acc, report) => {
+    type GroupedItem = BaseMapMarker & { items: GenericReport[] };
+    const grouped = reports.reduce<Record<string, GroupedItem>>((acc, report) => {
       const key = `${report.district}-${report.village}`;
       if (!acc[key]) {
         acc[key] = {
@@ -125,7 +126,7 @@ export const MapSection: React.FC<MapSectionProps> = ({
       acc[key].count += 1;
       acc[key].items.push(report);
       return acc;
-    }, {} as Record<string, any>);
+    }, {});
 
     return Object.values(grouped);
   }, [markers, reports]);
@@ -148,7 +149,9 @@ export const MapSection: React.FC<MapSectionProps> = ({
   };
 
   // Get marker radius based on data
-  const getMarkerRadius = (marker: any) => {
+  const getMarkerRadius = (
+    marker: BaseMapMarker | BuildingMapMarker | ViolationMapMarker | WaterResourceMarker | BinamargaMarker
+  ) => {
     const baseRadius = 8;
     const maxRadius = 20;
 
@@ -160,7 +163,7 @@ export const MapSection: React.FC<MapSectionProps> = ({
     }
 
     // For other types, use count
-    const sizeMultiplier = Math.min(marker.count / 5, 3);
+    const sizeMultiplier = Math.min((marker as BaseMapMarker).count / 5, 3);
     return Math.min(baseRadius + sizeMultiplier * 3, maxRadius);
   };
 

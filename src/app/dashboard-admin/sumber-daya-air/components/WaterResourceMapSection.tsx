@@ -48,12 +48,8 @@ export const WaterResourceMapSection: React.FC<WaterResourceMapSectionProps> = (
 }) => {
   const [mapLoaded, setMapLoaded] = useState(false);
 
-  // Ngawi center coordinates
-  const NGAWI_CENTER: [number, number] = [-7.4098, 111.4461];
-
-  // Calculate map center - always use Ngawi center for consistent view
   const mapCenter: [number, number] = useMemo(() => {
-    return NGAWI_CENTER;
+    return [-7.4098, 111.4461];
   }, []);
 
   // Helper untuk translate damage type

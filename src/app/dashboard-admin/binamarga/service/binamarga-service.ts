@@ -1,5 +1,5 @@
 import apiClient from "@/lib/api-client";
-import { BinamargaResponse, RoadType } from "../types/binamarga-types";
+import { BinamargaResponse, BinamargaReportsResponse, RoadType } from "../types/binamarga-types";
 
 export class BinamargaService {
   private static BASE_URL = "/api/v1/bina-marga";
@@ -17,6 +17,18 @@ export class BinamargaService {
       return response.data;
     } catch (error) {
       console.error("Error fetching binamarga overview:", error);
+      throw error;
+    }
+  }
+
+  static async getReports(): Promise<BinamargaReportsResponse> {
+    try {
+      const response = await apiClient.get<BinamargaReportsResponse>(
+        `/api/v1/bina-marga`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching binamarga reports:", error);
       throw error;
     }
   }

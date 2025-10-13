@@ -9,18 +9,20 @@ import {
 } from "@/components/ui/breadcrumb";
 import { StatsType } from "../types/stats";
 import { Home } from "lucide-react";
-import { MapSection } from "../components/MapSection";
+import { BinamargaMapSection } from "./components/BinamargaMapSection";
+import { BinamargaReportDetailView } from "./components/BinamargaReportDetailView";
 import { ChartPieDonut } from "../components/DonutChart";
+import { PieChartComponent } from "../components/PieChart";
 import CardStats from "./components/CardStats";
 import { CommodityChartSection } from "../components/BarChartSection";
-import { PieChartComponent } from "../components/PieChart";
 import { useBinamarga } from "./hooks/useBinamarga";
-import { RoadType } from "./types/binamarga-types";
-import { useMemo } from "react";
+import { RoadType, BinamargaReport } from "./types/binamarga-types";
+import { useMemo, useState } from "react";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 export default function BinamargaPage() {
-  const { data, isLoading, error } = useBinamarga(RoadType.ALL);
+  const { data, reports, isLoading, error } = useBinamarga(RoadType.ALL);
+  const [selectedReport, setSelectedReport] = useState<BinamargaReport | null>(null);
 
   // Helper function untuk translate damage types
   const translateDamageType = (type: string): string => {
@@ -45,6 +47,21 @@ export default function BinamargaPage() {
       "BERAT": "Berat",
     };
     return translations[level] || level;
+  };
+
+  // Handle report click and close
+  const handleReportClick = (report: BinamargaReport) => {
+    setSelectedReport(report);
+    setTimeout(() => {
+      const detailElement = document.getElementById('report-detail');
+      if (detailElement) {
+        detailElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedReport(null);
   };
 
   // Transform API data to stats format
@@ -308,7 +325,11 @@ export default function BinamargaPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <MapSection nama="SDA Rusak" />
+            <BinamargaMapSection
+              nama="Laporan Infrastruktur Rusak"
+              reports={reports}
+              onReportClick={handleReportClick}
+            />
             {urgensiData.length > 0 ? (
               <ChartPieDonut
                 title="Kategori Urgensi Penanganan"
@@ -320,6 +341,11 @@ export default function BinamargaPage() {
                 <p className="text-gray-500">Tidak ada data urgensi</p>
               </div>
             )}
+          </div>
+
+          {/* Report Detail View */}
+          <div id="report-detail">
+            <BinamargaReportDetailView report={selectedReport} onClose={handleCloseDetail} />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

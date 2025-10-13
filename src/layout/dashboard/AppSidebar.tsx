@@ -63,7 +63,7 @@ const mainNavItems: NavItem[] = [
         color="#3355FF"
       />
     ),
-    name: "Sumber Data Air",
+    name: "Sumber Daya Air",
     path: "/dashboard-admin/sumber-daya-air",
     // permission: PERMISSIONS.DASHBOARD_INDEX,
   },

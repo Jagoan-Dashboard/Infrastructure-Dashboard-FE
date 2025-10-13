@@ -73,3 +73,49 @@ export const BuildingTypeLabels: Record<BuildingType, string> = {
   [BuildingType.FASILITAS_UMUM]: "Fasilitas Umum Lainnya",
   [BuildingType.LAINNYA]: "Lainnya",
 };
+
+// Individual Report Types
+export interface ReportPhoto {
+  id: string;
+  report_id: string;
+  photo_url: string;
+  photo_type: string;
+  created_at: string;
+}
+
+export interface TataBangunanReport {
+  id: string;
+  reporter_name: string;
+  village: string;
+  district: string;
+  building_name: string;
+  building_type: string;
+  report_status: string;
+  funding_source: string;
+  last_year_construction: number;
+  full_address: string;
+  latitude: number;
+  longitude: number;
+  floor_area: number;
+  floor_count: number;
+  work_type: string;
+  condition_after_rehab: string;
+  photos: ReportPhoto[];
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TataBangunanReportsData {
+  reports: TataBangunanReport[];
+  total: number;
+  page: number;
+  per_page: number;
+  total_pages: number;
+}
+
+export interface TataBangunanReportsResponse {
+  success: boolean;
+  message: string;
+  data: TataBangunanReportsData;
+}

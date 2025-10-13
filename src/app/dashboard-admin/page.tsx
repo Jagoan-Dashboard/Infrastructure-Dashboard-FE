@@ -11,17 +11,19 @@ import {
 import { MultiSelect, Option } from "@/components/ui/multi-select";
 import { StatsType } from "./types/stats";
 import { Home } from "lucide-react";
-import { MapSection } from "./components/MapSection";
+import { IndividualReportMapSection } from "./components/IndividualReportMapSection";
+import { ReportDetailView } from "./components/ReportDetailView";
 import { ChartPieDonut } from "./components/DonutChart";
 import CardStats from "./components/CardStats";
 import { CommodityChartSection } from "./components/BarChartSection";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTataBangunan } from "./hooks/useTata-bangunan";
-import { BuildingType, BuildingTypeLabels } from "./types/tata-bangunan-types";
+import { BuildingType, BuildingTypeLabels, TataBangunanReport } from "./types/tata-bangunan-types";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 export default function DashboardPage() {
-  const { data, isLoading, error, buildingType, setBuildingType } = useTataBangunan(BuildingType.ALL);
+  const { data, reports, isLoading, error, buildingType, setBuildingType } = useTataBangunan(BuildingType.ALL);
+  const [selectedReport, setSelectedReport] = useState<TataBangunanReport | null>(null);
 
   // Options untuk multi-select
   const jenisBangunanOptions: Option[] = useMemo(() => {
@@ -167,6 +169,22 @@ export default function DashboardPage() {
       }));
   }, [data]);
 
+  // Handle report click
+  const handleReportClick = (report: TataBangunanReport) => {
+    setSelectedReport(report);
+    // Scroll to detail view
+    setTimeout(() => {
+      const detailElement = document.getElementById('report-detail');
+      if (detailElement) {
+        detailElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedReport(null);
+  };
+
   // Handle multi-select change
   const handleJenisBangunanChange = (selected: string[]) => {
     if (selected.length === 0) {
@@ -294,7 +312,11 @@ export default function DashboardPage() {
 
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <MapSection nama="Bangunan Rusak" />
+            <IndividualReportMapSection
+              nama="Laporan Bangunan"
+              reports={reports}
+              onReportClick={handleReportClick}
+            />
             {rehabilitasiData.length > 0 ? (
               <ChartPieDonut
                 title="Kondisi Setelah Rehabilitasi"
@@ -308,9 +330,14 @@ export default function DashboardPage() {
             )}
           </div>
 
+          {/* Report Detail View */}
+          <div id="report-detail">
+            <ReportDetailView report={selectedReport} onClose={handleCloseDetail} />
+          </div>
+
           {/* Aspirations Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 max-w-full">
               {perbaikanData.length > 0 && perbaikanData[0].value > 0 ? (
                 <CommodityChartSection
                   commodityData={perbaikanData}

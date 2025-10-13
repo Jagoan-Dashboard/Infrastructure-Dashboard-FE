@@ -1,6 +1,6 @@
 // src/app/dashboard-admin/service/tata-bangunan-service.ts
 import apiClient from "@/lib/api-client";
-import { TataBangunanResponse, BuildingType } from "../types/tata-bangunan-types";
+import { TataBangunanResponse, TataBangunanReportsResponse, BuildingType } from "../types/tata-bangunan-types";
 
 export class TataBangunanService {
   private static BASE_URL = "/api/v1/reports/tata-bangunan";
@@ -20,6 +20,32 @@ export class TataBangunanService {
       return response.data;
     } catch (error) {
       console.error("Error fetching tata bangunan overview:", error);
+      throw error;
+    }
+  }
+
+  static async getReports(
+    buildingType: BuildingType = BuildingType.ALL
+  ): Promise<TataBangunanReportsResponse> {
+    try {
+      const endpoint = `/api/v1/reports`;
+      const params: any = {
+        category: 'tata-bangunan'
+      };
+
+      if (buildingType !== BuildingType.ALL) {
+        params.building_type = buildingType;
+      }
+
+      const response = await apiClient.get<TataBangunanReportsResponse>(
+        endpoint,
+        {
+          params: params,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
       throw error;
     }
   }

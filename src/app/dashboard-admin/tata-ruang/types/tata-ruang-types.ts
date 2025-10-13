@@ -99,3 +99,43 @@ export const AreaCategoryLabels: Record<AreaCategory, string> = {
   [AreaCategory.KAWASAN_TRANSPORTASI]: "Kawasan Transportasi",
   [AreaCategory.LAINNYA]: "Lainnya",
 };
+
+// Individual Report interfaces
+export interface ReportPhoto {
+  id: string;
+  report_id: string;
+  photo_url: string;
+  caption: string;
+  created_at: string;
+}
+
+export interface TataRuangReport {
+  id: string;
+  reporter_name: string;
+  institution: string;
+  phone_number: string;
+  report_datetime: string;
+  area_description: string;
+  area_category: string;
+  violation_type: string;
+  violation_level: string;
+  environmental_impact: string;
+  urgency_level: string;
+  latitude: number;
+  longitude: number;
+  address: string;
+  photos: ReportPhoto[];
+  status: string;
+  notes: string;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TataRuangReportsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    reports: TataRuangReport[];
+  };
+}

@@ -10,18 +10,20 @@ import {
 } from "@/components/ui/breadcrumb";
 import { StatsType } from "../types/stats";
 import { Home } from "lucide-react";
-import { MapSection } from "../components/MapSection";
 import { ChartPieDonut } from "../components/DonutChart";
 import CardStats from "../components/CardStats";
 import { CommodityChartSection } from "../components/BarChartSection";
 import { MultiSelect, Option } from "@/components/ui/multi-select";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTataRuang } from "./hooks/useTata-ruang";
-import { AreaCategory, AreaCategoryLabels } from "./types/tata-ruang-types";
+import { AreaCategory, AreaCategoryLabels, TataRuangReport } from "./types/tata-ruang-types";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { IndividualReportMapSection } from "./components/IndividualReportMapSection";
+import { ReportDetailView } from "./components/ReportDetailView";
 
 export default function TataRuangPage() {
-  const { data, isLoading, error, areaCategory, setAreaCategory } = useTataRuang(AreaCategory.ALL);
+  const { data, reports, isLoading, error, areaCategory, setAreaCategory } = useTataRuang(AreaCategory.ALL);
+  const [selectedReport, setSelectedReport] = useState<TataRuangReport | null>(null);
 
   // Options untuk multi-select
   const jenisKawasanOptions: Option[] = useMemo(() => {
@@ -292,7 +294,11 @@ export default function TataRuangPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <MapSection nama="Pelanggaran Kawasan" />
+            <IndividualReportMapSection
+              nama="Pelanggaran Kawasan"
+              reports={reports}
+              onReportClick={(report) => setSelectedReport(report)}
+            />
             {urgensiData.length > 0 ? (
               <ChartPieDonut
                 title="Kategori Urgensi Penanganan"
@@ -305,6 +311,14 @@ export default function TataRuangPage() {
               </div>
             )}
           </div>
+
+          {/* Report Detail View */}
+          {selectedReport && (
+            <ReportDetailView
+              report={selectedReport}
+              onClose={() => setSelectedReport(null)}
+            />
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">

@@ -36,13 +36,11 @@ const Tooltip = dynamic(
 );
 
 interface IndividualReportMapSectionProps {
-  nama: string;
   reports: TataRuangReport[];
   onReportClick?: (report: TataRuangReport) => void;
 }
 
 export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProps> = ({
-  nama,
   reports,
   onReportClick
 }) => {
@@ -82,7 +80,7 @@ export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProp
         <div className="flex items-center gap-2 mb-4">
           <Icon icon="bxs:map" className="w-5 h-5 text-blue-600" />
           <h2 className="text-lg font-semibold text-gray-900">
-            Peta Sebaran {nama}
+            Peta Persebaran Pelanggaran Kawasan Tiap Kecamatan
           </h2>
         </div>
 
@@ -98,7 +96,7 @@ export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProp
       <div className="flex items-center gap-2 mb-4">
         <Icon icon="bxs:map" className="w-5 h-5 text-blue-600" />
         <h2 className="text-lg font-semibold text-gray-900">
-          Peta Sebaran {nama} ({reports.length} Laporan)
+          Peta Persebaran Pelanggaran Kawasan Tiap Kecamatan
         </h2>
       </div>
 
@@ -144,10 +142,10 @@ export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProp
                       {report.area_description}
                     </p>
                     <p className="text-gray-600">
-                      <span className="font-medium">Jenis:</span> {translateViolationType(report.violation_type)}
+                      <span className="font-medium">Perkiraan Panjang Pelanggaran:</span> {translateViolationType(report.violation_type)}
                     </p>
                     <p className="text-gray-600">
-                      <span className="font-medium">Tingkat:</span> {translateViolationLevel(report.violation_level)}
+                      <span className="font-medium">Perkiraan Lebar Pelanggaran:</span> {translateViolationLevel(report.violation_level)}
                     </p>
                     {onReportClick && (
                       <p className="text-xs text-gray-500 mt-1 italic">Klik untuk detail</p>

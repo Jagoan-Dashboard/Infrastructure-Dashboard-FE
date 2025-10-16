@@ -1,4 +1,3 @@
-// src/app/dashboard-admin/tata-ruang/page.tsx
 "use client";
 import {
   Breadcrumb,
@@ -13,10 +12,10 @@ import { Home } from "lucide-react";
 import { ChartPieDonut } from "../components/DonutChart";
 import CardStats from "../components/CardStats";
 import { CommodityChartSection } from "../components/BarChartSection";
-import { MultiSelect, Option } from "@/components/ui/multi-select";
+// import { Option } from "@/components/ui/multi-select";
 import { useMemo, useState } from "react";
 import { useTataRuang } from "./hooks/useTata-ruang";
-import { AreaCategory, AreaCategoryLabels, TataRuangReport } from "./types/tata-ruang-types";
+import { AreaCategory, TataRuangReport } from "./types/tata-ruang-types";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { IndividualReportMapSection } from "./components/IndividualReportMapSection";
 import { ReportDetailView } from "./components/ReportDetailView";
@@ -26,14 +25,14 @@ export default function TataRuangPage() {
   const [selectedReport, setSelectedReport] = useState<TataRuangReport | null>(null);
 
   // Options untuk multi-select
-  const jenisKawasanOptions: Option[] = useMemo(() => {
-    return Object.entries(AreaCategoryLabels)
-      .filter(([key]) => key !== AreaCategory.ALL) // Exclude "all" from options
-      .map(([value, label]) => ({
-        value,
-        label,
-      }));
-  }, []);
+  // const jenisKawasanOptions: Option[] = useMemo(() => {
+  //   return Object.entries(AreaCategoryLabels)
+  //     .filter(([key]) => key !== AreaCategory.ALL) // Exclude "all" from options
+  //     .map(([value, label]) => ({
+  //       value,
+  //       label,
+  //     }));
+  // }, []);
 
   // Helper function untuk translate violation types
   const translateViolationType = (type: string): string => {
@@ -276,7 +275,7 @@ export default function TataRuangPage() {
             </div>
 
             {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            {/* <div className="flex flex-col sm:flex-row gap-3">
               <MultiSelect
                 options={jenisKawasanOptions}
                 selected={selectedJenisKawasan}
@@ -285,7 +284,7 @@ export default function TataRuangPage() {
                 className="min-w-[250px]"
                 label="Jenis Kawasan"
               />
-            </div>
+            </div> */}
           </div>
 
           {/* Stats Cards */}
@@ -295,13 +294,12 @@ export default function TataRuangPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <IndividualReportMapSection
-              nama="Pelanggaran Kawasan"
               reports={reports}
               onReportClick={(report) => setSelectedReport(report)}
             />
             {urgensiData.length > 0 ? (
               <ChartPieDonut
-                title="Kategori Urgensi Penanganan"
+                title="Tingkat Urgensi Penanganan"
                 data={urgensiData}
                 showLegend={true}
               />
@@ -329,13 +327,13 @@ export default function TataRuangPage() {
             </div>
             {pelanggaranKawasanData.length > 0 ? (
               <ChartPieDonut
-                title="Tingkat Kerusakan Paling Banyak"
+                title="Tingkat Pelanggaran Kawasan"
                 data={pelanggaranKawasanData}
                 showLegend={true}
               />
             ) : (
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
-                <p className="text-gray-500">Tidak ada data tingkat kerusakan</p>
+                <p className="text-gray-500">Tidak ada data tingkat pelanggaran kawasan</p>
               </div>
             )}
           </div>

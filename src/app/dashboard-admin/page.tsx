@@ -1,4 +1,3 @@
-// src/app/dashboard-admin/page.tsx
 "use client";
 import {
   Breadcrumb,
@@ -8,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { MultiSelect, Option } from "@/components/ui/multi-select";
+// import { Option } from "@/components/ui/multi-select";
 import { StatsType } from "./types/stats";
 import { Home } from "lucide-react";
 import { IndividualReportMapSection } from "./components/IndividualReportMapSection";
@@ -18,7 +17,7 @@ import CardStats from "./components/CardStats";
 import { CommodityChartSection } from "./components/BarChartSection";
 import { useMemo, useState } from "react";
 import { useTataBangunan } from "./hooks/useTata-bangunan";
-import { BuildingType, BuildingTypeLabels, TataBangunanReport } from "./types/tata-bangunan-types";
+import { BuildingType, TataBangunanReport } from "./types/tata-bangunan-types";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 export default function DashboardPage() {
@@ -26,14 +25,14 @@ export default function DashboardPage() {
   const [selectedReport, setSelectedReport] = useState<TataBangunanReport | null>(null);
 
   // Options untuk multi-select
-  const jenisBangunanOptions: Option[] = useMemo(() => {
-    return Object.entries(BuildingTypeLabels)
-      .filter(([key]) => key !== BuildingType.ALL)
-      .map(([value, label]) => ({
-        value,
-        label,
-      }));
-  }, []);
+  // const jenisBangunanOptions: Option[] = useMemo(() => {
+  //   return Object.entries(BuildingTypeLabels)
+  //     .filter(([key]) => key !== BuildingType.ALL)
+  //     .map(([value, label]) => ({
+  //       value,
+  //       label,
+  //     }));
+  // }, []);
 
   // Helper function untuk translate work types
   const translateWorkType = (type: string): string => {
@@ -135,8 +134,10 @@ export default function DashboardPage() {
 
     const colorMap: Record<string, string> = {
       "Good": "#3355FF",
-      "New Construction": "#FFD633",
-      "LAINNYA": "#FF9933",
+      "pembangunan baru": "#FFD633",
+      "PEMBANGUNAN_BARU": "#FFD633",
+      "rehabilitasi perbaikan": "#FF9933",
+      "REHABILITASI": "#FF9933",
     };
 
     return data.status_distribution.map((item) => ({
@@ -153,10 +154,12 @@ export default function DashboardPage() {
     }
 
     const colorMap: Record<string, string> = {
-      "Baik & Siap Pakai": "#33AD5C",
-      "Masih Membutuhkan Perbaikan": "#FFD633",
+      "baik siap pakai": "#33AD5C",
+      "BAIK_SIAP_PAKAI": "#33AD5C",
+      "masih membutuhkan perbaikan tambahan": "#FFD633",
+      "BUTUH_PERBAIKAN_TAMBAHAN": "#FF9933",
       "NOT_SET": "#FF9933",
-      "LAINNYA": "#F0417E",
+      "lainnya": "#F0417E",
     };
 
     // Filter out NOT_SET
@@ -186,23 +189,23 @@ export default function DashboardPage() {
   };
 
   // Handle multi-select change
-  const handleJenisBangunanChange = (selected: string[]) => {
-    if (selected.length === 0) {
-      setBuildingType(BuildingType.ALL);
-    } else if (selected.length === 1) {
-      setBuildingType(selected[0] as BuildingType);
-    } else {
-      setBuildingType(selected[0] as BuildingType);
-    }
-  };
+  // const handleJenisBangunanChange = (selected: string[]) => {
+  //   if (selected.length === 0) {
+  //     setBuildingType(BuildingType.ALL);
+  //   } else if (selected.length === 1) {
+  //     setBuildingType(selected[0] as BuildingType);
+  //   } else {
+  //     setBuildingType(selected[0] as BuildingType);
+  //   }
+  // };
 
   // Get selected values for multi-select
-  const selectedJenisBangunan = useMemo(() => {
-    if (buildingType === BuildingType.ALL) {
-      return [];
-    }
-    return [buildingType];
-  }, [buildingType]);
+  // const selectedJenisBangunan = useMemo(() => {
+  //   if (buildingType === BuildingType.ALL) {
+  //     return [];
+  //   }
+  //   return [buildingType];
+  // }, [buildingType]);
 
   // Loading state
   if (isLoading) {
@@ -293,7 +296,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            {/* <div className="flex flex-col sm:flex-row gap-3">
               <MultiSelect
                 options={jenisBangunanOptions}
                 selected={selectedJenisBangunan}
@@ -302,7 +305,7 @@ export default function DashboardPage() {
                 className="min-w-[250px]"
                 label="Jenis Bangunan"
               />
-            </div>
+            </div> */}
           </div>
 
           {/* Stats Cards */}
@@ -313,7 +316,6 @@ export default function DashboardPage() {
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <IndividualReportMapSection
-              nama="Laporan Bangunan"
               reports={reports}
               onReportClick={handleReportClick}
             />

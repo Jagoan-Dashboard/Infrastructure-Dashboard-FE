@@ -36,13 +36,11 @@ const Tooltip = dynamic(
 );
 
 interface IndividualReportMapSectionProps {
-  nama: string;
   reports: TataBangunanReport[];
   onReportClick: (report: TataBangunanReport) => void;
 }
 
 export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProps> = ({
-  nama,
   reports,
   onReportClick
 }) => {
@@ -60,7 +58,7 @@ export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProp
         <div className="flex items-center gap-2 mb-4">
           <Icon icon="bxs:map" className="w-5 h-5 text-blue-600" />
           <h2 className="text-lg font-semibold text-gray-900">
-            Peta Sebaran {nama}
+            Peta Persebaran Bangunan Rusak Tiap Kecamatan 
           </h2>
         </div>
 
@@ -76,7 +74,7 @@ export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProp
       <div className="flex items-center gap-2 mb-4">
         <Icon icon="bxs:map" className="w-5 h-5 text-blue-600" />
         <h2 className="text-lg font-semibold text-gray-900">
-          Peta Sebaran {nama} ({reports.length} Laporan)
+          Peta Persebaran Bangunan Rusak Tiap Kecamatan 
         </h2>
       </div>
 
@@ -119,9 +117,9 @@ export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProp
                     <p className="font-semibold text-blue-700 mb-1">
                       {report.building_name}
                     </p>
-                    <p className="text-gray-600">Desa: {report.village}</p>
-                    <p className="text-gray-600">Lantai: {report.floor_count}</p>
-                    <p className="text-gray-600">Luas: {report.floor_area.toLocaleString('id-ID')} m²</p>
+                    <p className="text-gray-600">Kecamatan: {report.village}</p>
+                    <p className="text-gray-600">Jumlah Lantai: {report.floor_count}</p>
+                    <p className="text-gray-600">Luas Lantai: {report.floor_area.toLocaleString('id-ID')} m²</p>
                     <p className="text-xs text-gray-500 mt-1 italic">Klik untuk detail</p>
                   </div>
                 </Tooltip>

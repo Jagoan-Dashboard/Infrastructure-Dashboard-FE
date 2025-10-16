@@ -1,4 +1,3 @@
-
 "use client";
 import {
   Breadcrumb,
@@ -13,7 +12,7 @@ import { Home } from "lucide-react";
 import { ChartPieDonut } from "../components/DonutChart";
 import CardStats from "../components/CardStats";
 import { CommodityChartSection } from "../components/BarChartSection";
-import { MultiSelect, Option } from "@/components/ui/multi-select";
+// import { Option } from "@/components/ui/multi-select";
 import { useState, useMemo } from "react";
 import { useSumberDayaAir } from "./hooks/useSumber-daya-air";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
@@ -23,16 +22,16 @@ import { WaterResourceReport } from "./types/sumber-daya-air-types";
 
 export default function SumberDayaAirPage() {
   const { data, reports, isLoading, error } = useSumberDayaAir();
-  const [selectedJenisIrigasi, setSelectedJenisIrigasi] = useState<string[]>([]);
+  // const [selectedJenisIrigasi, setSelectedJenisIrigasi] = useState<string[]>([]);
   const [selectedReport, setSelectedReport] = useState<WaterResourceReport | null>(null);
 
   
-  const jenisIrigasiOptions: Option[] = [
-    { value: "Saluran Sekunder", label: "Saluran Sekunder" },
-    { value: "Pintu Air", label: "Pintu Air" },
-    { value: "Embung/Dam", label: "Embung/Dam" },
-    { value: "Bendung", label: "Bendung" },
-  ];
+  // const jenisIrigasiOptions: Option[] = [
+  //   { value: "Saluran Sekunder", label: "Saluran Sekunder" },
+  //   { value: "Pintu Air", label: "Pintu Air" },
+  //   { value: "Embung/Dam", label: "Embung/Dam" },
+  //   { value: "Bendung", label: "Bendung" },
+  // ];
 
   
   const statsData: StatsType[] = useMemo(() => {
@@ -229,7 +228,7 @@ export default function SumberDayaAirPage() {
             </div>
 
             {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            {/* <div className="flex flex-col sm:flex-row gap-3">
               <MultiSelect
                 options={jenisIrigasiOptions}
                 selected={selectedJenisIrigasi}
@@ -238,7 +237,7 @@ export default function SumberDayaAirPage() {
                 className="min-w-[250px]"
                 label="Jenis Irigasi"
               />
-            </div>
+            </div> */}
           </div>
 
           {/* Stats Cards */}

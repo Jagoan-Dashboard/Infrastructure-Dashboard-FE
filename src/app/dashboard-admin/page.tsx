@@ -54,7 +54,9 @@ export default function DashboardPage() {
     const translations: Record<string, string> = {
       "NOT_SET": "Belum Ditentukan",
       "Baik & Siap Pakai": "Baik / Siap Pakai",
+      "BAIK_SIAP_PAKAI" : "Baik / Siap Pakai",
       "Masih Membutuhkan Perbaikan": "Masih Membutuhkan Perbaikan Tambahan",
+      "BUTUH_PERBAIKAN_TAMBAHAN": "Masih Membutuhkan Perbaikan Tambahan",
       "LAINNYA": "Lainnya",
     };
     return translations[condition] || condition;
@@ -65,6 +67,8 @@ export default function DashboardPage() {
     const translations: Record<string, string> = {
       "Good": "Rehabilitasi / Perbaikan",
       "New Construction": "Pembangunan Baru",
+      "PEMBANGUNAN_BARU": "Pembangunan Baru",
+      "REHABILITASI": "Rehabilitasi / Perbaikan",
       "LAINNYA": "Lainnya",
     };
     return translations[status] || status;
@@ -133,11 +137,9 @@ export default function DashboardPage() {
     }
 
     const colorMap: Record<string, string> = {
-      "Good": "#3355FF",
-      "pembangunan baru": "#FFD633",
-      "PEMBANGUNAN_BARU": "#FFD633",
-      "rehabilitasi perbaikan": "#FF9933",
-      "REHABILITASI": "#FF9933",
+      "pembangunan baru": "#f0417e",
+      "rehabilitasi perbaikan": "#3355ff",
+      "lainnya": "#ff9933",
     };
 
     return data.status_distribution.map((item) => ({
@@ -155,11 +157,8 @@ export default function DashboardPage() {
 
     const colorMap: Record<string, string> = {
       "baik siap pakai": "#33AD5C",
-      "BAIK_SIAP_PAKAI": "#33AD5C",
-      "masih membutuhkan perbaikan tambahan": "#FFD633",
-      "BUTUH_PERBAIKAN_TAMBAHAN": "#FF9933",
-      "NOT_SET": "#FF9933",
-      "lainnya": "#F0417E",
+      "masih membutuhkan perbaikan tambahan": "#ff6f61",
+      "lainnya": "#ff9933",
     };
 
     // Filter out NOT_SET

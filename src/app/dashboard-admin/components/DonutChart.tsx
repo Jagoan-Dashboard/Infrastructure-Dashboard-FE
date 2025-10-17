@@ -152,8 +152,8 @@ export function ChartPieDonut({
                 cx="50%"
                 cy="50%"
                 label={renderCustomizedLabel}
-                innerRadius={60}
-                outerRadius={120}
+                innerRadius="45%"
+                outerRadius="80%"
                 paddingAngle={2}
                 labelLine={false}
               >

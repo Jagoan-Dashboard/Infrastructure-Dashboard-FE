@@ -27,13 +27,15 @@ export default function BinamargaPage() {
   const translateDamageType = (type: string): string => {
     const translations: Record<string, string> = {
       "LUBANG_POTHOLES": "Lubang/Potholes",
-      "RETAK": "Retak",
-      "AMBLAS": "Amblas",
-      "BERLUBANG": "Berlubang",
-      "TANGGUL_JEBOL": "Tanggul Jebol",
-      "SEDIMENTASI_TINGGI": "Sedimentasi Tinggi",
-      "RETAK_BOCOR": "Retak/Bocor",
-      "STRUKTUR_BETON_RUSAK": "Struktur Beton Rusak",
+      "RETAK_KULIT_BUAYA": "Retak Buaya (Aligator Cracking)",
+      "AMBLAS_LONGSOR": "Amblas/Longsor",
+      "PERMUKAAN_AUS_RAVELING": "Permukaan Aus/Raveling",
+      "GENANGAN_AIR_DRAINASE_BURUK": "Genangan Air/Drainase Buruk",
+      "LANTAI_JEMBATAN_RETAK_RUSAK": "Lantai Jembatan Retak/Rusak",
+      "OPRIT_ABUTMENT_AMBLAS": "Oprit/Abutment Amblas",
+      "RANGKA_UTAMA_RETAK": "Rangka Utama Retak",
+      "PONDASI_TERSERET_ARUS": "Pondasi Terseret Arus",
+      "LAINNYA": "Lainnya",
     };
     return translations[type] || type;
   };
@@ -49,8 +51,9 @@ export default function BinamargaPage() {
 
   const translateUrgency = (urgency: string): string => {
     const translations: Record<string, string> = {
+      "DARURAT": "Darurat",
+      "CEPAT": "Cepat",
       "RUTIN": "Rutin",
-      "MENDESAK": "Mendesak",
     };
     return translations[urgency] || urgency;
   };
@@ -140,23 +143,18 @@ export default function BinamargaPage() {
     }
 
     const colorMap: Record<string, string> = {
-      Mendesak: "#F0417E",
+      Darurat: "#F0417E",
+      Cepat: "#FF9933",
       Rutin: "#3355FF",
     };
 
-    const toUrgencyLabel = (priority: string): string => {
-      if (priority === "CEPAT") return translateUrgency("MENDESAK");
-      if (priority === "NORMAL") return translateUrgency("RUTIN");
-      return priority;
-    };
-
     return data.priority_distribution.map((item) => {
-      const label = toUrgencyLabel(item.priority_level);
+      const label = translateUrgency(item.priority_level);
       return {
         label,
         value: (item.count / data.basic_stats.total_infrastructure_reports) * 100,
         fill: colorMap[label] || "#999999",
-        detail: item.priority_level === "CEPAT" ? "(potensi gagal panen/banjir)" : undefined,
+        detail: item.priority_level === "DARURAT" ? "(prioritas tertinggi)" : undefined,
       };
     });
   }, [data]);

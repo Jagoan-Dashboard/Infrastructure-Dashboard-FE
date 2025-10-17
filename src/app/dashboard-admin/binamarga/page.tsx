@@ -24,7 +24,6 @@ export default function BinamargaPage() {
   const { data, reports, isLoading, error } = useBinamarga(RoadType.ALL);
   const [selectedReport, setSelectedReport] = useState<BinamargaReport | null>(null);
 
-  // Helper function untuk translate damage types
   const translateDamageType = (type: string): string => {
     const translations: Record<string, string> = {
       "LUBANG_POTHOLES": "Lubang/Potholes",
@@ -39,7 +38,6 @@ export default function BinamargaPage() {
     return translations[type] || type;
   };
 
-  // Helper function untuk translate damage levels
   const translateDamageLevel = (level: string): string => {
     const translations: Record<string, string> = {
       "RINGAN": "Ringan",
@@ -49,7 +47,14 @@ export default function BinamargaPage() {
     return translations[level] || level;
   };
 
-  // Handle report click and close
+  const translateUrgency = (urgency: string): string => {
+    const translations: Record<string, string> = {
+      "RUTIN": "Rutin",
+      "MENDESAK": "Mendesak",
+    };
+    return translations[urgency] || urgency;
+  };
+
   const handleReportClick = (report: BinamargaReport) => {
     setSelectedReport(report);
     setTimeout(() => {
@@ -64,7 +69,6 @@ export default function BinamargaPage() {
     setSelectedReport(null);
   };
 
-  // Transform API data to stats format
   const statsData: StatsType[] = useMemo(() => {
     if (!data) return [];
 
@@ -116,7 +120,6 @@ export default function BinamargaPage() {
     ];
   }, [data]);
 
-  // Transform bridge damage types for chart
   const kerusakanJembatanData = useMemo(() => {
     if (!data?.top_bridge_damage_types || data.top_bridge_damage_types.length === 0) {
       return [
@@ -131,42 +134,42 @@ export default function BinamargaPage() {
     }));
   }, [data]);
 
-  // Transform priority distribution for urgency chart
   const urgensiData = useMemo(() => {
     if (!data?.priority_distribution || data.basic_stats.total_infrastructure_reports === 0) {
       return [];
     }
 
     const colorMap: Record<string, string> = {
-      CEPAT: "#F0417E",
-      NORMAL: "#3355FF",
-      LAMBAT: "#FFD633",
+      Mendesak: "#F0417E",
+      Rutin: "#3355FF",
     };
 
-    const labelMap: Record<string, string> = {
-      CEPAT: "Mendesak",
-      NORMAL: "Rutin",
-      LAMBAT: "Tidak Mendesak",
+    const toUrgencyLabel = (priority: string): string => {
+      if (priority === "CEPAT") return translateUrgency("MENDESAK");
+      if (priority === "NORMAL") return translateUrgency("RUTIN");
+      return priority;
     };
 
-    return data.priority_distribution.map((item) => ({
-      label: labelMap[item.priority_level] || item.priority_level,
-      value: (item.count / data.basic_stats.total_infrastructure_reports) * 100,
-      fill: colorMap[item.priority_level] || "#999999",
-      detail: item.priority_level === "CEPAT" ? "(potensi gagal panen/banjir)" : undefined,
-    }));
+    return data.priority_distribution.map((item) => {
+      const label = toUrgencyLabel(item.priority_level);
+      return {
+        label,
+        value: (item.count / data.basic_stats.total_infrastructure_reports) * 100,
+        fill: colorMap[label] || "#999999",
+        detail: item.priority_level === "CEPAT" ? "(potensi gagal panen/banjir)" : undefined,
+      };
+    });
   }, [data]);
 
-  // Transform damage level distribution
   const pelanggaranKawasanData = useMemo(() => {
     if (!data?.road_damage_level_distribution || data.basic_stats.total_infrastructure_reports === 0) {
       return [];
     }
 
     const colorMap: Record<string, string> = {
-      RINGAN: "#FFD633",
-      SEDANG: "#FF9933",
-      BERAT: "#F0417E",
+      Ringan: "#FFD633",
+      Sedang: "#FF9933",
+      Berat: "#F0417E",
     };
 
     const detailMap: Record<string, string> = {
@@ -175,15 +178,17 @@ export default function BinamargaPage() {
       BERAT: "(tidak bisa difungsikan sama sekali)",
     };
 
-    return data.road_damage_level_distribution.map((item) => ({
-      label: translateDamageLevel(item.damage_level),
-      value: (item.count / data.basic_stats.total_infrastructure_reports) * 100,
-      fill: colorMap[item.damage_level] || "#999999",
-      detail: detailMap[item.damage_level],
-    }));
+    return data.road_damage_level_distribution.map((item) => {
+      const label = translateDamageLevel(item.damage_level);
+      return {
+        label,
+        value: (item.count / data.basic_stats.total_infrastructure_reports) * 100,
+        fill: colorMap[label] || "#999999",
+        detail: detailMap[item.damage_level],
+      };
+    });
   }, [data]);
 
-  // Transform road damage types for chart
   const kerusakanJalanData = useMemo(() => {
     if (!data?.top_road_damage_types || data.top_road_damage_types.length === 0) {
       return [
@@ -198,7 +203,6 @@ export default function BinamargaPage() {
     }));
   }, [data]);
 
-  // Transform priority data for pie chart
   const prioritasData = useMemo(() => {
     if (!data?.road_damage_level_distribution || data.basic_stats.total_infrastructure_reports === 0) {
       return [];
@@ -211,7 +215,6 @@ export default function BinamargaPage() {
       BERAT: "#F0417E",
     };
 
-    // Calculate percentages
     return data.road_damage_level_distribution.map((item) => ({
       name: translateDamageLevel(item.damage_level),
       value: (item.count / data.basic_stats.total_infrastructure_reports) * 100,
@@ -219,7 +222,6 @@ export default function BinamargaPage() {
     }));
   }, [data]);
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="container mx-auto max-w-7xl">
@@ -235,7 +237,6 @@ export default function BinamargaPage() {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="container mx-auto max-w-7xl">
@@ -266,7 +267,6 @@ export default function BinamargaPage() {
     );
   }
 
-  // No data state
   if (!data) {
     return (
       <div className="container mx-auto max-w-7xl">

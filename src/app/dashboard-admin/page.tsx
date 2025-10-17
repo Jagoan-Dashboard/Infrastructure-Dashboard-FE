@@ -139,7 +139,7 @@ export default function DashboardPage() {
     return data.status_distribution.map((item) => ({
       label: translateStatus(item.report_status),
       value: (item.count / data.basic_stats.total_reports) * 100,
-      fill: colorMap[item.report_status] || "#999999",
+      fill: colorMap[translateStatus(item.report_status)] || "#999999",
     }));
   }, [data]);
 
@@ -161,7 +161,7 @@ export default function DashboardPage() {
       .map((item) => ({
         label: translateCondition(item.condition_after_rehab),
         value: (item.count / data.basic_stats.total_reports) * 100,
-        fill: colorMap[item.condition_after_rehab] || "#999999",
+        fill: colorMap[translateCondition(item.condition_after_rehab)] || "#999999",
       }));
   }, [data]);
 

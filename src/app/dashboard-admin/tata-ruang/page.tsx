@@ -40,7 +40,7 @@ export default function TataRuangPage() {
       "PEMBANGUNAN_TANPA_IZIN": "Pembangunan Tanpa Izin Pemanfaatan Ruang",
       "BANGUNAN_SEMPADAN_JALAN": "Bangunan di Sempadan Jalan",
       "ALIH_FUNGSI_RTH": "Alih Fungsi Ruang Terbuka Hijau",
-      "PEMBANGUNAN_SEMPADAN_SUNGAI": "Bangunan di Sempadan Sungai/Waduk/Bendungan",
+      "BANGUNAN_SEMPADAN_SUNGAI": "Bangunan di Sempadan Sungai/Waduk/Bendungan",
       "ALIH_FUNGSI_LAHAN_PERTANIAN": "Alih Fungsi Lahan Pertanian",
       "LAINNYA": "Lainnya",
     };
@@ -127,14 +127,14 @@ export default function TataRuangPage() {
     }
 
     const colorMap: Record<string, string> = {
-      "Mendesak": "#F0417E",
-      "Biasa": "#3355FF",
+      Mendesak: "#F0417E",
+      Biasa: "#3355FF",
     };
 
     return data.urgency_statistics.map((item) => ({
       label: translateUrgencyLevel(item.urgency_level),
       value: item.percentage,
-      fill: colorMap[item.urgency_level] || "#999999",
+      fill: colorMap[translateUrgencyLevel(item.urgency_level)] || "#999999",
     }));
   }, [data]);
 
@@ -145,21 +145,21 @@ export default function TataRuangPage() {
     }
 
     const colorMap: Record<string, string> = {
-      "Ringan": "#FFD633",
-      "Sedang": "#FF9933",
-      "Berat": "#F0417E",
+      Ringan: "#FFD633",
+      Sedang: "#FF9933",
+      Berat: "#F0417E",
     };
 
     const detailMap: Record<string, string> = {
-      "Ringan": "(dapat diperbaiki cepat, fungsi kawasan masih berjalan)",
-      "Sedang": "(fungsi kawasan terganggu sebagian)",
-      "Berat": "(Fungsi kawasan hilang / tidak sesuai peruntukan)",
+      Ringan: "(dapat diperbaiki cepat, fungsi kawasan masih berjalan)",
+      Sedang: "(fungsi kawasan terganggu sebagian)",
+      Berat: "(Fungsi kawasan hilang / tidak sesuai peruntukan)",
     };
 
     return data.violation_level_statistics.map((item) => ({
       label: translateViolationLevel(item.violation_level),
       value: item.percentage,
-      fill: colorMap[item.violation_level] || "#999999",
+      fill: colorMap[translateViolationLevel(item.violation_level)] || "#999999",
       detail: detailMap[item.violation_level],
     }));
   }, [data]);

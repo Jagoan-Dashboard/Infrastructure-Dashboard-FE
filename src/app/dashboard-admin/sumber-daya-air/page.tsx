@@ -25,7 +25,7 @@ export default function SumberDayaAirPage() {
   // const [selectedJenisIrigasi, setSelectedJenisIrigasi] = useState<string[]>([]);
   const [selectedReport, setSelectedReport] = useState<WaterResourceReport | null>(null);
 
-  
+
   // const jenisIrigasiOptions: Option[] = [
   //   { value: "Saluran Sekunder", label: "Saluran Sekunder" },
   //   { value: "Pintu Air", label: "Pintu Air" },
@@ -33,7 +33,7 @@ export default function SumberDayaAirPage() {
   //   { value: "Bendung", label: "Bendung" },
   // ];
 
-  
+
   const statsData: StatsType[] = useMemo(() => {
     if (!data) return [];
 
@@ -68,30 +68,60 @@ export default function SumberDayaAirPage() {
     ];
   }, [data]);
 
-  
+  const translateKerusakan = (kerusakan: string): string => {
+    const translations: Record<string, string> = {
+      "RETAK_BOCOR": "Retak/Bocor",
+      "LONGSOR_AMBROL": "Longsor/Ambrol",
+      "SEDIMENTASI_TINGGI": "Sedimentasi Tinggi",
+      "TERSUMBAT_SAMPAH": "Tersumbat Sampah",
+      "STRUKTUR_BETON_RUSAK": "Struktur Beton Rusak",
+      "PINTU_AIR_MACET": "Pintu Air Macet/Tidak Berfungsi",
+      "TANGGUL_JEBOL": "Tanggul Jebol",
+      "LAINNYA": "Lainnya",
+    };
+    return translations[kerusakan] || kerusakan;
+  };
+
+  const translateUrgensi = (urgensi: string): string => {
+    const translations: Record<string, string> = {
+      "RUTIN": "Rutin",
+      "MENDESAK": "Mendesak",
+    };
+    return translations[urgensi] || urgensi;
+  };
+
+  const translateLevel = (level: string): string => {
+    const translations: Record<string, string> = {
+      "RINGAN": "Ringan",
+      "SEDANG": "Sedang",
+      "BERAT": "Berat",
+    };
+    return translations[level] || level;
+  };
+
   const kerusakanData = useMemo(() => {
     if (!data?.damage_type_distribution) return [];
 
     return data.damage_type_distribution.map((item) => ({
-      name: item.damage_type,
+      name: translateKerusakan(item.damage_type),
       value: item.count,
-      fullName: item.damage_type,
+      fullName: translateKerusakan(item.damage_type),
     }));
   }, [data]);
 
-  
+
   const urgensiData = useMemo(() => {
     if (!data?.urgency_distribution) return [];
 
     const colorMap: Record<string, string> = {
-      RUTIN: "#3355FF",
-      MENDESAK: "#F0417E",
+      Rutin: "#3355FF",
+      Mendesak: "#F0417E",
     };
 
     return data.urgency_distribution.map((item) => ({
-      label: item.urgency_category,
+      label: translateUrgensi(item.urgency_category),
       value: (item.count / data.basic_stats.total_damaged_reports) * 100,
-      fill: colorMap[item.urgency_category] || "#999999",
+      fill: colorMap[translateUrgensi(item.urgency_category)] || "#999999",
       detail:
         item.urgency_category === "MENDESAK"
           ? "(potensi gagal panen/banjir)"
@@ -99,29 +129,30 @@ export default function SumberDayaAirPage() {
     }));
   }, [data]);
 
-  
+
   const pelanggaranKawasanData = useMemo(() => {
     if (!data?.damage_level_distribution) return [];
 
     const colorMap: Record<string, string> = {
-      RINGAN: "#FFD633",
-      SEDANG: "#FF9933",
-      BERAT: "#F0417E",
+      Ringan: "#FFD633",
+      Sedang: "#FF9933",
+      Berat: "#F0417E",
     };
 
     const detailMap: Record<string, string> = {
-      RINGAN: "(fungsi masih berjalan)",
-      SEDANG: "(fungsi terganggu sebagian)",
-      BERAT: "(tidak bisa difungsikan sama sekali)",
+      Ringan: "(fungsi masih berjalan)",
+      Sedang: "(fungsi terganggu sebagian)",
+      Berat: "(tidak bisa difungsikan sama sekali)",
     };
 
     return data.damage_level_distribution.map((item) => ({
-      label: item.damage_level,
+      label: translateLevel(item.damage_level),
       value: (item.count / data.basic_stats.total_damaged_reports) * 100,
-      fill: colorMap[item.damage_level] || "#999999",
-      detail: detailMap[item.damage_level],
+      fill: colorMap[translateLevel(item.damage_level)] || "#999999",
+      detail: detailMap[translateLevel(item.damage_level)],
     }));
   }, [data]);
+
 
   // Handle report click
   const handleReportClick = (report: WaterResourceReport) => {
@@ -139,7 +170,7 @@ export default function SumberDayaAirPage() {
     setSelectedReport(null);
   };
 
-  
+
   if (isLoading) {
     return (
       <div className="container mx-auto max-w-7xl">
@@ -155,7 +186,7 @@ export default function SumberDayaAirPage() {
     );
   }
 
-  
+
   if (error) {
     return (
       <div className="container mx-auto max-w-7xl">
@@ -186,7 +217,7 @@ export default function SumberDayaAirPage() {
     );
   }
 
-  
+
   if (!data) {
     return (
       <div className="container mx-auto max-w-7xl">

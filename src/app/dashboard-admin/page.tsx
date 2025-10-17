@@ -37,13 +37,12 @@ export default function DashboardPage() {
   // Helper function untuk translate work types
   const translateWorkType = (type: string): string => {
     const translations: Record<string, string> = {
-      "NOT_SET": "Belum Ditentukan",
-      "Perbaikan Atap": "Perbaikan Atap",
-      "Perbaikan Dinding": "Perbaikan Dinding/Cat",
-      "Perbaikan Lantai": "Perbaikan Lantai",
-      "Perbaikan Pintu/Jendela": "Perbaikan Pintu/Jendela",
-      "Perbaikan Listrik/Air": "Perbaikan Listrik/Air",
-      "Perbaikan Sanitasi/MCK": "Perbaikan Sanitasi/MCK",
+      "PERBAIKAN_ATAP": "Perbaikan Atap",
+      "PERBAIKAN_DINDING": "Perbaikan Dinding/Cat",
+      "PERBAIKAN_LANTAI": "Perbaikan Lantai",
+      "PERBAIKAN_PINTU_JENDERA": "Perbaikan Pintu/Jendela",
+      "PERBAIKAN_LISTRIK_AIR": "Perbaikan Listrik/Air",
+      "PERBAIKAN_SANITASI": "Perbaikan Sanitasi/MCK",
       "LAINNYA": "Lainnya",
     };
     return translations[type] || type;
@@ -52,10 +51,7 @@ export default function DashboardPage() {
   // Helper function untuk translate condition
   const translateCondition = (condition: string): string => {
     const translations: Record<string, string> = {
-      "NOT_SET": "Belum Ditentukan",
-      "Baik & Siap Pakai": "Baik / Siap Pakai",
       "BAIK_SIAP_PAKAI" : "Baik / Siap Pakai",
-      "Masih Membutuhkan Perbaikan": "Masih Membutuhkan Perbaikan Tambahan",
       "BUTUH_PERBAIKAN_TAMBAHAN": "Masih Membutuhkan Perbaikan Tambahan",
       "LAINNYA": "Lainnya",
     };
@@ -65,8 +61,6 @@ export default function DashboardPage() {
   // Helper function untuk translate status
   const translateStatus = (status: string): string => {
     const translations: Record<string, string> = {
-      "Good": "Rehabilitasi / Perbaikan",
-      "New Construction": "Pembangunan Baru",
       "PEMBANGUNAN_BARU": "Pembangunan Baru",
       "REHABILITASI": "Rehabilitasi / Perbaikan",
       "LAINNYA": "Lainnya",
@@ -137,9 +131,9 @@ export default function DashboardPage() {
     }
 
     const colorMap: Record<string, string> = {
-      "pembangunan baru": "#f0417e",
-      "rehabilitasi perbaikan": "#3355ff",
-      "lainnya": "#ff9933",
+      "Pembangunan Baru": "#f0417e",
+      "Rehabilitasi / Perbaikan": "#3355ff",
+      "Lainnya": "#ff9933",
     };
 
     return data.status_distribution.map((item) => ({
@@ -156,9 +150,9 @@ export default function DashboardPage() {
     }
 
     const colorMap: Record<string, string> = {
-      "baik siap pakai": "#33AD5C",
-      "masih membutuhkan perbaikan tambahan": "#ff6f61",
-      "lainnya": "#ff9933",
+      "Baik / Siap Pakai": "#33AD5C",
+      "Masih Membutuhkan Perbaikan Tambahan": "#ff6f61",
+      "Lainnya": "#ff9933",
     };
 
     // Filter out NOT_SET

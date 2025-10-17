@@ -37,11 +37,11 @@ export default function TataRuangPage() {
   // Helper function untuk translate violation types
   const translateViolationType = (type: string): string => {
     const translations: Record<string, string> = {
-      "Zoning violation": "Pembangunan Tanpa Izin Pemanfaatan Ruang",
-      "Building without permit": "Bangunan di Sempadan Jalan",
-      "Green space conversion": "Alih Fungsi Ruang Terbuka Hijau",
-      "River boundary violation": "Bangunan di Sempadan Sungai/Waduk/Bendungan",
-      "Agricultural land conversion": "Alih Fungsi Lahan Pertanian",
+      "PEMBANGUNAN_TANPA_IZIN": "Pembangunan Tanpa Izin Pemanfaatan Ruang",
+      "BANGUNAN_SEMPADAN_JALAN": "Bangunan di Sempadan Jalan",
+      "ALIH_FUNGSI_RTH": "Alih Fungsi Ruang Terbuka Hijau",
+      "PEMBANGUNAN_SEMPADAN_SUNGAI": "Bangunan di Sempadan Sungai/Waduk/Bendungan",
+      "ALIH_FUNGSI_LAHAN_PERTANIAN": "Alih Fungsi Lahan Pertanian",
       "LAINNYA": "Lainnya",
     };
     return translations[type] || type;
@@ -62,7 +62,6 @@ export default function TataRuangPage() {
     const translations: Record<string, string> = {
       MENDESAK: "Mendesak",
       BIASA: "Biasa",
-      TIDAK_MENDESAK: "Tidak Mendesak",
     };
     return translations[level] || level;
   };
@@ -128,9 +127,8 @@ export default function TataRuangPage() {
     }
 
     const colorMap: Record<string, string> = {
-      MENDESAK: "#F0417E",
-      BIASA: "#3355FF",
-      TIDAK_MENDESAK: "#FFD633",
+      "Mendesak": "#F0417E",
+      "Biasa": "#3355FF",
     };
 
     return data.urgency_statistics.map((item) => ({
@@ -147,15 +145,15 @@ export default function TataRuangPage() {
     }
 
     const colorMap: Record<string, string> = {
-      RINGAN: "#FFD633",
-      SEDANG: "#FF9933",
-      BERAT: "#F0417E",
+      "Ringan": "#FFD633",
+      "Sedang": "#FF9933",
+      "Berat": "#F0417E",
     };
 
     const detailMap: Record<string, string> = {
-      RINGAN: "(dapat diperbaiki cepat, fungsi kawasan masih berjalan)",
-      SEDANG: "(fungsi kawasan terganggu sebagian)",
-      BERAT: "(Fungsi kawasan hilang / tidak sesuai peruntukan)",
+      "Ringan": "(dapat diperbaiki cepat, fungsi kawasan masih berjalan)",
+      "Sedang": "(fungsi kawasan terganggu sebagian)",
+      "Berat": "(Fungsi kawasan hilang / tidak sesuai peruntukan)",
     };
 
     return data.violation_level_statistics.map((item) => ({

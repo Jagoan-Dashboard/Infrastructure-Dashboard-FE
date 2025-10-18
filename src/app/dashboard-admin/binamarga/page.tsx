@@ -18,7 +18,7 @@ import { CommodityChartSection } from "../components/BarChartSection";
 import { useBinamarga } from "./hooks/useBinamarga";
 import { RoadType, BinamargaReport } from "./types/binamarga-types";
 import { useMemo, useState } from "react";
-import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import FullPageSkeleton from "@/components/common/FullPageSkeleton";
 
 export default function BinamargaPage() {
   const { data, reports, isLoading, error } = useBinamarga(RoadType.ALL);
@@ -221,18 +221,7 @@ export default function BinamargaPage() {
   }, [data]);
 
   if (isLoading) {
-    return (
-      <div className="container mx-auto max-w-7xl">
-        <div className="bg-gray-50 rounded-lg p-4 lg:p-6">
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-center">
-              <Spinner variant="circle" size={48} className="mx-auto mb-4 text-blue-600" />
-              <p className="text-gray-600">Memuat data...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <FullPageSkeleton cards={4} withSidebarMap={true} />;
   }
 
   if (error) {

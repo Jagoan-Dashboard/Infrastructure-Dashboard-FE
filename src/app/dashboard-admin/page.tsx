@@ -18,7 +18,7 @@ import { CommodityChartSection } from "./components/BarChartSection";
 import { useMemo, useState } from "react";
 import { useTataBangunan } from "./hooks/useTata-bangunan";
 import { BuildingType, TataBangunanReport } from "./types/tata-bangunan-types";
-import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import FullPageSkeleton from "@/components/common/FullPageSkeleton";
 
 export default function DashboardPage() {
   const { data, reports, isLoading, error, buildingType, setBuildingType } = useTataBangunan(BuildingType.ALL);
@@ -202,18 +202,7 @@ export default function DashboardPage() {
 
   // Loading state
   if (isLoading) {
-    return (
-      <div className="container mx-auto max-w-7xl">
-        <div className="bg-gray-50 rounded-lg p-4 lg:p-6">
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-center">
-              <Spinner variant="circle" size={48} className="mx-auto mb-4 text-blue-600" />
-              <p className="text-gray-600">Memuat data...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <FullPageSkeleton cards={3} withSidebarMap={true} />;
   }
 
   // Error state

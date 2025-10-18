@@ -40,7 +40,13 @@ const getBarColor = (value: number, maxValue: number) => {
   return '#A5B4FC'; // Lighter blue for other values
 };
 
-const CustomizedXAxisTick = (props: any) => {
+interface XAxisTickProps {
+  x: number;
+  y: number;
+  payload: { value: string };
+}
+
+const CustomizedXAxisTick = (props: XAxisTickProps) => {
   const { x, y, payload } = props;
   const value = String(payload?.value ?? '');
   const words = value.split(' ');
@@ -119,7 +125,7 @@ export const CommodityChartSection = ({ commodityData, title }: CommodityChartSe
               />
               <XAxis
                 dataKey="name"
-                tick={<CustomizedXAxisTick />}
+                tick={(props) => <CustomizedXAxisTick {...(props as XAxisTickProps)} />}
                 tickLine={{ stroke: '#E5E7EB' }}
                 axisLine={{ stroke: '#E5E7EB' }}
                 interval={0}

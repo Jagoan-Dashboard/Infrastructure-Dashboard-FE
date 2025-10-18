@@ -70,11 +70,19 @@ export const useLogin = () => {
         });
       }
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login error:', error);
 
-      
-      if (error.response?.status === 401) {
+      interface ErrorWithResponse {
+        response?: {
+          status?: number;
+          data?: { message?: string };
+        };
+      }
+
+      const err = (error as ErrorWithResponse) || {};
+
+      if (err.response?.status === 401) {
         
         setError('email', {
           type: 'manual',
@@ -88,10 +96,10 @@ export const useLogin = () => {
         toast.error('Login Gagal', {
           description: 'Email atau password yang Anda masukkan salah'
         });
-      } else if (error.response?.status === 422) {
+      } else if (err.response?.status === 422) {
         
         toast.error('Validasi Gagal', {
-          description: error.response?.data?.message || 'Data yang Anda masukkan tidak valid'
+          description: err.response?.data?.message || 'Data yang Anda masukkan tidak valid'
         });
       } else {
         

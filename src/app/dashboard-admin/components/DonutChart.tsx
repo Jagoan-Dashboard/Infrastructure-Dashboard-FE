@@ -76,17 +76,18 @@ interface LabelProps {
   innerRadius: number;
   outerRadius: number;
   percent: number;
+  value: number;
 }
 
 const renderCustomizedLabel = ({
   cx,
   cy,
   midAngle,
-  innerRadius,
   outerRadius,
-  percent,
+  value,
 }: LabelProps) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const offset = 14; // distance outside the slice
+  const radius = (outerRadius ?? 0) + offset;
   const x = cx + radius * Math.cos(-(midAngle ?? 0) * RADIAN);
   const y = cy + radius * Math.sin(-(midAngle ?? 0) * RADIAN);
 
@@ -94,11 +95,13 @@ const renderCustomizedLabel = ({
     <text
       x={x}
       y={y}
-      fill="white"
+      fill="#374151"
+      fontSize={12}
+      fontWeight={600}
       textAnchor={x > cx ? "start" : "end"}
       dominantBaseline="central"
     >
-      {`${((percent ?? 1) * 100).toFixed(0)}%`}
+      {`${Number(value ?? 0).toFixed(1)}%`}
     </text>
   );
 };
@@ -155,7 +158,7 @@ export function ChartPieDonut({
                 innerRadius="45%"
                 outerRadius="80%"
                 paddingAngle={2}
-                labelLine={false}
+                labelLine={true}
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.fill} />

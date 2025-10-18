@@ -40,8 +40,47 @@ const getBarColor = (value: number, maxValue: number) => {
   return '#A5B4FC'; // Lighter blue for other values
 };
 
-export const 
-CommodityChartSection = ({ commodityData, title }: CommodityChartSectionProps) => {
+const CustomizedXAxisTick = (props: any) => {
+  const { x, y, payload } = props;
+  const value = String(payload?.value ?? '');
+  const words = value.split(' ');
+  const lines: string[] = [];
+  let current = '';
+  words.forEach((w) => {
+    const next = current ? `${current} ${w}` : w;
+    if (next.length <= 14) {
+      current = next;
+    } else {
+      if (current) lines.push(current);
+      current = w;
+    }
+  });
+  if (current) lines.push(current);
+  if (lines.length > 2) {
+    const truncated = lines.slice(0, 2);
+    truncated[1] = truncated[1] + '...';
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text dy={16} textAnchor="middle" fill="#6B7280" fontSize={11} fontWeight={500}>
+          {truncated.map((line, i) => (
+            <tspan key={i} x={0} dy={i === 0 ? 0 : 14}>{line}</tspan>
+          ))}
+        </text>
+      </g>
+    );
+  }
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text dy={16} textAnchor="middle" fill="#6B7280" fontSize={11} fontWeight={500}>
+        {lines.map((line, i) => (
+          <tspan key={i} x={0} dy={i === 0 ? 0 : 14}>{line}</tspan>
+        ))}
+      </text>
+    </g>
+  );
+};
+
+export const CommodityChartSection = ({ commodityData, title }: CommodityChartSectionProps) => {
   const maxValue = Math.max(...commodityData?.map(item => item.value) || []);
 
   return (
@@ -59,71 +98,6 @@ CommodityChartSection = ({ commodityData, title }: CommodityChartSectionProps) =
       </div>
 
       {/* Chart Container */}
-      {/* <div className="p-6">
-        <div className="h-80 lg:h-100 mb-2">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={commodityData}
-              margin={{
-                top: 0,
-                right: 0,
-                left: 0,
-                bottom: 40,
-              }}
-              barCategoryGap="20%"
-            >
-              <CartesianGrid 
-                strokeDasharray="3 3" 
-                stroke="#E5E7EB" 
-                horizontal={true}
-                vertical={false}
-              />
-              <XAxis
-                dataKey="name"
-                tick={{
-                  fontSize: 12,
-                  fill: '#3C3C3C',
-                  fontWeight: 500,
-                  width: 100,
-                  // wordWrap: 'break-word',
-                }}
-                tickLine={{ stroke: '#E5E7EB' }}
-                axisLine={{ stroke: '#E5E7EB' }}
-                interval={0}
-                tickFormatter={(value) => {
-                  const words = value.split(' ');
-                  if (words.length > 2) {
-                    return words.slice(0, 2).join(' ') + '...';
-                  }
-                  return value;
-                }}
-              />
-              <YAxis
-                domain={[0, maxValue + (maxValue * 0.1)]}
-                tick={{ fontSize: 11, fill: '#6B7280', textAnchor: 'end' }}
-                axisLine={{ stroke: '#E5E7EB' }}
-                tickCount={7}
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar
-                dataKey="value"
-                radius={[4, 4, 0, 0]}
-                maxBarSize={60}
-              >
-                {commodityData?.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={getBarColor(entry.value, maxValue)}
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-      </div> */}
-
-      {/* Chart Container */}
       <div className="p-6">
         <div className="h-[30rem] mb-4">
           <ResponsiveContainer width="100%" height="100%">
@@ -133,7 +107,7 @@ CommodityChartSection = ({ commodityData, title }: CommodityChartSectionProps) =
                 top: 0,
                 right: 0,
                 left: 0,
-                bottom: 40,
+                bottom: 70,
               }}
               barCategoryGap="20%"
             >
@@ -145,16 +119,11 @@ CommodityChartSection = ({ commodityData, title }: CommodityChartSectionProps) =
               />
               <XAxis
                 dataKey="name"
-                tick={{ 
-                  fontSize: 11, 
-                  fill: '#6B7280',
-                  textAnchor: 'end'
-                }}
+                tick={<CustomizedXAxisTick />}
                 tickLine={{ stroke: '#E5E7EB' }}
                 axisLine={{ stroke: '#E5E7EB' }}
                 interval={0}
-                angle={-35}
-                textAnchor="end"
+                tickMargin={8}
               />
               <YAxis
                 domain={[0, 12]}
@@ -162,7 +131,7 @@ CommodityChartSection = ({ commodityData, title }: CommodityChartSectionProps) =
                 axisLine={{ stroke: '#E5E7EB' }}
                 tickCount={7}
               />
-              <Tooltip content={<CustomTooltip active={false} payload={[]} label="" />} />
+              <Tooltip content={<CustomTooltip />} />
               <Bar
                 dataKey="value"
                 radius={[4, 4, 0, 0]}

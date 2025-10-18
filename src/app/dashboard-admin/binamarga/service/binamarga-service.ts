@@ -24,7 +24,7 @@ export class BinamargaService {
   static async getReports(): Promise<BinamargaReportsResponse> {
     try {
       const response = await apiClient.get<BinamargaReportsResponse>(
-        `/api/v1/bina-marga`
+        `/api/v1/bina-marga?page=1&limit=200`
       );
       return response.data;
     } catch (error) {

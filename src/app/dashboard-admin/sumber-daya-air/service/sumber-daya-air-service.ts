@@ -20,7 +20,7 @@ export class WaterResourcesService {
   static async getReports(): Promise<WaterResourcesReportsResponse> {
     try {
       const response = await apiClient.get<WaterResourcesReportsResponse>(
-        `/api/v1/water-resources`
+        `/api/v1/water-resources?page=1&limit=200`
       );
       return response.data;
     } catch (error) {

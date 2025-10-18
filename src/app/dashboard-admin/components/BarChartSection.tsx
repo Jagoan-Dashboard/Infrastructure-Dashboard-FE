@@ -40,7 +40,8 @@ const getBarColor = (value: number, maxValue: number) => {
   return '#A5B4FC'; // Lighter blue for other values
 };
 
-export const CommodityChartSection = ({ commodityData, title }: CommodityChartSectionProps) => {
+export const 
+CommodityChartSection = ({ commodityData, title }: CommodityChartSectionProps) => {
   const maxValue = Math.max(...commodityData?.map(item => item.value) || []);
 
   return (

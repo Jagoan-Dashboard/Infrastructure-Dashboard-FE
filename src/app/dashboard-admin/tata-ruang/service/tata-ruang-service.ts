@@ -4,7 +4,7 @@ import { TataRuangResponse, AreaCategory, TataRuangReportsResponse } from "../ty
 
 export class TataRuangService {
   private static BASE_URL = "/api/v1/spatial-planning/tata-ruang";
-  private static REPORTS_BASE_URL = "/api/v1/spatial-planning";
+  private static REPORTS_BASE_URL = "/api/v1/spatial-planning?page=1&limit=200";
 
   static async getOverview(
     areaCategory: AreaCategory = AreaCategory.ALL

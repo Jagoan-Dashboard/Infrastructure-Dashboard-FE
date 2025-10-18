@@ -28,7 +28,7 @@ export const useLogin = () => {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: ''
     }
   });
@@ -39,7 +39,7 @@ export const useLogin = () => {
     try {
       
       const response = await LoginService.login({
-        identifier: data.email, 
+        identifier: data.username, 
         password: data.password
       });
 
@@ -84,17 +84,17 @@ export const useLogin = () => {
 
       if (err.response?.status === 401) {
         
-        setError('email', {
+        setError('username', {
           type: 'manual',
-          message: 'Email atau password salah'
+          message: 'Username atau password salah'
         });
         setError('password', {
           type: 'manual',
-          message: 'Email atau password salah'
+          message: 'Username atau password salah'
         });
         
         toast.error('Login Gagal', {
-          description: 'Email atau password yang Anda masukkan salah'
+          description: 'Username atau password yang Anda masukkan salah'
         });
       } else if (err.response?.status === 422) {
         

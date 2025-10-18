@@ -103,39 +103,39 @@ const LoginPage = () => {
                 Selamat Datang!
               </h2>
               <p className="text-muted-foreground">
-                Silahkan masukkan email yang sudah terdaftar
+                Silahkan masukkan username yang sudah terdaftar
               </p>
             </div>
           </div>
 
           {/* Login Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Email Field */}
+            {/* Username Field */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">
-                Email Address
+              <Label htmlFor="username" className="text-sm font-medium">
+                Username
               </Label>
               <div className="relative">
                 <Input
-                  id="email"
-                  type="email"
-                  {...register('email', {
-                    onChange: () => handleInputChange('email')
+                  id="username"
+                  type="text"
+                  {...register('username', {
+                    onChange: () => handleInputChange('username')
                   })}
                   className={cn(
                     "pl-4 pr-4 py-3 text-base transition-all duration-200 bg-background/50 backdrop-blur-sm",
                     "border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20",
                     "hover:border-border shadow-sm hover:shadow-md",
-                    errors.email && "border-destructive focus:border-destructive focus:ring-destructive/20"
+                    errors.username && "border-destructive focus:border-destructive focus:ring-destructive/20"
                   )}
-                  placeholder="Enter your email address"
+                  placeholder="Enter your username"
                   disabled={isLoading || isSubmitting}
                 />
               </div>
-              {errors.email && (
+              {errors.username && (
                 <p className="text-sm text-destructive flex items-center space-x-1 animate-in slide-in-from-left-1 duration-200">
                   <span className="w-1 h-1 bg-destructive rounded-full" />
-                  <span>{errors.email.message}</span>
+                  <span>{errors.username.message}</span>
                 </p>
               )}
             </div>

@@ -59,6 +59,15 @@ export default function BinamargaPage() {
     return translations[urgency] || urgency;
   };
 
+  const translateBridgeDamageLevel = (level: string): string => {
+    const translations: Record<string, string> = {
+      RINGAN: "Ringan",
+      SEDANG: "Sedang",
+      BERAT_TIDAK_LAYAK: "Berat (Tidak Layak)",
+    };
+    return translations[level] || level;
+  };
+
   const handleReportClick = (report: BinamargaReport) => {
     setSelectedReport(report);
     setTimeout(() => {
@@ -157,14 +166,19 @@ export default function BinamargaPage() {
     });
   }, [data]);
 
-  const translateBridgeDamageLevel = (level: string): string => {
-    const translations: Record<string, string> = {
-      RINGAN: "Ringan",
-      SEDANG: "Sedang",
-      BERAT_TIDAK_LAYAK: "Berat (Tidak Layak)",
-    };
-    return translations[level] || level;
-  };
+  const kerusakanJalanData = useMemo(() => {
+    if (!data?.top_road_damage_types || data.top_road_damage_types.length === 0) {
+      return [
+        { name: "Tidak ada data", value: 0, fullName: "Tidak ada data kerusakan jalan" }
+      ];
+    }
+
+    return data.top_road_damage_types.map((item) => ({
+      name: translateDamageType(item.damage_type),
+      value: item.count,
+      fullName: translateDamageType(item.damage_type),
+    }));
+  }, [data]);
 
   const kerusakanJembatanLevelData = useMemo(() => {
     if (!data?.bridge_damage_level_distribution || data.bridge_damage_level_distribution.length === 0) {
@@ -343,6 +357,13 @@ return (
             </div>
           )}
         </div>
+
+        <div className="">
+            <CommodityChartSection
+              commodityData={kerusakanJalanData}
+              title="Jenis Kerusakan Jalan Paling Banyak"
+            />
+          </div>
       </div>
     </div>
   </div>

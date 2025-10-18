@@ -1,4 +1,4 @@
-// context/AuthContext.tsx
+
 "use client";
 
 import { createContext, useState, ReactNode, useMemo, useEffect, useContext } from "react";
@@ -19,19 +19,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Hanya berjalan di client side
+    
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
     
     if (storedUser && storedToken) {
       try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
+        const parsedUser = JSON.parse(storedUser) as User;
+        
+        
+        const tokenExpiry = localStorage.getItem('token_expiry');
+        if (tokenExpiry && Date.now() > parseInt(tokenExpiry)) {
+          
+          console.log('Token expired, clearing auth data');
+          logout();
+        } else {
+          setUser(parsedUser);
+        }
       } catch (error) {
         console.error("AuthContext: Error parsing stored user:", error);
-        localStorage.removeItem("user");
-        localStorage.removeItem("user_id");
-        localStorage.removeItem("token");
+        logout();
       }
     }
     setIsLoading(false);
@@ -39,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (userData: User, token: string) => {
     localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("user_id", userData.id.toString());
+    localStorage.setItem("user_id", userData.id);
     localStorage.setItem("token", token);
     setUser(userData);
   };
@@ -48,14 +55,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("user");
     localStorage.removeItem("user_id");
     localStorage.removeItem("token");
+    localStorage.removeItem("token_expiry");
     setUser(null);
   };
 
   const isAuthenticated = useMemo(() => {
-    const hasUser = !!user;
-    // const hasToken = !!localStorage.getItem("token");
-    // return hasUser && hasToken;
-    return hasUser;
+    return !!user && !!localStorage.getItem("token");
   }, [user]);
 
   const value = useMemo(
@@ -66,13 +71,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isAuthenticated,
       isLoading,
     }),
-    [user, isAuthenticated, isLoading],
+    [user, isAuthenticated, isLoading]
   );
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-400" />
         <p className="ml-4 text-lg">Loading...</p>
       </div>
     );

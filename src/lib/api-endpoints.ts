@@ -1,6 +1,6 @@
 export class ENDPOINTS{
-    static LOGIN = "login";
-    static LOGOUT = "logout";
+    static LOGIN = "/api/v1/auth/login";
+  static LOGOUT = "/api/v1/auth/logout";
     static WATER_RESOURCES = {
     OVERVIEW: "/api/v1/water-resources/overview",
     };

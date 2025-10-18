@@ -86,6 +86,25 @@ const CustomizedXAxisTick = (props: XAxisTickProps) => {
   );
 };
 
+// Rotated tick at -35 degrees for showing all labels with tilt
+const RotatedXAxisTick = ({ x, y, payload }: XAxisTickProps) => {
+  const value = String(payload?.value ?? '');
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text
+        dy={16}
+        textAnchor="end"
+        fill="#6B7280"
+        fontSize={11}
+        fontWeight={500}
+        transform="rotate(-35)"
+      >
+        {value}
+      </text>
+    </g>
+  );
+};
+
 export const CommodityChartSection = ({ commodityData, title }: CommodityChartSectionProps) => {
   const maxValue = Math.max(...commodityData?.map(item => item.value) || []);
 
@@ -113,7 +132,7 @@ export const CommodityChartSection = ({ commodityData, title }: CommodityChartSe
                 top: 0,
                 right: 0,
                 left: 0,
-                bottom: 70,
+                bottom: 120,
               }}
               barCategoryGap="20%"
             >
@@ -125,11 +144,11 @@ export const CommodityChartSection = ({ commodityData, title }: CommodityChartSe
               />
               <XAxis
                 dataKey="name"
-                tick={(props) => <CustomizedXAxisTick {...(props as XAxisTickProps)} />}
+                tick={(props) => <RotatedXAxisTick {...(props as XAxisTickProps)} />}
                 tickLine={{ stroke: '#E5E7EB' }}
                 axisLine={{ stroke: '#E5E7EB' }}
                 interval={0}
-                tickMargin={8}
+                tickMargin={12}
               />
               <YAxis
                 domain={[0, 12]}

@@ -54,6 +54,7 @@ export default function BinamargaPage() {
       "DARURAT": "Darurat",
       "CEPAT": "Cepat",
       "RUTIN": "Rutin",
+      "RENDAH": "Rendah",
     };
     return translations[urgency] || urgency;
   };
@@ -129,7 +130,6 @@ export default function BinamargaPage() {
         { name: "Tidak ada data", value: 0, fullName: "Tidak ada data kerusakan jembatan" }
       ];
     }
-
     return data.top_bridge_damage_types.map((item) => ({
       name: translateDamageType(item.damage_type),
       value: item.count,
@@ -138,86 +138,73 @@ export default function BinamargaPage() {
   }, [data]);
 
   const urgensiData = useMemo(() => {
-    if (!data?.priority_distribution || data.basic_stats.total_infrastructure_reports === 0) {
-      return [];
-    }
-
-    const colorMap: Record<string, string> = {
-      Darurat: "#F0417E",
-      Cepat: "#FF9933",
-      Rutin: "#3355FF",
-    };
-
-    return data.priority_distribution.map((item) => {
-      const label = translateUrgency(item.priority_level);
-      return {
-        label,
-        value: (item.count / data.basic_stats.total_infrastructure_reports) * 100,
-        fill: colorMap[label] || "#999999",
-        detail: item.priority_level === "DARURAT" ? "(prioritas tertinggi)" : undefined,
-      };
-    });
-  }, [data]);
-
-  const pelanggaranKawasanData = useMemo(() => {
     if (!data?.road_damage_level_distribution || data.basic_stats.total_infrastructure_reports === 0) {
       return [];
     }
-
     const colorMap: Record<string, string> = {
       Ringan: "#FFD633",
       Sedang: "#FF9933",
       Berat: "#F0417E",
     };
-
-    const detailMap: Record<string, string> = {
-      RINGAN: "(fungsi masih berjalan)",
-      SEDANG: "(fungsi terganggu sebagian)",
-      BERAT: "(tidak bisa difungsikan sama sekali)",
-    };
-
+    const total = data.road_damage_level_distribution.reduce((sum, i) => sum + i.count, 0) || 1;
     return data.road_damage_level_distribution.map((item) => {
       const label = translateDamageLevel(item.damage_level);
       return {
         label,
-        value: (item.count / data.basic_stats.total_infrastructure_reports) * 100,
+        value: (item.count / total) * 100,
         fill: colorMap[label] || "#999999",
-        detail: detailMap[item.damage_level],
       };
     });
   }, [data]);
 
-  const kerusakanJalanData = useMemo(() => {
-    if (!data?.top_road_damage_types || data.top_road_damage_types.length === 0) {
-      return [
-        { name: "Tidak ada data", value: 0, fullName: "Tidak ada data kerusakan jalan" }
-      ];
-    }
+  const translateBridgeDamageLevel = (level: string): string => {
+    const translations: Record<string, string> = {
+      RINGAN: "Ringan",
+      SEDANG: "Sedang",
+      BERAT_TIDAK_LAYAK: "Berat (Tidak Layak)",
+    };
+    return translations[level] || level;
+  };
 
-    return data.top_road_damage_types.map((item) => ({
-      name: translateDamageType(item.damage_type),
-      value: item.count,
-      fullName: translateDamageType(item.damage_type),
-    }));
+  const kerusakanJembatanLevelData = useMemo(() => {
+    if (!data?.bridge_damage_level_distribution || data.bridge_damage_level_distribution.length === 0) {
+      return [];
+    }
+    const colorMap: Record<string, string> = {
+      Ringan: "#5C77FF",
+      Sedang: "#FF9933",
+      "Berat (Tidak Layak)": "#F0417E",
+    };
+    const total = data.bridge_damage_level_distribution.reduce((sum, i) => sum + i.count, 0) || 1;
+    return data.bridge_damage_level_distribution.map((item) => {
+      const label = translateBridgeDamageLevel(item.damage_level);
+      return {
+        label,
+        value: (item.count / total) * 100,
+        fill: colorMap[label] || "#999999",
+      };
+    });
   }, [data]);
 
   const prioritasData = useMemo(() => {
-    if (!data?.road_damage_level_distribution || data.basic_stats.total_infrastructure_reports === 0) {
+    if (!data?.priority_distribution || data.basic_stats.total_infrastructure_reports === 0) {
       return [];
     }
-
     const colorMap: Record<string, string> = {
-      BAIK: "#5C77FF",
-      RINGAN: "#FFD633",
-      SEDANG: "#FF9933",
-      BERAT: "#F0417E",
+      Darurat: "#F0417E",
+      Cepat: "#FF9933",
+      Rutin: "#3355FF",
+      Rendah: "#5C77FF",
     };
-
-    return data.road_damage_level_distribution.map((item) => ({
-      name: translateDamageLevel(item.damage_level),
-      value: (item.count / data.basic_stats.total_infrastructure_reports) * 100,
-      color: colorMap[item.damage_level] || "#999999",
-    }));
+    const total = data.priority_distribution.reduce((sum, i) => sum + i.count, 0) || 1;
+    return data.priority_distribution.map((item) => {
+      const label = translateUrgency(item.priority_level);
+      return {
+        name: label,
+        value: (item.count / total) * 100,
+        color: colorMap[label] || "#999999",
+      };
+    });
   }, [data]);
 
   if (isLoading) {
@@ -266,103 +253,97 @@ export default function BinamargaPage() {
     );
   }
 
-  return (
-    <div className="container mx-auto max-w-7xl">
-      <div className="bg-gray-50 rounded-lg p-4 lg:p-6">
-        <div className="w-full space-y-6">
-          {/* Breadcrumb */}
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/dashboard-admin">
-                  <Home className="w-4 h-4" />
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Binamarga</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+return (
+  <div className="container mx-auto max-w-7xl">
+    <div className="bg-gray-50 rounded-lg p-4 lg:p-6">
+      <div className="w-full space-y-6">
+        {/* Breadcrumb */}
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard-admin">
+                <Home className="w-4 h-4" />
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Binamarga</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
-          {/* Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div>
-              <p className="text-sm text-gray-600">Kabupaten Ngawi</p>
-              <h1 className="text-xl lg:text-2xl font-bold text-gray-900">
-                Dashboard Binamarga
-              </h1>
-            </div>
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div>
+            <p className="text-sm text-gray-600">Kabupaten Ngawi</p>
+            <h1 className="text-xl lg:text-2xl font-bold text-gray-900">
+              Dashboard Binamarga
+            </h1>
           </div>
+        </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-            <div className="grid grid-cols-2 gap-6">
-              <CardStats statsData={statsData} />
-            </div>
-            <div className="grid grid-cols-1">
-              {prioritasData.length > 0 ? (
-                <PieChartComponent statusData={prioritasData} />
-              ) : (
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
-                  <p className="text-gray-500">Tidak ada data prioritas</p>
-                </div>
-              )}
-            </div>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-6">
+            <CardStats statsData={statsData} />
           </div>
+          <div className="grid grid-cols-1">
+            {prioritasData.length > 0 ? (
+              <PieChartComponent statusData={prioritasData} />
+            ) : (
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
+                <p className="text-gray-500">Tidak ada data prioritas</p>
+              </div>
+            )}
+          </div>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <BinamargaMapSection
-              nama="Laporan Infrastruktur Rusak"
-              reports={reports}
-              onReportClick={handleReportClick}
+        {/* Map + Road Damage Donut */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <BinamargaMapSection
+            nama="Laporan Infrastruktur Rusak"
+            reports={reports}
+            onReportClick={handleReportClick}
+          />
+          {urgensiData.length > 0 ? (
+            <ChartPieDonut
+              title="Tingkat Kerusakan Jalan"
+              data={urgensiData}
+              showLegend={true}
             />
-            {urgensiData.length > 0 ? (
-              <ChartPieDonut
-                title="Kategori Urgensi Penanganan"
-                data={urgensiData}
-                showLegend={true}
-              />
-            ) : (
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
-                <p className="text-gray-500">Tidak ada data urgensi</p>
-              </div>
-            )}
-          </div>
-
-          {/* Report Detail View */}
-          <div id="report-detail">
-            <BinamargaReportDetailView report={selectedReport} onClose={handleCloseDetail} />
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <CommodityChartSection
-                commodityData={kerusakanJembatanData}
-                title="Jenis Kerusakan Jembatan Paling Banyak"
-              />
+          ) : (
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
+              <p className="text-gray-500">Tidak ada data urgensi</p>
             </div>
-            {pelanggaranKawasanData.length > 0 ? (
-              <ChartPieDonut
-                title="Tingkat Kerusakan Paling Banyak"
-                data={pelanggaranKawasanData}
-                showLegend={true}
-              />
-            ) : (
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
-                <p className="text-gray-500">Tidak ada data tingkat kerusakan</p>
-              </div>
-            )}
-          </div>
+          )}
+        </div>
 
-          <div className="">
+        {/* Report Detail View */}
+        <div id="report-detail">
+          <BinamargaReportDetailView report={selectedReport} onClose={handleCloseDetail} />
+        </div>
+
+        {/* Bottom charts: Bridge types + Bridge damage level */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
             <CommodityChartSection
-              commodityData={kerusakanJalanData}
-              title="Jenis Kerusakan Jalan Paling Banyak"
+              commodityData={kerusakanJembatanData}
+              title="Jenis Kerusakan Jembatan Paling Banyak"
             />
           </div>
+          {kerusakanJembatanLevelData.length > 0 ? (
+            <ChartPieDonut
+              title="Tingkat Kerusakan Jembatan"
+              data={kerusakanJembatanLevelData}
+              showLegend={true}
+            />
+          ) : (
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
+              <p className="text-gray-500">Tidak ada data tingkat kerusakan</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
-  );
-}
+  </div>
+)};

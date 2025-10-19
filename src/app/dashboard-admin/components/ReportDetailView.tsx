@@ -12,6 +12,46 @@ interface ReportDetailViewProps {
 export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onClose }) => {
   if (!report) return null;
 
+  const translateBuildingType = (type: string): string => {
+    const translations: Record<string, string> = {
+      "PERBAIKAN_ATAP": "Perbaikan Atap",
+      "PERBAIKAN_DINDING": "Perbaikan Dinding/Cat",
+      "PERBAIKAN_LANTAI": "Perbaikan Lantai",
+      "PERBAIKAN_PINTU_JENDELA": "Perbaikan Pintu/Jendela",
+      "PERBAIKAN_LISTRIK_AIR": "Perbaikan Listrik/Air",
+      "PERBAIKAN_SANITASI": "Perbaikan Sanitasi/MCK",
+      "LAINNYA": "Lainnya",
+    };
+    return translations[type] || type;
+  };
+
+  const translateCondition = (condition: string): string => {
+    const translations: Record<string, string> = {
+      "BAIK_SIAP_PAKAI" : "Baik / Siap Pakai",
+      "BUTUH_PERBAIKAN_TAMBAHAN": "Masih Membutuhkan Perbaikan Tambahan",
+      "LAINNYA": "Lainnya",
+    };
+    return translations[condition] || condition;
+  };
+
+  const translateStatus = (status: string): string => {
+    const translations: Record<string, string> = {
+      "PEMBANGUNAN_BARU": "Pembangunan Baru",
+      "REHABILITASI": "Rehabilitasi / Perbaikan",
+      "LAINNYA": "Lainnya",
+    };
+    return translations[status] || status;
+  };
+
+  const translateFundingSource = (source: string): string => {
+    const translations: Record<string, string> = {
+      "APBD_KABUPATEN": "APBD Kabupaten",
+      "APBD_KOTA": "APBD Kota",
+      "APBD_PROVINSI": "APBD Provinsi",
+    };
+    return translations[source] || source;
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6 animate-in fade-in slide-in-from-top-2 duration-300">
       {/* Header */}
@@ -137,13 +177,16 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
               {report.photos.map((photo) => (
                 <div key={photo.id} className="relative group">
                   <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
-                    <Image
-                      src={photo.photo_url}
-                      alt={`${photo.photo_type} photo`}
-                      fill
-                      className="object-cover transition-transform group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
+                    <a href={photo.photo_url} target="_blank" rel="noopener noreferrer">
+                      <Image
+                        src={photo.photo_url}
+                        alt={`${photo.photo_type} photo`}
+                        fill
+                        unoptimized
+                        className="object-cover transition-transform group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </a>
                   </div>
                   <div className="absolute top-2 left-2 bg-black/60 text-white px-3 py-1 rounded-full text-xs capitalize">
                     {photo.photo_type}

@@ -36,13 +36,11 @@ const Tooltip = dynamic(
 );
 
 interface BinamargaMapSectionProps {
-  nama: string;
   reports: BinamargaReport[];
   onReportClick: (report: BinamargaReport) => void;
 }
 
 export const BinamargaMapSection: React.FC<BinamargaMapSectionProps> = ({
-  nama,
   reports,
   onReportClick
 }) => {
@@ -100,7 +98,7 @@ export const BinamargaMapSection: React.FC<BinamargaMapSectionProps> = ({
         <div className="flex items-center gap-2 mb-4">
           <Icon icon="bxs:map" className="w-5 h-5 text-blue-600" />
           <h2 className="text-lg font-semibold text-gray-900">
-            Peta Sebaran {nama}
+            Peta Persebaran Infrastruktur Rusak
           </h2>
         </div>
 
@@ -116,7 +114,7 @@ export const BinamargaMapSection: React.FC<BinamargaMapSectionProps> = ({
       <div className="flex items-center gap-2 mb-4">
         <Icon icon="bxs:map" className="w-5 h-5 text-blue-600" />
         <h2 className="text-lg font-semibold text-gray-900">
-          Peta Sebaran {nama} ({reports.length} Laporan)
+          Peta Persebaran Infrastruktur Rusak
         </h2>
       </div>
 
@@ -165,27 +163,12 @@ export const BinamargaMapSection: React.FC<BinamargaMapSectionProps> = ({
                       <p className="text-gray-600">
                         Tipe: {reportIsBridge ? 'Jembatan' : 'Jalan'}
                       </p>
-
-                      {reportIsBridge ? (
-                        <>
-                          <p className="text-gray-600">
-                            Kerusakan: {translateDamageType(report.bridge_damage_type)}
-                          </p>
-                          <p className="text-gray-600">
-                            Tingkat: {translateDamageLevel(report.bridge_damage_level)}
-                          </p>
-                        </>
-                      ) : (
-                        <>
-                          <p className="text-gray-600">
-                            Perkerasan: {translatePavementType(report.pavement_type)}
-                          </p>
-                          <p className="text-gray-600">
-                            Kerusakan: {translateDamageType(report.damage_type)}
-                          </p>
-                        </>
-                      )}
-
+                      <p className="text-gray-600">
+                        Panjang Kerusakan (m): {report.damaged_length}
+                      </p>
+                      <p className="text-gray-600">
+                        Lebar Kerusakan (m): {report.damaged_width}
+                      </p>
                       <p className="text-xs text-gray-500 mt-1 italic">Klik untuk detail</p>
                     </div>
                   </Tooltip>

@@ -222,13 +222,16 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
               {report.photos.map((photo) => (
                 <div key={photo.id} className="relative group">
                   <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
-                    <Image
-                      src={photo.photo_url}
-                      alt={photo.caption}
-                      fill
-                      className="object-cover transition-transform group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
+                    <a href={photo.photo_url} target="_blank" rel="noopener noreferrer">
+                      <Image
+                        src={photo.photo_url}
+                        alt={photo.caption}
+                        fill
+                        unoptimized
+                        className="object-cover transition-transform group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </a>
                   </div>
                   {photo.caption && (
                     <div className="absolute bottom-2 left-2 right-2 bg-black/60 text-white px-3 py-1 rounded-lg text-xs">

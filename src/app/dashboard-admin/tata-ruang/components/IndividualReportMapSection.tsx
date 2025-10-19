@@ -50,20 +50,18 @@ export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProp
       return [-7.4098, 111.4461];
     }, []);
 
-  // Helper function to translate violation types
   const translateViolationType = (type: string): string => {
     const translations: Record<string, string> = {
-      "pembangunan tanpa izin pemanfaatan ruang": "Pembangunan Tanpa Izin",
-      "bangunan sempadan jalan": "Bangunan di Sempadan Jalan",
-      "alih fungsi ruang terbuka hijau": "Alih Fungsi RTH",
-      "bangunan sempadan sungai": "Bangunan di Sempadan Sungai",
-      "alih fungsi lahan pertanian": "Alih Fungsi Lahan Pertanian",
-      "lainnya": "Lainnya",
+      "PEMBANGUNAN_TANPA_IZIN": "Pembangunan Tanpa Izin Pemanfaatan Ruang",
+      "BANGUNAN_SEMPADAN_JALAN": "Bangunan di Sempadan Jalan",
+      "ALIH_FUNGSI_RTH": "Alih Fungsi Ruang Terbuka Hijau",
+      "BANGUNAN_SEMPADAN_SUNGAI": "Bangunan di Sempadan Sungai/Waduk/Bendungan",
+      "ALIH_FUNGSI_LAHAN_PERTANIAN": "Alih Fungsi Lahan Pertanian",
+      "LAINNYA": "Lainnya",
     };
-    return translations[type.toLowerCase()] || type;
+    return translations[type] || type;
   };
 
-  // Helper function to translate violation levels
   const translateViolationLevel = (level: string): string => {
     const translations: Record<string, string> = {
       RINGAN: "Ringan",
@@ -142,10 +140,10 @@ export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProp
                       {report.area_description}
                     </p>
                     <p className="text-gray-600">
-                      <span className="font-medium">Perkiraan Panjang Pelanggaran:</span> {translateViolationType(report.violation_type)}
+                      <span className="font-medium">Jenis Pelanggaran:</span> {translateViolationType(report.violation_type)}
                     </p>
                     <p className="text-gray-600">
-                      <span className="font-medium">Perkiraan Lebar Pelanggaran:</span> {translateViolationLevel(report.violation_level)}
+                      <span className="font-medium">Tingkat Pelanggaran:</span> {translateViolationLevel(report.violation_level)}
                     </p>
                     {onReportClick && (
                       <p className="text-xs text-gray-500 mt-1 italic">Klik untuk detail</p>

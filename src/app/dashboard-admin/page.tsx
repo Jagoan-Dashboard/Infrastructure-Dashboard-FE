@@ -40,7 +40,7 @@ export default function DashboardPage() {
       "PERBAIKAN_ATAP": "Perbaikan Atap",
       "PERBAIKAN_DINDING": "Perbaikan Dinding/Cat",
       "PERBAIKAN_LANTAI": "Perbaikan Lantai",
-      "PERBAIKAN_PINTU_JENDERA": "Perbaikan Pintu/Jendela",
+      "PERBAIKAN_PINTU_JENDELA": "Perbaikan Pintu/Jendela",
       "PERBAIKAN_LISTRIK_AIR": "Perbaikan Listrik/Air",
       "PERBAIKAN_SANITASI": "Perbaikan Sanitasi/MCK",
       "LAINNYA": "Lainnya",

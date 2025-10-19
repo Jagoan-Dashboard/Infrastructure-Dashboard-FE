@@ -315,7 +315,6 @@ return (
         {/* Map + Road Damage Donut */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <BinamargaMapSection
-            nama="Laporan Infrastruktur Rusak"
             reports={reports}
             onReportClick={handleReportClick}
           />

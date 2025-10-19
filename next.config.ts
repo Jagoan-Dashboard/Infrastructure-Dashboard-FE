@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "s3-backend-dashboard.jagoansatudata.com",
         port: "",
-        pathname: "/jagoanbe/reports/**",
+        pathname: "/jagoanbe/**",
       },
     ],
   },

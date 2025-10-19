@@ -399,13 +399,16 @@ export const BinamargaReportDetailView: React.FC<BinamargaReportDetailViewProps>
               {report.photos.map((photo) => (
                 <div key={photo.id} className="relative group">
                   <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
-                    <Image
-                      src={photo.photo_url}
-                      alt={photo.caption || `${photo.photo_angle} view`}
-                      fill
-                      className="object-cover transition-transform group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
+                    <a href={photo.photo_url} target="_blank" rel="noopener noreferrer">
+                      <Image
+                        src={photo.photo_url}
+                        alt={photo.caption || `${photo.photo_angle} view`}
+                        fill
+                        unoptimized
+                        className="object-cover transition-transform group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </a>
                   </div>
                   <div className="absolute top-2 left-2 bg-black/60 text-white px-3 py-1 rounded-full text-xs capitalize">
                     {photo.photo_angle}

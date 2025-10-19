@@ -19,19 +19,20 @@ import FullPageSkeleton from "@/components/common/FullPageSkeleton";
 import { WaterResourceMapSection } from "./components/WaterResourceMapSection";
 import { WaterResourceReportDetailView } from "./components/WaterResourceReportDetailView";
 import { WaterResourceReport } from "./types/sumber-daya-air-types";
+import { MultiSelect, Option } from "@/components/ui/multi-select";
 
 export default function SumberDayaAirPage() {
   const { data, reports, isLoading, error } = useSumberDayaAir();
-  // const [selectedJenisIrigasi, setSelectedJenisIrigasi] = useState<string[]>([]);
+  const [selectedJenisIrigasi, setSelectedJenisIrigasi] = useState<string[]>([]);
   const [selectedReport, setSelectedReport] = useState<WaterResourceReport | null>(null);
 
 
-  // const jenisIrigasiOptions: Option[] = [
-  //   { value: "Saluran Sekunder", label: "Saluran Sekunder" },
-  //   { value: "Pintu Air", label: "Pintu Air" },
-  //   { value: "Embung/Dam", label: "Embung/Dam" },
-  //   { value: "Bendung", label: "Bendung" },
-  // ];
+  const jenisIrigasiOptions: Option[] = [
+    { value: "Saluran Sekunder", label: "Saluran Sekunder" },
+    { value: "Pintu Air", label: "Pintu Air" },
+    { value: "Embung/Dam", label: "Embung/Dam" },
+    { value: "Bendung", label: "Bendung" },
+  ];
 
 
   const statsData: StatsType[] = useMemo(() => {
@@ -102,10 +103,19 @@ export default function SumberDayaAirPage() {
   const kerusakanData = useMemo(() => {
     if (!data?.damage_type_distribution) return [];
 
-    return data.damage_type_distribution.map((item) => ({
-      name: translateKerusakan(item.damage_type),
-      value: item.count,
-      fullName: translateKerusakan(item.damage_type),
+    const grouped: Record<string, number> = data.damage_type_distribution.reduce(
+      (acc, item) => {
+        const key = translateKerusakan(item.damage_type);
+        acc[key] = (acc[key] || 0) + item.count;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    return Object.entries(grouped).map(([label, count]) => ({
+      name: label,
+      value: count,
+      fullName: label,
     }));
   }, [data]);
 
@@ -134,23 +144,27 @@ export default function SumberDayaAirPage() {
     if (!data?.damage_level_distribution) return [];
 
     const colorMap: Record<string, string> = {
-      Ringan: "#FFD633",
-      Sedang: "#FF9933",
       Berat: "#F0417E",
+      Sedang: "#FF9933",
+      Ringan: "#FFD633",
     };
 
     const detailMap: Record<string, string> = {
-      Ringan: "(fungsi masih berjalan)",
-      Sedang: "(fungsi terganggu sebagian)",
       Berat: "(tidak bisa difungsikan sama sekali)",
+      Sedang: "(fungsi terganggu sebagian)",
+      Ringan: "(fungsi masih berjalan)",
     };
 
-    return data.damage_level_distribution.map((item) => ({
-      label: translateLevel(item.damage_level),
-      value: (item.count / data.basic_stats.total_damaged_reports) * 100,
-      fill: colorMap[translateLevel(item.damage_level)] || "#999999",
-      detail: detailMap[translateLevel(item.damage_level)],
-    }));
+    const order: Record<string, number> = { Berat: 0, Sedang: 1, Ringan: 2 };
+
+    return data.damage_level_distribution
+      .map((item) => ({
+        label: translateLevel(item.damage_level),
+        value: (item.count / data.basic_stats.total_damaged_reports) * 100,
+        fill: colorMap[translateLevel(item.damage_level)] || "#999999",
+        detail: detailMap[translateLevel(item.damage_level)],
+      }))
+      .sort((a, b) => (order[a.label] ?? 99) - (order[b.label] ?? 99));
   }, [data]);
 
 
@@ -248,7 +262,7 @@ export default function SumberDayaAirPage() {
             </div>
 
             {/* Filters */}
-            {/* <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <MultiSelect
                 options={jenisIrigasiOptions}
                 selected={selectedJenisIrigasi}
@@ -257,7 +271,7 @@ export default function SumberDayaAirPage() {
                 className="min-w-[250px]"
                 label="Jenis Irigasi"
               />
-            </div> */}
+            </div>
           </div>
 
           {/* Stats Cards */}
@@ -267,7 +281,6 @@ export default function SumberDayaAirPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <WaterResourceMapSection
-              nama="Kerusakan SDA"
               reports={reports}
               onReportClick={handleReportClick}
             />

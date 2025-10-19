@@ -36,13 +36,11 @@ const Tooltip = dynamic(
 );
 
 interface WaterResourceMapSectionProps {
-  nama: string;
   reports: WaterResourceReport[];
   onReportClick: (report: WaterResourceReport) => void;
 }
 
 export const WaterResourceMapSection: React.FC<WaterResourceMapSectionProps> = ({
-  nama,
   reports,
   onReportClick
 }) => {
@@ -52,37 +50,61 @@ export const WaterResourceMapSection: React.FC<WaterResourceMapSectionProps> = (
     return [-7.4098, 111.4461];
   }, []);
 
-  // Helper untuk translate damage type
-  const translateDamageType = (type: string): string => {
-    const translations: Record<string, string> = {
-      "TANGGUL_JEBOL": "Tanggul Jebol",
-      "SEDIMENTASI_TINGGI": "Sedimentasi Tinggi",
-      "RETAK_BOCOR": "Retak/Bocor",
-      "STRUKTUR_BETON_RUSAK": "Struktur Beton Rusak",
-      "PINTU_AIR_RUSAK": "Pintu Air Rusak",
-      "TERSUMBAT": "Tersumbat",
-    };
-    return translations[type] || type;
+  const [minLen, maxLen, minWid, maxWid] = useMemo(() => {
+    if (!Array.isArray(reports) || reports.length === 0) return [0, 0, 0, 0] as const;
+    let minL = Number.POSITIVE_INFINITY;
+    let maxL = Number.NEGATIVE_INFINITY;
+    let minW = Number.POSITIVE_INFINITY;
+    let maxW = Number.NEGATIVE_INFINITY;
+    for (const r of reports) {
+      if (typeof r.estimated_length === 'number') {
+        if (r.estimated_length < minL) minL = r.estimated_length;
+        if (r.estimated_length > maxL) maxL = r.estimated_length;
+      }
+      if (typeof r.estimated_width === 'number') {
+        if (r.estimated_width < minW) minW = r.estimated_width;
+        if (r.estimated_width > maxW) maxW = r.estimated_width;
+      }
+    }
+    if (!isFinite(minL)) minL = 0;
+    if (!isFinite(maxL)) maxL = 0;
+    if (!isFinite(minW)) minW = 0;
+    if (!isFinite(maxW)) maxW = 0;
+    return [minL, maxL, minW, maxW] as const;
+  }, [reports]);
+
+  const scaleLengthToRadius = (len: number) => {
+    const minR = 6;
+    const maxR = 16;
+    if (maxLen === minLen) return (minR + maxR) / 2;
+    const t = (len - minLen) / (maxLen - minLen);
+    return Math.round(minR + t * (maxR - minR));
   };
 
-  // Helper untuk translate damage level
-  const translateDamageLevel = (level: string): string => {
-    const translations: Record<string, string> = {
-      "RINGAN": "Ringan",
-      "SEDANG": "Sedang",
-      "BERAT": "Berat",
-    };
-    return translations[level] || level;
+  const hslToHex = (h: number, s: number, l: number) => {
+    s /= 100; l /= 100;
+    const k = (n: number) => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = (n: number) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    const toHex = (x: number) => Math.round(255 * x).toString(16).padStart(2, '0');
+    return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
   };
 
-  // Show empty state if no data
+  const scaleWidthToColor = (wid: number) => {
+    if (maxWid === minWid) return hslToHex(210, 90, 60);
+    const t = (wid - minWid) / (maxWid - minWid);
+    const lightness = 80 - t * 45;
+    return hslToHex(210, 90, lightness);
+  };
+
+
   if (!Array.isArray(reports) || reports.length === 0) {
     return (
       <div className="bg-white col-span-2 p-6 rounded-xl shadow-sm border border-gray-100">
         <div className="flex items-center gap-2 mb-4">
           <Icon icon="bxs:map" className="w-5 h-5 text-blue-600" />
           <h2 className="text-lg font-semibold text-gray-900">
-            Peta Sebaran {nama}
+            Peta Persebaran Kerusakan SDA Tiap Kecamatan
           </h2>
         </div>
 
@@ -98,7 +120,7 @@ export const WaterResourceMapSection: React.FC<WaterResourceMapSectionProps> = (
       <div className="flex items-center gap-2 mb-4">
         <Icon icon="bxs:map" className="w-5 h-5 text-blue-600" />
         <h2 className="text-lg font-semibold text-gray-900">
-          Peta Sebaran {nama} ({reports.length} Laporan)
+          Peta Persebaran Kerusakan SDA Tiap Kecamatan
         </h2>
       </div>
 
@@ -124,8 +146,8 @@ export const WaterResourceMapSection: React.FC<WaterResourceMapSectionProps> = (
               <CircleMarker
                 key={report.id || index}
                 center={[report.latitude, report.longitude]}
-                radius={8}
-                fillColor="#3b82f6"
+                radius={scaleLengthToRadius(report.estimated_length)}
+                fillColor={scaleWidthToColor(report.estimated_width)}
                 color="#fff"
                 weight={2}
                 opacity={1}
@@ -141,9 +163,8 @@ export const WaterResourceMapSection: React.FC<WaterResourceMapSectionProps> = (
                     <p className="font-semibold text-blue-700 mb-1">
                       {report.irrigation_area_name}
                     </p>
-                    <p className="text-gray-600">Jenis: {report.irrigation_type}</p>
-                    <p className="text-gray-600">Kerusakan: {translateDamageType(report.damage_type)}</p>
-                    <p className="text-gray-600">Tingkat: {translateDamageLevel(report.damage_level)}</p>
+                    <p className="text-gray-600">Panjang Kerusakan (m): {report.estimated_length.toLocaleString('id-ID')}</p>
+                    <p className="text-gray-600">Lebar Kerusakan (m): {report.estimated_width.toLocaleString('id-ID')}</p>
                     <p className="text-xs text-gray-500 mt-1 italic">Klik untuk detail</p>
                   </div>
                 </Tooltip>

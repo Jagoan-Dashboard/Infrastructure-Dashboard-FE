@@ -1,7 +1,7 @@
 "use client";
 
 import { BiSolidPieChart } from "react-icons/bi";
-import { Pie, PieChart, Cell, ResponsiveContainer } from "recharts";
+import { Pie, PieChart, Cell, ResponsiveContainer, PieLabelRenderProps } from "recharts";
 
 import {
   Card,
@@ -79,32 +79,32 @@ interface LabelProps {
   value: number;
 }
 
-const renderCustomizedLabel = ({
-  cx,
-  cy,
-  midAngle,
-  outerRadius,
-  value,
-}: LabelProps) => {
-  const offset = 14; // distance outside the slice
-  const radius = (outerRadius ?? 0) + offset;
-  const x = cx + radius * Math.cos(-(midAngle ?? 0) * RADIAN);
-  const y = cy + radius * Math.sin(-(midAngle ?? 0) * RADIAN);
+// const renderCustomizedLabel = ({
+//   cx,
+//   cy,
+//   midAngle,
+//   outerRadius,
+//   value,
+// }: LabelProps) => {
+//   const offset = 14; // distance outside the slice
+//   const radius = (outerRadius ?? 0) + offset;
+//   const x = cx + radius * Math.cos(-(midAngle ?? 0) * RADIAN);
+//   const y = cy + radius * Math.sin(-(midAngle ?? 0) * RADIAN);
 
-  return (
-    <text
-      x={x}
-      y={y}
-      fill="#374151"
-      fontSize={12}
-      fontWeight={600}
-      textAnchor={x > cx ? "start" : "end"}
-      dominantBaseline="central"
-    >
-      {`${Number(value ?? 0).toFixed(1)}%`}
-    </text>
-  );
-};
+//   return (
+//     <text
+//       x={x}
+//       y={y}
+//       fill="#374151"
+//       fontSize={12}
+//       fontWeight={600}
+//       textAnchor={x > cx ? "start" : "end"}
+//       dominantBaseline="central"
+//     >
+//       {`${Number(value ?? 0).toFixed(1)}%`}
+//     </text>
+//   );
+// };
 
 export function ChartPieDonut({
   title = "Tingkat Pelanggaran Kawasan",
@@ -154,11 +154,13 @@ export function ChartPieDonut({
                 nameKey="label"
                 cx="50%"
                 cy="50%"
-                label={renderCustomizedLabel}
+                labelLine={false}
+                label={(props: PieLabelRenderProps) => {
+                  const percent = typeof props.percent === 'number' ? props.percent : 0;
+                  return `${(percent * 100).toFixed(1)}%`;
+                }}
                 innerRadius="45%"
                 outerRadius="80%"
-                paddingAngle={2}
-                labelLine={true}
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.fill} />

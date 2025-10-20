@@ -71,12 +71,12 @@ export default function SumberDayaAirPage() {
 
   const translateKerusakan = (kerusakan: string): string => {
     const translations: Record<string, string> = {
-      "RETAK_BOCOR": "Retak/Bocor",
-      "LONGSOR_AMBROL": "Longsor/Ambrol",
+      "RETAK_BOCOR": "Retak / Bocor",
+      "LONGSOR_AMBROL": "Longsor / Ambrol",
       "SEDIMENTASI_TINGGI": "Sedimentasi Tinggi",
       "TERSUMBAT_SAMPAH": "Tersumbat Sampah",
       "STRUKTUR_BETON_RUSAK": "Struktur Beton Rusak",
-      "PINTU_AIR_MACET": "Pintu Air Macet/Tidak Berfungsi",
+      "PINTU_AIR_MACET": "Pintu Air Macet / Tidak Berfungsi",
       "TANGGUL_JEBOL": "Tanggul Jebol",
       "LAINNYA": "Lainnya",
     };

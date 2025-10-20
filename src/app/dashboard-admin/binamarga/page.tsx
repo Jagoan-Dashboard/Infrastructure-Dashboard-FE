@@ -63,7 +63,8 @@ export default function BinamargaPage() {
     const translations: Record<string, string> = {
       RINGAN: "Ringan",
       SEDANG: "Sedang",
-      BERAT_TIDAK_LAYAK: "Berat (Tidak Layak)",
+      BERAT: "Berat (tidak layak)",
+      BERAT_TIDAK_LAYAK: "Berat (tidak layak)",
     };
     return translations[level] || level;
   };
@@ -185,19 +186,24 @@ export default function BinamargaPage() {
       return [];
     }
     const colorMap: Record<string, string> = {
-      Ringan: "#5C77FF",
+      "Berat (tidak layak)": "#F0417E",
       Sedang: "#FF9933",
-      "Berat (Tidak Layak)": "#F0417E",
+      Ringan: "#5C77FF",
     };
-    const total = data.bridge_damage_level_distribution.reduce((sum, i) => sum + i.count, 0) || 1;
-    return data.bridge_damage_level_distribution.map((item) => {
+    const aggregated: Record<string, number> = {};
+    for (const item of data.bridge_damage_level_distribution) {
       const label = translateBridgeDamageLevel(item.damage_level);
-      return {
+      aggregated[label] = (aggregated[label] || 0) + item.count;
+    }
+    const total = Object.values(aggregated).reduce((sum, v) => sum + v, 0) || 1;
+    const order = ["Berat (tidak layak)", "Sedang", "Ringan"];
+    return Object.entries(aggregated)
+      .map(([label, count]) => ({
         label,
-        value: (item.count / total) * 100,
+        value: (count / total) * 100,
         fill: colorMap[label] || "#999999",
-      };
-    });
+      }))
+      .sort((a, b) => order.indexOf(a.label) - order.indexOf(b.label));
   }, [data]);
 
   const prioritasData = useMemo(() => {

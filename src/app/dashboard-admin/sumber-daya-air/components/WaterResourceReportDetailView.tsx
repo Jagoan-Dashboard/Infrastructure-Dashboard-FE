@@ -12,7 +12,6 @@ interface WaterResourceReportDetailViewProps {
 export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailViewProps> = ({ report, onClose }) => {
   if (!report) return null;
 
-  // Helper untuk translate damage type
   const translateDamageType = (type: string): string => {
     const translations: Record<string, string> = {
       "TANGGUL_JEBOL": "Tanggul Jebol",
@@ -25,7 +24,16 @@ export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailVi
     return translations[type] || type;
   };
 
-  // Helper untuk translate damage level
+  const translateIrrigationType = (type: string): string => {
+    const translations: Record<string, string> = {
+      "SALURAN_SEKUNDER": "Saluran Sekunder",
+      "BENDUNG": "Bendung",
+      "EMBUNG_DAM": "Embung/Dam",
+      "PINTU_AIR": "Pintu Air",
+    };
+    return translations[type] || type;
+  };
+
   const translateDamageLevel = (level: string): string => {
     const translations: Record<string, string> = {
       "RINGAN": "Ringan",
@@ -35,7 +43,6 @@ export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailVi
     return translations[level] || level;
   };
 
-  // Helper untuk translate urgency
   const translateUrgency = (urgency: string): string => {
     const translations: Record<string, string> = {
       "MENDESAK": "Mendesak",
@@ -44,7 +51,6 @@ export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailVi
     return translations[urgency] || urgency;
   };
 
-  // Helper untuk translate status
   const translateStatus = (status: string): string => {
     const translations: Record<string, string> = {
       "PENDING": "Menunggu",
@@ -91,7 +97,7 @@ export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailVi
                 <div className="font-medium text-gray-900">{report.irrigation_area_name}</div>
 
                 <div className="text-gray-600">Jenis Irigasi:</div>
-                <div className="font-medium text-gray-900">{report.irrigation_type}</div>
+                <div className="font-medium text-gray-900">{translateIrrigationType(report.irrigation_type)}</div>
 
                 <div className="text-gray-600">Jenis Kerusakan:</div>
                 <div className="font-medium text-gray-900">{translateDamageType(report.damage_type)}</div>

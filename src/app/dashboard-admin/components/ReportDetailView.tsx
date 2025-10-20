@@ -14,6 +14,19 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
 
   const translateBuildingType = (type: string): string => {
     const translations: Record<string, string> = {
+      "KANTOR_PEMERINTAH": "Kantor Pemerintah",
+      "SEKOLAH": "Sekolah",
+      "PUSKESMAS_POSYANDU": "Puskesmas/Posyandu",
+      "PASAR": "Pasar",
+      "SARANA_OLAHRAGA": "Sarana Olahraga/Gedung Serbaguna",
+      "FASILITAS_UMUM": "Fasilitas Umum Lainnya",
+      "LAINNYA": "Lainnya",
+    };
+    return translations[type] || type;
+  }
+
+  const translateWorkType = (type: string): string => {
+    const translations: Record<string, string> = {
       "PERBAIKAN_ATAP": "Perbaikan Atap",
       "PERBAIKAN_DINDING": "Perbaikan Dinding/Cat",
       "PERBAIKAN_LANTAI": "Perbaikan Lantai",
@@ -88,7 +101,7 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
                 <div className="font-medium text-gray-900">{report.building_name}</div>
 
                 <div className="text-gray-600">Jenis Bangunan:</div>
-                <div className="font-medium text-gray-900 capitalize">{report.building_type.replace(/_/g, ' ')}</div>
+                <div className="font-medium text-gray-900 capitalize">{translateBuildingType(report.building_type)}</div>
 
                 <div className="text-gray-600">Desa:</div>
                 <div className="font-medium text-gray-900">{report.village}</div>
@@ -129,16 +142,16 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
             <div className="bg-gray-50 rounded-lg p-4 space-y-2">
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div className="text-gray-600">Status Laporan:</div>
-                <div className="font-medium text-gray-900 capitalize">{report.report_status}</div>
+                <div className="font-medium text-gray-900 capitalize">{translateStatus(report.report_status)}</div>
 
                 <div className="text-gray-600">Jenis Pekerjaan:</div>
-                <div className="font-medium text-gray-900 capitalize">{report.work_type}</div>
+                <div className="font-medium text-gray-900 capitalize">{translateWorkType(report.work_type)}</div>
 
                 <div className="text-gray-600">Sumber Dana:</div>
-                <div className="font-medium text-gray-900 uppercase">{report.funding_source}</div>
+                <div className="font-medium text-gray-900 uppercase">{translateFundingSource(report.funding_source)}</div>
 
                 <div className="text-gray-600">Kondisi Setelah Rehab:</div>
-                <div className="font-medium text-gray-900 col-span-1 capitalize">{report.condition_after_rehab}</div>
+                <div className="font-medium text-gray-900 col-span-1 capitalize">{translateCondition(report.condition_after_rehab)}</div>
               </div>
             </div>
           </div>

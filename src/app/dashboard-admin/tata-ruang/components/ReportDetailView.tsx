@@ -12,20 +12,18 @@ interface ReportDetailViewProps {
 export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onClose }) => {
   if (!report) return null;
 
-  // Helper function to translate violation types
   const translateViolationType = (type: string): string => {
     const translations: Record<string, string> = {
-      "pembangunan tanpa izin pemanfaatan ruang": "Pembangunan Tanpa Izin Pemanfaatan Ruang",
-      "bangunan sempadan jalan": "Bangunan di Sempadan Jalan",
-      "alih fungsi ruang terbuka hijau": "Alih Fungsi Ruang Terbuka Hijau",
-      "bangunan sempadan sungai": "Bangunan di Sempadan Sungai",
-      "alih fungsi lahan pertanian": "Alih Fungsi Lahan Pertanian",
-      "lainnya": "Lainnya",
+      "PEMBANGUNAN_TANPA_IZIN": "Pembangunan Tanpa Izin Pemanfaatan Ruang",
+      "BANGUNAN_SEMPADAN_JALAN": "Bangunan di Sempadan Jalan",
+      "ALIH_FUNGSI_RTH": "Alih Fungsi Ruang Terbuka Hijau",
+      "BANGUNAN_SEMPADAN_SUNGAI": "Bangunan di Sempadan Sungai",
+      "ALIH_FUNGSI_LAHAN_PERTANIAN": "Alih Fungsi Lahan Pertanian",
+      "LAINNYA": "Lainnya",
     };
     return translations[type.toLowerCase()] || type;
   };
 
-  // Helper function to translate violation levels
   const translateViolationLevel = (level: string): string => {
     const translations: Record<string, string> = {
       RINGAN: "Ringan",
@@ -35,7 +33,6 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
     return translations[level] || level;
   };
 
-  // Helper function to translate urgency levels
   const translateUrgencyLevel = (level: string): string => {
     const translations: Record<string, string> = {
       MENDESAK: "Mendesak",
@@ -45,7 +42,15 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
     return translations[level] || level;
   };
 
-  // Helper function to translate area category
+  const translateEnvironmentImpact = (impact: string): string => {
+    const translations: Record<string, string> = {
+      "MENURUN_KUALITAS_RUANG": "Menurun Kualitas Ruang/Ekosistem",
+      "POTENSI_BANJIR_LONGSOR": "Potensi Banjir/Longsor",
+      "GANGGU_AKTIVITAS_WARGA": "Mengganggu Aktivitas Warga"
+    };
+    return translations[impact] || impact;
+  };
+
   const translateAreaCategory = (category: string): string => {
     const translations: Record<string, string> = {
       KAWASAN_CAGAR_BUDAYA: "Kawasan Cagar Budaya",
@@ -63,7 +68,6 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
     return translations[category] || category;
   };
 
-  // Helper function to get status color
   const getStatusColor = (status: string): string => {
     const colors: Record<string, string> = {
       PENDING: "bg-yellow-100 text-yellow-800",
@@ -132,7 +136,7 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
 
                 <div className="grid grid-cols-5 gap-2">
                   <div className="text-gray-600 col-span-1">Dampak Lingkungan:</div>
-                  <div className="font-medium text-gray-900 col-span-4 capitalize">{report.environmental_impact.replace(/_/g, ' ')}</div>
+                  <div className="font-medium text-gray-900 col-span-4 capitalize">{translateEnvironmentImpact(report.environmental_impact)}</div>
                 </div>
               </div>
             </div>

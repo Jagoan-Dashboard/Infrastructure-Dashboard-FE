@@ -49,63 +49,6 @@ const defaultData = [
   },
 ];
 
-// Create chart config dynamically
-// const createChartConfig = (data: ChartData[]): ChartConfig => {
-//   const config: ChartConfig = {
-//     value: {
-//       label: "Value",
-//     },
-//   };
-
-//   data.forEach((item) => {
-//     config[item.label.toLowerCase()] = {
-//       label: item.label,
-//       color: item.fill,
-//     };
-//   });
-
-//   return config;
-// };
-
-const RADIAN = Math.PI / 180;
-
-interface LabelProps {
-  cx: number;
-  cy: number;
-  midAngle: number;
-  innerRadius: number;
-  outerRadius: number;
-  percent: number;
-  value: number;
-}
-
-// const renderCustomizedLabel = ({
-//   cx,
-//   cy,
-//   midAngle,
-//   outerRadius,
-//   value,
-// }: LabelProps) => {
-//   const offset = 14; // distance outside the slice
-//   const radius = (outerRadius ?? 0) + offset;
-//   const x = cx + radius * Math.cos(-(midAngle ?? 0) * RADIAN);
-//   const y = cy + radius * Math.sin(-(midAngle ?? 0) * RADIAN);
-
-//   return (
-//     <text
-//       x={x}
-//       y={y}
-//       fill="#374151"
-//       fontSize={12}
-//       fontWeight={600}
-//       textAnchor={x > cx ? "start" : "end"}
-//       dominantBaseline="central"
-//     >
-//       {`${Number(value ?? 0).toFixed(1)}%`}
-//     </text>
-//   );
-// };
-
 export function ChartPieDonut({
   title = "Tingkat Pelanggaran Kawasan",
   data = defaultData,

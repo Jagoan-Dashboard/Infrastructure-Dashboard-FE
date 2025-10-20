@@ -7,7 +7,7 @@ import { LoginService } from "@/app/login/service/login-service";
 import { toast } from "sonner";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UserIcon, Settings, LogOut } from "lucide-react";
+import { UserIcon, LogOut } from "lucide-react";
 
 export default function UserDropdown() {
   const { user, logout } = useAuth();
@@ -15,36 +15,36 @@ export default function UserDropdown() {
 
   const handleLogout = async () => {
     try {
-      
+
       await LoginService.logout();
-      
-      
+
+
       logout();
-      
-      
+
+
       toast.success('Logout Berhasil', {
         description: 'Anda telah keluar dari sistem'
       });
-      
-      
+
+
       router.push('/login');
     } catch (error) {
       console.error('Logout error:', error);
-      
-      
+
+
       logout();
       router.push('/login');
     }
   };
 
-    const initials = user?.username
+  const initials = user?.username
     .split(" ")
     .map((n) => n[0])
     .join("")
     .toUpperCase()
     .slice(0, 2);
 
-  
+
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case "ADMIN":
@@ -57,9 +57,7 @@ export default function UserDropdown() {
   };
 
   return (
-    <div className="user-dropdown">
-      <p>Welcome, {user?.username}</p>
-      <DropdownMenu>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="flex items-center space-x-3 p-2 rounded-lg hover:bg-accent/50 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400">
           <Avatar className="h-9 w-9">
@@ -93,8 +91,8 @@ export default function UserDropdown() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem className="cursor-pointer">
-          <Settings className="mr-2 h-4 w-4" />
-          <span>Settings</span>
+          <UserIcon className="mr-2 h-4 w-4" />
+          <span>Profile</span>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -108,6 +106,5 @@ export default function UserDropdown() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-    </div>
   );
 }

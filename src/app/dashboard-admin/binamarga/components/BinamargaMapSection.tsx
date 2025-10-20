@@ -55,42 +55,6 @@ export const BinamargaMapSection: React.FC<BinamargaMapSectionProps> = ({
     return Boolean(report.bridge_name && report.bridge_name.trim() !== '');
   };
 
-  // Helper untuk translate damage type
-  const translateDamageType = (type: string): string => {
-    const translations: Record<string, string> = {
-      "LUBANG_POTHOLES": "Lubang/Potholes",
-      "RETAK": "Retak",
-      "AMBLAS": "Amblas",
-      "BERLUBANG": "Berlubang",
-      "AMBLAS_LONGSOR": "Amblas/Longsor",
-      "KERUSAKAN_JEMBATAN": "Kerusakan Jembatan",
-      "RANGKA_UTAMA_RETAK": "Rangka Utama Retak",
-    };
-    return translations[type] || type.replace(/_/g, ' ');
-  };
-
-  // Helper untuk translate damage level
-  const translateDamageLevel = (level: string): string => {
-    const translations: Record<string, string> = {
-      "RINGAN": "Ringan",
-      "SEDANG": "Sedang",
-      "BERAT": "Berat",
-      "BERAT_TIDAK_LAYAK": "Berat - Tidak Layak",
-    };
-    return translations[level] || level;
-  };
-
-  // Helper untuk translate pavement type
-  const translatePavementType = (type: string): string => {
-    const translations: Record<string, string> = {
-      "ASPAL_FLEXIBLE": "Aspal Flexible",
-      "BETON_RIGID": "Beton Rigid",
-      "JALAN_TANAH": "Jalan Tanah",
-      "JALAN_KERIKIL": "Jalan Kerikil",
-    };
-    return translations[type] || type.replace(/_/g, ' ');
-  };
-
   // Show empty state if no data
   if (!Array.isArray(reports) || reports.length === 0) {
     return (

@@ -46,46 +46,6 @@ interface XAxisTickProps {
   payload: { value: string };
 }
 
-const CustomizedXAxisTick = (props: XAxisTickProps) => {
-  const { x, y, payload } = props;
-  const value = String(payload?.value ?? '');
-  const words = value.split(' ');
-  const lines: string[] = [];
-  let current = '';
-  words.forEach((w) => {
-    const next = current ? `${current} ${w}` : w;
-    if (next.length <= 14) {
-      current = next;
-    } else {
-      if (current) lines.push(current);
-      current = w;
-    }
-  });
-  if (current) lines.push(current);
-  if (lines.length > 2) {
-    const truncated = lines.slice(0, 2);
-    truncated[1] = truncated[1] + '...';
-    return (
-      <g transform={`translate(${x},${y})`}>
-        <text dy={16} textAnchor="middle" fill="#6B7280" fontSize={11} fontWeight={500}>
-          {truncated.map((line, i) => (
-            <tspan key={i} x={0} dy={i === 0 ? 0 : 14}>{line}</tspan>
-          ))}
-        </text>
-      </g>
-    );
-  }
-  return (
-    <g transform={`translate(${x},${y})`}>
-      <text dy={16} textAnchor="middle" fill="#6B7280" fontSize={11} fontWeight={500}>
-        {lines.map((line, i) => (
-          <tspan key={i} x={0} dy={i === 0 ? 0 : 14}>{line}</tspan>
-        ))}
-      </text>
-    </g>
-  );
-};
-
 // Rotated tick at -35 degrees for showing all labels with tilt
 const RotatedXAxisTick = ({ x, y, payload }: XAxisTickProps) => {
   const value = String(payload?.value ?? '');

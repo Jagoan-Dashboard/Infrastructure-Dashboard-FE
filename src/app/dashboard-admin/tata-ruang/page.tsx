@@ -12,27 +12,27 @@ import { Home } from "lucide-react";
 import { ChartPieDonut } from "../components/DonutChart";
 import CardStats from "../components/CardStats";
 import { CommodityChartSection } from "../components/BarChartSection";
-// import { Option } from "@/components/ui/multi-select";
 import { useMemo, useState } from "react";
 import { useTataRuang } from "./hooks/useTata-ruang";
 import { AreaCategory, TataRuangReport } from "./types/tata-ruang-types";
 import FullPageSkeleton from "@/components/common/FullPageSkeleton";
 import { IndividualReportMapSection } from "./components/IndividualReportMapSection";
 import { ReportDetailView } from "./components/ReportDetailView";
+import { MultiSelect, Option } from "@/components/ui/multi-select";
 
 export default function TataRuangPage() {
   const { data, reports, isLoading, error, areaCategory, setAreaCategory } = useTataRuang(AreaCategory.ALL);
   const [selectedReport, setSelectedReport] = useState<TataRuangReport | null>(null);
 
   // Options untuk multi-select
-  // const jenisKawasanOptions: Option[] = useMemo(() => {
-  //   return Object.entries(AreaCategoryLabels)
-  //     .filter(([key]) => key !== AreaCategory.ALL) // Exclude "all" from options
-  //     .map(([value, label]) => ({
-  //       value,
-  //       label,
-  //     }));
-  // }, []);
+  const jenisKawasanOptions: Option[] = useMemo(() => {
+    return Object.entries(AreaCategory)
+      .filter(([key]) => key !== AreaCategory.ALL) // Exclude "all" from options
+      .map(([value, label]) => ({
+        value,
+        label,
+      }));
+  }, []);
 
   // Helper function untuk translate violation types
   const translateViolationType = (type: string): string => {
@@ -262,7 +262,7 @@ export default function TataRuangPage() {
             </div>
 
             {/* Filters */}
-            {/* <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <MultiSelect
                 options={jenisKawasanOptions}
                 selected={selectedJenisKawasan}
@@ -271,7 +271,7 @@ export default function TataRuangPage() {
                 className="min-w-[250px]"
                 label="Jenis Kawasan"
               />
-            </div> */}
+            </div>
           </div>
 
           {/* Stats Cards */}

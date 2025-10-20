@@ -7,7 +7,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-// import { Option } from "@/components/ui/multi-select";
 import { StatsType } from "./types/stats";
 import { Home } from "lucide-react";
 import { IndividualReportMapSection } from "./components/IndividualReportMapSection";
@@ -19,20 +18,21 @@ import { useMemo, useState } from "react";
 import { useTataBangunan } from "./hooks/useTata-bangunan";
 import { BuildingType, TataBangunanReport } from "./types/tata-bangunan-types";
 import FullPageSkeleton from "@/components/common/FullPageSkeleton";
+import { MultiSelect, Option } from "@/components/ui/multi-select";
 
 export default function DashboardPage() {
   const { data, reports, isLoading, error, buildingType, setBuildingType } = useTataBangunan(BuildingType.ALL);
   const [selectedReport, setSelectedReport] = useState<TataBangunanReport | null>(null);
 
   // Options untuk multi-select
-  // const jenisBangunanOptions: Option[] = useMemo(() => {
-  //   return Object.entries(BuildingTypeLabels)
-  //     .filter(([key]) => key !== BuildingType.ALL)
-  //     .map(([value, label]) => ({
-  //       value,
-  //       label,
-  //     }));
-  // }, []);
+  const jenisBangunanOptions: Option[] = useMemo(() => {
+    return Object.entries(BuildingType)
+      .filter(([key]) => key !== BuildingType.ALL)
+      .map(([value, label]) => ({
+        value,
+        label,
+      }));
+  }, []);
 
   // Helper function untuk translate work types
   const translateWorkType = (type: string): string => {
@@ -182,23 +182,23 @@ export default function DashboardPage() {
   };
 
   // Handle multi-select change
-  // const handleJenisBangunanChange = (selected: string[]) => {
-  //   if (selected.length === 0) {
-  //     setBuildingType(BuildingType.ALL);
-  //   } else if (selected.length === 1) {
-  //     setBuildingType(selected[0] as BuildingType);
-  //   } else {
-  //     setBuildingType(selected[0] as BuildingType);
-  //   }
-  // };
+  const handleJenisBangunanChange = (selected: string[]) => {
+    if (selected.length === 0) {
+      setBuildingType(BuildingType.ALL);
+    } else if (selected.length === 1) {
+      setBuildingType(selected[0] as BuildingType);
+    } else {
+      setBuildingType(selected[0] as BuildingType);
+    }
+  };
 
   // Get selected values for multi-select
-  // const selectedJenisBangunan = useMemo(() => {
-  //   if (buildingType === BuildingType.ALL) {
-  //     return [];
-  //   }
-  //   return [buildingType];
-  // }, [buildingType]);
+  const selectedJenisBangunan = useMemo(() => {
+    if (buildingType === BuildingType.ALL) {
+      return [];
+    }
+    return [buildingType];
+  }, [buildingType]);
 
   // Loading state
   if (isLoading) {
@@ -278,7 +278,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Filters */}
-            {/* <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <MultiSelect
                 options={jenisBangunanOptions}
                 selected={selectedJenisBangunan}
@@ -287,7 +287,7 @@ export default function DashboardPage() {
                 className="min-w-[250px]"
                 label="Jenis Bangunan"
               />
-            </div> */}
+            </div>
           </div>
 
           {/* Stats Cards */}

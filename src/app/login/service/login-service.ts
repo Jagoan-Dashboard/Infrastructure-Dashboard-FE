@@ -1,12 +1,11 @@
 
-
 import { apiClient } from "@/lib/api-client";
 import { ENDPOINTS } from "@/lib/api-endpoints";
 import { LoginRequest, LoginResponse } from "@/types/user";
 
 export class LoginService {
   /**
-   * Login user dengan email/username dan password
+   * Login user dengan email dan password
    */
   static async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {

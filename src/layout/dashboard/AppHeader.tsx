@@ -3,9 +3,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import UserDropdown from "@/components/UserDropdown";
 import { useSidebar } from "@/context/SidebarContext";
+import Image from "next/image";
 import { assets } from "@/assets/assets";
 
 const AppHeader: React.FC = () => {
@@ -44,11 +44,7 @@ const AppHeader: React.FC = () => {
     <div className="relative top-0 right-0  w-full p-5 ">
       <div className="bg-white max-w-7xl container mx-auto rounded-xl flex justify-center items-center z-30 ">
         <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6">
-          <div
-            className={`flex items-center justify-between w-full gap-2 px-3 py-3 ${
-              isApplicationMenuOpen ? "border-b border-gray-200" : ""
-            } sm:gap-4 lg:justify-normal lg:px-0 lg:py-4`}
-          >
+          <div className={`flex items-center justify-between w-full gap-2 px-3 py-3 ${isApplicationMenuOpen ? 'border-b border-gray-200' : ''} sm:gap-4 lg:justify-normal lg:px-0 lg:py-4`}>
             <button
               aria-label="Toggle Sidebar"
               className="items-center justify-center w-10 h-10 text-gray-500 rounded-lg z-30 lg:flex lg:h-11 lg:w-11"
@@ -87,12 +83,20 @@ const AppHeader: React.FC = () => {
               )}
             </button>
             <Link className="lg:hidden" href="/">
-              <Image
-                src={assets.imageLogoNgawi}
-                alt="Logo Ngawi"
-                width={30}
-                height={30}
-              />
+              <div className=" flex justify-center items-center gap-2">
+                <Image
+                  src={assets.imageLogoNgawi}
+                  alt="Logo Ngawi"
+                  width={30}
+                  height={30}
+                />
+                <Image
+                  src={assets.imageLogo}
+                  alt="Logo Jagoan Satu Data"
+                  width={120}
+                  height={120}
+                />
+              </div>
             </Link>
             <button
               className="flex items-center justify-center w-10 h-10 text-gray-700 rounded-lg z- hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 lg:hidden"
@@ -115,9 +119,8 @@ const AppHeader: React.FC = () => {
             </button>
           </div>
           <div
-            className={`${
-              isApplicationMenuOpen ? "flex" : "hidden"
-            } items-center justify-between w-full gap-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
+            className={`${isApplicationMenuOpen ? "flex" : "hidden"
+              } items-center justify-between w-full gap-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
           >
             <div className="flex items-center gap-2 2xsm:gap-3">
               {/* Dark Mode Toggler bisa ditambahkan di sini */}

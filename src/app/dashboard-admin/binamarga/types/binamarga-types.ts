@@ -106,9 +106,8 @@ export interface BinamargaReport {
   institution_unit: string;
   phone_number: string;
   report_datetime: string;
+  district: string;
   road_name: string;
-  road_type: string;
-  road_class: string;
   segment_length: number;
   latitude: number;
   longitude: number;
@@ -120,6 +119,7 @@ export interface BinamargaReport {
   damaged_area: number;
   total_damaged_area: number;
   bridge_name: string;
+  bridge_section: string;
   bridge_structure_type: string;
   bridge_damage_type: string;
   bridge_damage_level: string;

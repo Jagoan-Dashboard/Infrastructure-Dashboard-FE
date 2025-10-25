@@ -141,8 +141,14 @@ export const BinamargaReportDetailView: React.FC<BinamargaReportDetailViewProps>
                 </h3>
                 <div className="bg-gray-50 rounded-lg p-4 space-y-2">
                   <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="text-gray-600">Kecamatan:</div>
+                    <div className="font-medium text-gray-900">{report.district}</div>
+
                     <div className="text-gray-600">Nama Jembatan:</div>
                     <div className="font-medium text-gray-900">{report.bridge_name}</div>
+
+                    <div className="text-gray-600">Nama Ruas Jembatan:</div>
+                    <div className="font-medium text-gray-900">{report.bridge_section}</div>
 
                     <div className="text-gray-600">Tipe Struktur:</div>
                     <div className="font-medium text-gray-900">
@@ -165,16 +171,6 @@ export const BinamargaReportDetailView: React.FC<BinamargaReportDetailViewProps>
                         {translateDamageLevel(report.bridge_damage_level)}
                       </span>
                     </div>
-
-                    <div className="text-gray-600">Tipe Jalan:</div>
-                    <div className="font-medium text-gray-900">
-                      {translateRoadType(report.road_type)}
-                    </div>
-
-                    <div className="text-gray-600">Kelas Jalan:</div>
-                    <div className="font-medium text-gray-900">
-                      {translateRoadClass(report.road_class)}
-                    </div>
                   </div>
                 </div>
               </div>
@@ -189,18 +185,11 @@ export const BinamargaReportDetailView: React.FC<BinamargaReportDetailViewProps>
                 </h3>
                 <div className="bg-gray-50 rounded-lg p-4 space-y-2">
                   <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="text-gray-600">Kecamatan:</div>
+                    <div className="font-medium text-gray-900">{report.district}</div>
+
                     <div className="text-gray-600">Nama Jalan:</div>
                     <div className="font-medium text-gray-900">{report.road_name}</div>
-
-                    <div className="text-gray-600">Tipe Jalan:</div>
-                    <div className="font-medium text-gray-900">
-                      {translateRoadType(report.road_type)}
-                    </div>
-
-                    <div className="text-gray-600">Kelas Jalan:</div>
-                    <div className="font-medium text-gray-900">
-                      {translateRoadClass(report.road_class)}
-                    </div>
 
                     <div className="text-gray-600">Tipe Perkerasan:</div>
                     <div className="font-medium text-gray-900">

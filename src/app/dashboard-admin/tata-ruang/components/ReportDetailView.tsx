@@ -21,7 +21,7 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
       "ALIH_FUNGSI_LAHAN_PERTANIAN": "Alih Fungsi Lahan Pertanian",
       "LAINNYA": "Lainnya",
     };
-    return translations[type.toLowerCase()] || type;
+    return translations[type] || type;
   };
 
   const translateViolationLevel = (level: string): string => {
@@ -66,6 +66,15 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
       LAINNYA: "Lainnya",
     };
     return translations[category] || category;
+  };
+
+  const translateInstitution = (institution: string): string => {
+    const translations: Record<string, string> = {
+      "DESA": "Desa",
+      "KECAMATAN": "Kecamatan",
+      "DINAS": "Dinas",
+    };
+    return translations[institution] || institution;
   };
 
   const getStatusColor = (status: string): string => {
@@ -173,7 +182,7 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
                 <div className="font-medium text-gray-900">{report.reporter_name}</div>
 
                 <div className="text-gray-600">Institusi:</div>
-                <div className="font-medium text-gray-900">{report.institution}</div>
+                <div className="font-medium text-gray-900">{translateInstitution(report.institution)}</div>
 
                 <div className="text-gray-600">No. Telepon:</div>
                 <div className="font-medium text-gray-900">{report.phone_number}</div>

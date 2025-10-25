@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { WaterResourcesService } from "../service/sumber-daya-air-service";
 import { WaterResourcesOverview, WaterResourceReport } from "../types/sumber-daya-air-types";
@@ -9,6 +8,7 @@ export const useSumberDayaAir = () => {
   const [reports, setReports] = useState<WaterResourceReport[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [irrigationType, setIrrigationType] = useState<string>("all");
 
   const fetchData = async () => {
     try {
@@ -17,7 +17,7 @@ export const useSumberDayaAir = () => {
 
       // Fetch both overview and reports in parallel
       const [overviewResponse, reportsResponse] = await Promise.all([
-        WaterResourcesService.getOverview(),
+        WaterResourcesService.getOverview(irrigationType),
         WaterResourcesService.getReports()
       ]);
 
@@ -45,13 +45,15 @@ export const useSumberDayaAir = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [irrigationType]);
 
   return {
     data,
     reports,
     isLoading,
     error,
+    irrigationType,
+    setIrrigationType,
     refetch: fetchData
   };
 };

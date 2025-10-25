@@ -1,14 +1,16 @@
-
 import apiClient from "@/lib/api-client";
 import { WaterResourcesResponse, WaterResourcesReportsResponse } from "../types/sumber-daya-air-types";
 
 export class WaterResourcesService {
   private static BASE_URL = "/api/v1/water-resources";
 
-  static async getOverview(): Promise<WaterResourcesResponse> {
+  static async getOverview(irrigationType?: string): Promise<WaterResourcesResponse> {
     try {
+      const query = irrigationType && irrigationType !== "all"
+        ? `?irrigation_type=${encodeURIComponent(irrigationType)}`
+        : "";
       const response = await apiClient.get<WaterResourcesResponse>(
-        `${this.BASE_URL}/overview`
+        `${this.BASE_URL}/overview${query}`
       );
       return response.data;
     } catch (error) {

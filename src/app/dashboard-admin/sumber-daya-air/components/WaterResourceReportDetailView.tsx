@@ -150,6 +150,12 @@ export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailVi
                 <div className="text-gray-600">Lebar:</div>
                 <div className="font-medium text-gray-900">{report.estimated_width.toLocaleString('id-ID')} m</div>
 
+                <div className="text-gray-600">Kedalaman:</div>
+                <div className="font-medium text-gray-900">{report.estimated_depth.toLocaleString('id-ID')} m</div>
+
+                <div className="text-gray-600">Luas:</div>
+                <div className="font-medium text-gray-900">{report.estimated_area.toLocaleString('id-ID')} m²</div>
+
                 <div className="text-gray-600">Volume:</div>
                 <div className="font-medium text-gray-900">{report.estimated_volume.toLocaleString('id-ID')} m³</div>
               </div>

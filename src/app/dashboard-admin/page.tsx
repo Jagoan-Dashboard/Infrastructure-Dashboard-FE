@@ -16,22 +16,26 @@ import CardStats from "./components/CardStats";
 import { CommodityChartSection } from "./components/BarChartSection";
 import { useMemo, useState } from "react";
 import { useTataBangunan } from "./hooks/useTata-bangunan";
-import { BuildingType, TataBangunanReport } from "./types/tata-bangunan-types";
+import { BuildingType, BuildingTypeLabels, TataBangunanReport } from "./types/tata-bangunan-types";
 import FullPageSkeleton from "@/components/common/FullPageSkeleton";
-import { MultiSelect, Option } from "@/components/ui/multi-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function DashboardPage() {
   const { data, reports, isLoading, error, buildingType, setBuildingType } = useTataBangunan(BuildingType.ALL);
   const [selectedReport, setSelectedReport] = useState<TataBangunanReport | null>(null);
 
-  // Options untuk multi-select
-  const jenisBangunanOptions: Option[] = useMemo(() => {
-    return Object.entries(BuildingType)
-      .filter(([key]) => key !== BuildingType.ALL)
-      .map(([value, label]) => ({
-        value,
-        label,
-      }));
+  // Options untuk select
+  const jenisBangunanOptions = useMemo(() => {
+    return Object.values(BuildingType).map((value) => ({
+      value: value,
+      label: BuildingTypeLabels[value],
+    }));
   }, []);
 
   // Helper function untuk translate work types
@@ -64,6 +68,7 @@ export default function DashboardPage() {
       "PEMBANGUNAN_BARU": "Pembangunan Baru",
       "REHABILITASI": "Rehabilitasi / Perbaikan",
       "LAINNYA": "Lainnya",
+      "KERUSAKAN": "Kerusakan",
     };
     return translations[status] || status;
   };
@@ -105,7 +110,6 @@ export default function DashboardPage() {
     ];
   }, [data]);
 
-  // Transform work type distribution for chart
   const perbaikanData = useMemo(() => {
     if (!data?.work_type_distribution || data.work_type_distribution.length === 0) {
       return [
@@ -113,7 +117,6 @@ export default function DashboardPage() {
       ];
     }
 
-    // Filter out NOT_SET and sort by count
     return data.work_type_distribution
       .filter((item) => item.work_type !== "NOT_SET")
       .sort((a, b) => b.count - a.count)
@@ -124,7 +127,6 @@ export default function DashboardPage() {
       }));
   }, [data]);
 
-  // Transform status distribution for chart
   const laporanData = useMemo(() => {
     if (!data?.status_distribution || data.basic_stats.total_reports === 0) {
       return [];
@@ -134,6 +136,7 @@ export default function DashboardPage() {
       "Pembangunan Baru": "#f0417e",
       "Rehabilitasi / Perbaikan": "#3355ff",
       "Lainnya": "#ff9933",
+      "Kerusakan": "#e90606ff",
     };
 
     return data.status_distribution.map((item) => ({
@@ -143,7 +146,6 @@ export default function DashboardPage() {
     }));
   }, [data]);
 
-  // Transform condition distribution for chart
   const rehabilitasiData = useMemo(() => {
     if (!data?.condition_distribution || data.basic_stats.total_reports === 0) {
       return [];
@@ -165,10 +167,8 @@ export default function DashboardPage() {
       }));
   }, [data]);
 
-  // Handle report click
   const handleReportClick = (report: TataBangunanReport) => {
     setSelectedReport(report);
-    // Scroll to detail view
     setTimeout(() => {
       const detailElement = document.getElementById('report-detail');
       if (detailElement) {
@@ -181,24 +181,10 @@ export default function DashboardPage() {
     setSelectedReport(null);
   };
 
-  // Handle multi-select change
-  const handleJenisBangunanChange = (selected: string[]) => {
-    if (selected.length === 0) {
-      setBuildingType(BuildingType.ALL);
-    } else if (selected.length === 1) {
-      setBuildingType(selected[0] as BuildingType);
-    } else {
-      setBuildingType(selected[0] as BuildingType);
-    }
+  const handleJenisBangunanChange = (value: string) => {
+    setBuildingType(value as BuildingType);
   };
 
-  // Get selected values for multi-select
-  const selectedJenisBangunan = useMemo(() => {
-    if (buildingType === BuildingType.ALL) {
-      return [];
-    }
-    return [buildingType];
-  }, [buildingType]);
 
   // Loading state
   if (isLoading) {
@@ -279,14 +265,23 @@ export default function DashboardPage() {
 
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <MultiSelect
-                options={jenisBangunanOptions}
-                selected={selectedJenisBangunan}
-                onChange={handleJenisBangunanChange}
-                placeholder="Pilih Jenis Bangunan"
-                className="min-w-[250px]"
-                label="Jenis Bangunan"
-              />
+              <div className="flex flex-col gap-2">
+                <Select
+                  value={buildingType}
+                  onValueChange={handleJenisBangunanChange}
+                >
+                  <SelectTrigger className="min-w-[250px]">
+                    <SelectValue placeholder="Pilih Jenis Bangunan" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {jenisBangunanOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 

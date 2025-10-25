@@ -14,24 +14,27 @@ import CardStats from "../components/CardStats";
 import { CommodityChartSection } from "../components/BarChartSection";
 import { useMemo, useState } from "react";
 import { useTataRuang } from "./hooks/useTata-ruang";
-import { AreaCategory, TataRuangReport } from "./types/tata-ruang-types";
+import { AreaCategory, AreaCategoryLabels, TataRuangReport } from "./types/tata-ruang-types";
 import FullPageSkeleton from "@/components/common/FullPageSkeleton";
 import { IndividualReportMapSection } from "./components/IndividualReportMapSection";
 import { ReportDetailView } from "./components/ReportDetailView";
-import { MultiSelect, Option } from "@/components/ui/multi-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function TataRuangPage() {
   const { data, reports, isLoading, error, areaCategory, setAreaCategory } = useTataRuang(AreaCategory.ALL);
   const [selectedReport, setSelectedReport] = useState<TataRuangReport | null>(null);
 
-  // Options untuk multi-select
-  const jenisKawasanOptions: Option[] = useMemo(() => {
-    return Object.entries(AreaCategory)
-      .filter(([key]) => key !== AreaCategory.ALL) // Exclude "all" from options
-      .map(([value, label]) => ({
-        value,
-        label,
-      }));
+  const jenisKawasanOptions = useMemo(() => {
+    return Object.values(AreaCategory).map((value) => ({
+      value: value,
+      label: AreaCategoryLabels[value],
+    }));
   }, []);
 
   // Helper function untuk translate violation types
@@ -164,25 +167,10 @@ export default function TataRuangPage() {
     }));
   }, [data]);
 
-  // Handle multi-select change
-  const handleJenisKawasanChange = (selected: string[]) => {
-    if (selected.length === 0) {
-      setAreaCategory(AreaCategory.ALL);
-    } else if (selected.length === 1) {
-      setAreaCategory(selected[0] as AreaCategory);
-    } else {
-      // If multiple selected, use the first one or handle as needed
-      setAreaCategory(selected[0] as AreaCategory);
-    }
+  const handleJenisKawasanChange = (value: string) => {
+    setAreaCategory(value as AreaCategory);
   };
 
-  // Get selected values for multi-select
-  const selectedJenisKawasan = useMemo(() => {
-    if (areaCategory === AreaCategory.ALL) {
-      return [];
-    }
-    return [areaCategory];
-  }, [areaCategory]);
 
   // Loading state
   if (isLoading) {
@@ -263,14 +251,23 @@ export default function TataRuangPage() {
 
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <MultiSelect
-                options={jenisKawasanOptions}
-                selected={selectedJenisKawasan}
-                onChange={handleJenisKawasanChange}
-                placeholder="Kategori Kawasan"
-                className="min-w-[250px]"
-                label="Jenis Kawasan"
-              />
+              <div className="flex flex-col gap-2">
+                <Select
+                  value={areaCategory}
+                  onValueChange={handleJenisKawasanChange}
+                >
+                  <SelectTrigger className="min-w-[250px]">
+                    <SelectValue placeholder="Pilih Jenis Kawasan" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {jenisKawasanOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 

@@ -67,6 +67,8 @@ export interface WaterResourceReport {
   damage_level: string;
   estimated_length: number;
   estimated_width: number;
+  estimated_depth: number;
+  estimated_area: number;
   estimated_volume: number;
   affected_rice_field_area: number;
   affected_farmers_count: number;

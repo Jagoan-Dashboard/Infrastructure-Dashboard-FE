@@ -64,10 +64,11 @@ export function ChartPieDonut({
   const CustomTooltip = ({ active, payload }: TooltipProps) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
+      const formattedValue = parseFloat(data.value.toFixed(2)).toString();
       return (
         <div className="bg-white p-2 border rounded shadow-md">
           <p className="font-semibold">{data.label}</p>
-          <p className="text-sm">{data.value}%</p>
+          <p className="text-sm">{formattedValue}%</p>
           {data.detail && (
             <p className="text-xs text-gray-600 max-w-48">{data.detail}</p>
           )}
@@ -100,10 +101,11 @@ export function ChartPieDonut({
                 labelLine={false}
                 label={(props: PieLabelRenderProps) => {
                   const percent = typeof props.percent === 'number' ? props.percent : 0;
-                  return `${(percent * 100).toFixed(1)}%`;
+                  const formattedPercent = parseFloat((percent * 100).toFixed(1));
+                  return `${formattedPercent}%`;
                 }}
-                innerRadius="45%"
-                outerRadius="80%"
+                innerRadius="25%"
+                outerRadius="60%"
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.fill} />

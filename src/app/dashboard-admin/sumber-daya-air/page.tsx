@@ -19,21 +19,31 @@ import FullPageSkeleton from "@/components/common/FullPageSkeleton";
 import { WaterResourceMapSection } from "./components/WaterResourceMapSection";
 import { WaterResourceReportDetailView } from "./components/WaterResourceReportDetailView";
 import { WaterResourceReport } from "./types/sumber-daya-air-types";
-import { MultiSelect, Option } from "@/components/ui/multi-select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function SumberDayaAirPage() {
-  const { data, reports, isLoading, error } = useSumberDayaAir();
-  const [selectedJenisIrigasi, setSelectedJenisIrigasi] = useState<string[]>([]);
+  const { data, reports, isLoading, error, irrigationType, setIrrigationType } = useSumberDayaAir();
   const [selectedReport, setSelectedReport] = useState<WaterResourceReport | null>(null);
 
+  const IRRIGATION_LABELS: Record<string, string> = {
+    SALURAN_SEKUNDER: "Saluran Sekunder",
+    PINTU_AIR: "Pintu Air",
+    EMBUNG_DAM: "Embung/Dam",
+    BENDUNG: "Bendung",
+  };
 
-  const jenisIrigasiOptions: Option[] = [
-    { value: "Saluran Sekunder", label: "Saluran Sekunder" },
-    { value: "Pintu Air", label: "Pintu Air" },
-    { value: "Embung/Dam", label: "Embung/Dam" },
-    { value: "Bendung", label: "Bendung" },
-  ];
+  const irrigationTypeOptions = useMemo(() => {
+    return [
+      { value: "all", label: "Semua Jenis" },
+      ...Object.entries(IRRIGATION_LABELS).map(([value, label]) => ({ value, label })),
+    ];
+  }, []);
 
+  const filteredReports = useMemo(() => {
+    if (irrigationType === "all") return reports;
+    const label = IRRIGATION_LABELS[irrigationType] || irrigationType;
+    return reports.filter((r) => r.irrigation_type === irrigationType || r.irrigation_type === label);
+  }, [reports, irrigationType]);
 
   const statsData: StatsType[] = useMemo(() => {
     if (!data) return [];
@@ -263,14 +273,23 @@ export default function SumberDayaAirPage() {
 
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <MultiSelect
-                options={jenisIrigasiOptions}
-                selected={selectedJenisIrigasi}
-                onChange={setSelectedJenisIrigasi}
-                placeholder="Jenis Irigasi"
-                className="min-w-[250px]"
-                label="Jenis Irigasi"
-              />
+              <div className="flex flex-col gap-2">
+                <Select
+                  value={irrigationType}
+                  onValueChange={setIrrigationType}
+                >
+                  <SelectTrigger className="min-w-[250px]">
+                    <SelectValue placeholder="Pilih Jenis Irigasi" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {irrigationTypeOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -281,7 +300,7 @@ export default function SumberDayaAirPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <WaterResourceMapSection
-              reports={reports}
+              reports={filteredReports}
               onReportClick={handleReportClick}
             />
             <ChartPieDonut

@@ -26,7 +26,7 @@ export default function SumberDayaAirPage() {
   const [selectedReport, setSelectedReport] = useState<WaterResourceReport | null>(null);
 
   const IRRIGATION_LABELS: Record<string, string> = {
-    SALURAN_SEKUNDER: "Saluran Sekunder",
+    // SALURAN_SEKUNDER: "Saluran Sekunder",
     PINTU_AIR: "Pintu Air",
     EMBUNG_DAM: "Embung/Dam",
     BENDUNG: "Bendung",
@@ -85,7 +85,8 @@ export default function SumberDayaAirPage() {
       "LONGSOR_AMBROL": "Longsor / Ambrol",
       "SEDIMENTASI_TINGGI": "Sedimentasi Tinggi",
       "TERSUMBAT_SAMPAH": "Tersumbat Sampah",
-      "STRUKTUR_BETON_RUSAK": "Struktur Beton Rusak",
+      "STRUKTUR_BETON_RUSAK": "Struktur Rusak",
+      "STRUKTUR_RUSAK": "Struktur Rusak",
       "PINTU_AIR_MACET": "Pintu Air Macet / Tidak Berfungsi",
       "TANGGUL_JEBOL": "Tanggul Jebol",
       "LAINNYA": "Lainnya",

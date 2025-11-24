@@ -1,9 +1,8 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { Icon } from '@iconify/react';
 import { TataBangunanReport } from '../types/tata-bangunan-types';
 import RetryableImage from './RetryableImage';
-import ImagePreviewModal from './ImagePreviewModal';
 
 interface ReportDetailViewProps {
   report: TataBangunanReport | null;
@@ -12,8 +11,6 @@ interface ReportDetailViewProps {
 
 export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onClose }) => {
   if (!report) return null;
-
-  const [preview, setPreview] = useState<{ src: string; alt: string } | null>(null);
 
   const translateBuildingType = (type: string): string => {
     const translations: Record<string, string> = {
@@ -69,7 +66,6 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
   };
 
   return (
-    <>
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6 animate-in fade-in slide-in-from-top-2 duration-300">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -194,24 +190,20 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
               {report.photos.map((photo, index) => (
                 <div key={photo.id} className="relative group">
                   <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
-                    <div
-                      role="button"
-                      aria-label="Pratinjau gambar"
-                      onClick={() => setPreview({ src: photo.photo_url, alt: `${photo.photo_type} photo` })}
-                    >
+                    <a href={photo.photo_url} target="_blank" rel="noopener noreferrer">
                       <RetryableImage
                         src={photo.photo_url}
                         alt={`${photo.photo_type} photo`}
                         fill
                         unoptimized
-                        className="object-cover transition-transform group-hover:scale-105 cursor-zoom-in"
+                        className="object-cover transition-transform group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, 50vw"
                         maxRetries={10}
                         priority={index < 2}
                       />
-                    </div>
+                    </a>
                   </div>
-                  <div className="absolute bottom-2 left-2 right-2 bg-black/60 text-white px-3 py-1 rounded-lg text-xs">
+                  <div className="absolute top-2 left-2 bg-black/60 text-white px-3 py-1 rounded-full text-xs capitalize">
                     {photo.photo_type}
                   </div>
                 </div>
@@ -226,13 +218,5 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
         </div>
       </div>
     </div>
-    {preview && (
-      <ImagePreviewModal
-        src={preview.src}
-        alt={preview.alt}
-        onClose={() => setPreview(null)}
-      />
-    )}
-    </>
   );
 };

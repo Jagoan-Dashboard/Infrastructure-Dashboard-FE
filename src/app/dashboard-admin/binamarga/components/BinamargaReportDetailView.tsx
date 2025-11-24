@@ -1,9 +1,8 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { Icon } from '@iconify/react';
 import { BinamargaReport } from '../types/binamarga-types';
 import RetryableImage from '../../components/RetryableImage';
-import ImagePreviewModal from '../../components/ImagePreviewModal';
 
 interface BinamargaReportDetailViewProps {
   report: BinamargaReport | null;
@@ -12,7 +11,6 @@ interface BinamargaReportDetailViewProps {
 
 export const BinamargaReportDetailView: React.FC<BinamargaReportDetailViewProps> = ({ report, onClose }) => {
   if (!report) return null;
-  const [preview, setPreview] = useState<{ src: string; alt: string } | null>(null);
 
   // Determine if this is a bridge or road report
   const isBridge = Boolean(report.bridge_name && report.bridge_name.trim() !== '');
@@ -101,7 +99,6 @@ export const BinamargaReportDetailView: React.FC<BinamargaReportDetailViewProps>
   };
 
   return (
-    <>
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6 animate-in fade-in slide-in-from-top-2 duration-300">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -391,26 +388,27 @@ export const BinamargaReportDetailView: React.FC<BinamargaReportDetailViewProps>
               {report.photos.map((photo, index) => (
                 <div key={photo.id} className="relative group">
                   <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
-                    <div
-                      role="button"
-                      aria-label="Pratinjau gambar"
-                      onClick={() => setPreview({ src: photo.photo_url, alt: photo.caption || `${photo.photo_angle} view` })}
-                    >
+                    <a href={photo.photo_url} target="_blank" rel="noopener noreferrer">
                       <RetryableImage
                         src={photo.photo_url}
                         alt={photo.caption || `${photo.photo_angle} view`}
                         fill
                         unoptimized
-                        className="object-cover transition-transform group-hover:scale-105 cursor-zoom-in"
+                        className="object-cover transition-transform group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, 50vw"
                         maxRetries={10}
                         priority={index < 2}
                       />
-                    </div>
+                    </a>
                   </div>
-                  <div className="absolute bottom-2 left-2 right-2 bg-black/60 text-white px-3 py-1 rounded-lg text-xs">
+                  <div className="absolute top-2 left-2 bg-black/60 text-white px-3 py-1 rounded-full text-xs capitalize">
                     {photo.photo_angle}
                   </div>
+                  {photo.caption && (
+                    <div className="mt-2 text-sm text-gray-600">
+                      {photo.caption}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -423,13 +421,5 @@ export const BinamargaReportDetailView: React.FC<BinamargaReportDetailViewProps>
         </div>
       </div>
     </div>
-    {preview && (
-      <ImagePreviewModal
-        src={preview.src}
-        alt={preview.alt}
-        onClose={() => setPreview(null)}
-      />
-    )}
-    </>
   );
 };

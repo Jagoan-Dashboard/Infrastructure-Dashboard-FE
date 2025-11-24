@@ -1,8 +1,9 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { WaterResourceReport } from '../types/sumber-daya-air-types';
 import RetryableImage from '../../components/RetryableImage';
+import { ImagePreviewModal } from '@/components/ui/image-preview-modal';
 
 interface WaterResourceReportDetailViewProps {
   report: WaterResourceReport | null;
@@ -10,7 +11,11 @@ interface WaterResourceReportDetailViewProps {
 }
 
 export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailViewProps> = ({ report, onClose }) => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   if (!report) return null;
+
+
 
   const translateDamageType = (type: string): string => {
     const translations: Record<string, string> = {
@@ -104,32 +109,29 @@ export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailVi
 
                 <div className="text-gray-600">Tingkat Kerusakan:</div>
                 <div className="font-medium text-gray-900">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
-                    report.damage_level === 'BERAT' ? 'bg-red-100 text-red-700' :
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${report.damage_level === 'BERAT' ? 'bg-red-100 text-red-700' :
                     report.damage_level === 'SEDANG' ? 'bg-yellow-100 text-yellow-700' :
-                    'bg-green-100 text-green-700'
-                  }`}>
+                      'bg-green-100 text-green-700'
+                    }`}>
                     {translateDamageLevel(report.damage_level)}
                   </span>
                 </div>
 
                 <div className="text-gray-600">Kategori Urgensi:</div>
                 <div className="font-medium text-gray-900">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
-                    report.urgency_category === 'MENDESAK' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
-                  }`}>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${report.urgency_category === 'MENDESAK' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
+                    }`}>
                     {translateUrgency(report.urgency_category)}
                   </span>
                 </div>
 
                 <div className="text-gray-600">Status:</div>
                 <div className="font-medium text-gray-900">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
-                    report.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${report.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
                     report.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-700' :
-                    report.status === 'CANCELLED' ? 'bg-gray-100 text-gray-700' :
-                    'bg-yellow-100 text-yellow-700'
-                  }`}>
+                      report.status === 'CANCELLED' ? 'bg-gray-100 text-gray-700' :
+                        'bg-yellow-100 text-yellow-700'
+                    }`}>
                     {translateStatus(report.status)}
                   </span>
                 </div>
@@ -243,7 +245,10 @@ export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailVi
               {report.photos.map((photo, index) => (
                 <div key={photo.id} className="relative group">
                   <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
-                    <a href={photo.photo_url} target="_blank" rel="noopener noreferrer">
+                    <div
+                      className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden cursor-pointer"
+                      onClick={() => setSelectedImage(photo.photo_url)}
+                    >
                       <RetryableImage
                         src={photo.photo_url}
                         alt={photo.caption || `${photo.photo_angle} view`}
@@ -254,7 +259,7 @@ export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailVi
                         maxRetries={10}
                         priority={index < 2}
                       />
-                    </a>
+                    </div>
                   </div>
                   {photo.caption && (
                     <div className="absolute bottom-2 left-2 right-2 bg-black/60 text-white px-3 py-1 rounded-lg text-xs">
@@ -272,6 +277,11 @@ export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailVi
           )}
         </div>
       </div>
+      <ImagePreviewModal
+        isOpen={!!selectedImage}
+        imageUrl={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };

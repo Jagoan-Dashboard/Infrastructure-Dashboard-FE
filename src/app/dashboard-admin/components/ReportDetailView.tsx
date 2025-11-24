@@ -1,8 +1,9 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { TataBangunanReport } from '../types/tata-bangunan-types';
 import RetryableImage from './RetryableImage';
+import { ImagePreviewModal } from '@/components/ui/image-preview-modal';
 
 interface ReportDetailViewProps {
   report: TataBangunanReport | null;
@@ -10,6 +11,8 @@ interface ReportDetailViewProps {
 }
 
 export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onClose }) => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   if (!report) return null;
 
   const translateBuildingType = (type: string): string => {
@@ -40,7 +43,7 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
 
   const translateCondition = (condition: string): string => {
     const translations: Record<string, string> = {
-      "BAIK_SIAP_PAKAI" : "Baik / Siap Pakai",
+      "BAIK_SIAP_PAKAI": "Baik / Siap Pakai",
       "BUTUH_PERBAIKAN_TAMBAHAN": "Masih Membutuhkan Perbaikan Tambahan",
       "LAINNYA": "Lainnya",
     };
@@ -189,21 +192,22 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
             <div className="grid grid-cols-1 gap-4">
               {report.photos.map((photo, index) => (
                 <div key={photo.id} className="relative group">
-                  <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
-                    <a href={photo.photo_url} target="_blank" rel="noopener noreferrer">
-                      <RetryableImage
-                        src={photo.photo_url}
-                        alt={`${photo.photo_type} photo`}
-                        fill
-                        unoptimized
-                        className="object-cover transition-transform group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        maxRetries={10}
-                        priority={index < 2}
-                      />
-                    </a>
+                  <div
+                    className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden cursor-pointer"
+                    onClick={() => setSelectedImage(photo.photo_url)}
+                  >
+                    <RetryableImage
+                      src={photo.photo_url}
+                      alt={`${photo.photo_type} photo`}
+                      fill
+                      unoptimized
+                      className="object-cover transition-transform group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      maxRetries={10}
+                      priority={index < 2}
+                    />
                   </div>
-                  <div className="absolute bottom-2 left-2 right-2 bg-black/60 text-white px-3 py-1 rounded-lg text-xs">
+                  <div className="absolute bottom-2 left-2 right-2 bg-black/60 text-white px-3 py-1 rounded-lg text-xs pointer-events-none">
                     {photo.photo_type}
                   </div>
                 </div>
@@ -217,6 +221,12 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
           )}
         </div>
       </div>
+
+      <ImagePreviewModal
+        isOpen={!!selectedImage}
+        imageUrl={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };

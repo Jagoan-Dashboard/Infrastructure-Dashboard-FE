@@ -1,8 +1,9 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { TataRuangReport } from '../types/tata-ruang-types';
 import RetryableImage from '../../components/RetryableImage';
+import { ImagePreviewModal } from '@/components/ui/image-preview-modal';
 
 interface ReportDetailViewProps {
   report: TataRuangReport | null;
@@ -10,6 +11,9 @@ interface ReportDetailViewProps {
 }
 
 export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onClose }) => {
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   if (!report) return null;
 
   const translateViolationType = (type: string): string => {
@@ -151,10 +155,10 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
             </div>
           </div>
         </div>
-        
+
         {/* Information Section */}
         <div className="space-y-4">
-          
+
 
           <div className="space-y-3">
             <h3 className="font-semibold text-gray-900 flex items-center gap-2">
@@ -235,7 +239,10 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
               {report.photos.map((photo, index) => (
                 <div key={photo.id} className="relative group">
                   <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
-                    <a href={photo.photo_url} target="_blank" rel="noopener noreferrer">
+                    <div
+                      className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden cursor-pointer"
+                      onClick={() => setSelectedImage(photo.photo_url)}
+                    >
                       <RetryableImage
                         src={photo.photo_url}
                         alt={photo.caption}
@@ -246,7 +253,7 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
                         maxRetries={10}
                         priority={index < 2}
                       />
-                    </a>
+                    </div>
                   </div>
                   {photo.caption && (
                     <div className="absolute bottom-2 left-2 right-2 bg-black/60 text-white px-3 py-1 rounded-lg text-xs">
@@ -264,6 +271,11 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
           )}
         </div>
       </div>
+      <ImagePreviewModal
+        isOpen={!!selectedImage}
+        imageUrl={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };

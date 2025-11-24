@@ -18,9 +18,13 @@ const RetryableImage: React.FC<Props> = ({
 }) => {
   const [attempt, setAttempt] = useState(0);
   const [failed, setFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const timerRef = useRef<number | null>(null);
 
   const srcWithBust = useMemo(() => {
+    if (attempt === 0) {
+      return src;
+    }
     const bust = `v=${Date.now()}-${attempt}`;
     return src.includes('?') ? `${src}&${bust}` : `${src}?${bust}`;
   }, [src, attempt]);
@@ -48,29 +52,17 @@ const RetryableImage: React.FC<Props> = ({
       <Image
         {...rest}
         src={srcWithBust}
-        onError={() => scheduleRetry()}
-        onLoadingComplete={() => setFailed(false)}
+        onError={() => {
+          setLoaded(false);
+          scheduleRetry();
+        }}
+        onLoadingComplete={() => {
+          setFailed(false);
+          setLoaded(true);
+        }}
       />
-      {attempt > 0 && attempt < maxRetries && (
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          <div className="px-3 py-1 text-xs rounded bg-black/50 text-white">
-            Memuat ulang gambar... (percobaan {attempt}/{maxRetries})
-          </div>
-        </div>
-      )}
-      {failed && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-          <button
-            type="button"
-            className="px-3 py-2 text-sm rounded bg-white shadow"
-            onClick={() => {
-              setFailed(false);
-              setAttempt((a) => a + 1);
-            }}
-          >
-            Coba lagi
-          </button>
-        </div>
+      {!loaded && (
+        <div className="absolute inset-0 animate-pulse bg-gray-200" />
       )}
     </div>
   );

@@ -11,8 +11,8 @@ interface BinamargaReportDetailViewProps {
 }
 
 export const BinamargaReportDetailView: React.FC<BinamargaReportDetailViewProps> = ({ report, onClose }) => {
-  if (!report) return null;
   const [preview, setPreview] = useState<{ src: string; alt: string } | null>(null);
+  if (!report) return null;
 
   // Determine if this is a bridge or road report
   const isBridge = Boolean(report.bridge_name && report.bridge_name.trim() !== '');

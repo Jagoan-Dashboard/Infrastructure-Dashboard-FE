@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 type Props = Omit<ImageProps, 'src' | 'onError'> & {
   src: string;
+  alt: string;
   maxRetries?: number;
   baseDelayMs?: number;
   onFinalError?: () => void;
@@ -11,13 +12,13 @@ type Props = Omit<ImageProps, 'src' | 'onError'> & {
 
 const RetryableImage: React.FC<Props> = ({
   src,
+  alt,
   maxRetries = 10,
   baseDelayMs = 500,
   onFinalError,
   ...rest
 }) => {
   const [attempt, setAttempt] = useState(0);
-  const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const timerRef = useRef<number | null>(null);
 
@@ -31,7 +32,6 @@ const RetryableImage: React.FC<Props> = ({
 
   const scheduleRetry = useCallback(() => {
     if (attempt >= maxRetries) {
-      setFailed(true);
       onFinalError?.();
       return;
     }
@@ -52,12 +52,12 @@ const RetryableImage: React.FC<Props> = ({
       <Image
         {...rest}
         src={srcWithBust}
+        alt={alt}
         onError={() => {
           setLoaded(false);
           scheduleRetry();
         }}
         onLoadingComplete={() => {
-          setFailed(false);
           setLoaded(true);
         }}
       />

@@ -11,8 +11,8 @@ interface WaterResourceReportDetailViewProps {
 }
 
 export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailViewProps> = ({ report, onClose }) => {
-  const [preview, setPreview] = useState<{ src: string; alt: string } | null>(null);
   if (!report) return null;
+  const [preview, setPreview] = useState<{ src: string; alt: string } | null>(null);
 
   const translateDamageType = (type: string): string => {
     const translations: Record<string, string> = {

@@ -11,8 +11,8 @@ interface ReportDetailViewProps {
 }
 
 export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onClose }) => {
-  const [preview, setPreview] = useState<{ src: string; alt: string } | null>(null);
   if (!report) return null;
+  const [preview, setPreview] = useState<{ src: string; alt: string } | null>(null);
 
   const translateViolationType = (type: string): string => {
     const translations: Record<string, string> = {

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Icon } from '@iconify/react';
 import { WaterResourceReport } from '../types/sumber-daya-air-types';
-import Image from 'next/image';
+import RetryableImage from '../../components/RetryableImage';
 
 interface WaterResourceReportDetailViewProps {
   report: WaterResourceReport | null;
@@ -240,17 +240,19 @@ export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailVi
           </h3>
           {report.photos.length > 0 ? (
             <div className="grid grid-cols-1 gap-4">
-              {report.photos.map((photo) => (
+              {report.photos.map((photo, index) => (
                 <div key={photo.id} className="relative group">
                   <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
                     <a href={photo.photo_url} target="_blank" rel="noopener noreferrer">
-                      <Image
+                      <RetryableImage
                         src={photo.photo_url}
                         alt={photo.caption || `${photo.photo_angle} view`}
                         fill
                         unoptimized
                         className="object-cover transition-transform group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, 50vw"
+                        maxRetries={10}
+                        priority={index < 2}
                       />
                     </a>
                   </div>

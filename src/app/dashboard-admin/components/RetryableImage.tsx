@@ -1,4 +1,5 @@
 "use client";
+import { Skeleton } from '@/components/ui/skeleton';
 import Image, { ImageProps } from 'next/image';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -52,24 +53,10 @@ const RetryableImage: React.FC<Props> = ({
         onLoadingComplete={() => setFailed(false)}
       />
       {attempt > 0 && attempt < maxRetries && (
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          <div className="px-3 py-1 text-xs rounded bg-black/50 text-white">
-            Memuat ulang gambar... (percobaan {attempt}/{maxRetries})
-          </div>
-        </div>
+        <Skeleton className="absolute inset-0 w-full h-full" />
       )}
       {failed && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-          <button
-            type="button"
-            className="px-3 py-2 text-sm rounded bg-white shadow"
-            onClick={() => {
-              setFailed(false);
-              setAttempt((a) => a + 1);
-            }}
-          >
-            Coba lagi
-          </button>
         </div>
       )}
     </div>

@@ -256,11 +256,8 @@ export const WaterResourceReportDetailView: React.FC<WaterResourceReportDetailVi
                       />
                     </a>
                   </div>
-                  <div className="absolute top-2 left-2 bg-black/60 text-white px-3 py-1 rounded-full text-xs capitalize">
-                    {photo.photo_angle}
-                  </div>
                   {photo.caption && (
-                    <div className="mt-2 text-sm text-gray-600">
+                    <div className="absolute bottom-2 left-2 right-2 bg-black/60 text-white px-3 py-1 rounded-lg text-xs">
                       {photo.caption}
                     </div>
                   )}

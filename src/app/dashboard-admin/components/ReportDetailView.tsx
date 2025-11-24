@@ -203,7 +203,7 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({ report, onCl
                       />
                     </a>
                   </div>
-                  <div className="absolute top-2 left-2 bg-black/60 text-white px-3 py-1 rounded-full text-xs capitalize">
+                  <div className="absolute bottom-2 left-2 right-2 bg-black/60 text-white px-3 py-1 rounded-lg text-xs">
                     {photo.photo_type}
                   </div>
                 </div>

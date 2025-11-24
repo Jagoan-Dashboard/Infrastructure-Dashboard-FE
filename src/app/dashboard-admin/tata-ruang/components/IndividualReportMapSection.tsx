@@ -107,7 +107,7 @@ export const IndividualReportMapSection: React.FC<IndividualReportMapSectionProp
             style={{ height: '100%', width: '100%' }}
             className="z-0"
             whenReady={() => setMapLoaded(true)}
-            scrollWheelZoom={false}
+            scrollWheelZoom={true}
             zoomControl={true}
           >
             <TileLayer

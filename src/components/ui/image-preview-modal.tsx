@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { Icon } from '@iconify/react';
-import Image from 'next/image';
+import RetryableImage from '@/app/dashboard-admin/components/RetryableImage';
 
 interface ImagePreviewModalProps {
     isOpen: boolean;
@@ -53,7 +53,7 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="relative w-full h-full">
-                    <Image
+                    <RetryableImage
                         src={imageUrl}
                         alt={altText}
                         fill

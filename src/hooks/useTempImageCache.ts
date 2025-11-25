@@ -9,6 +9,11 @@ import localforage from 'localforage';
  * @param src Original image URL
  * @param ttlSeconds How long the cached entry is considered fresh (default 5 min)
  */
+interface CacheEntry {
+  objectUrl: string;
+  expires: number;
+}
+
 export function useTempImageCache(
   src: string,
   ttlSeconds: number = 300
@@ -19,11 +24,12 @@ export function useTempImageCache(
 
   const cacheKey = `img_${src}`;
 
+  // Load from cache or fetch and store
   useEffect(() => {
     let cancelled = false;
     async function fetchAndCache() {
       try {
-        const cached = await localforage.getItem<any>(cacheKey);
+        const cached = await localforage.getItem<CacheEntry>(cacheKey);
         const now = Date.now();
         if (cached && cached.expires > now) {
           if (!cancelled) {
@@ -36,10 +42,7 @@ export function useTempImageCache(
         if (!resp.ok) throw new Error('Network error');
         const blob = await resp.blob();
         const objectUrl = URL.createObjectURL(blob);
-        await localforage.setItem(cacheKey, {
-          objectUrl,
-          expires: now + ttlSeconds * 1000,
-        });
+        await localforage.setItem(cacheKey, { objectUrl, expires: now + ttlSeconds * 1000 });
         if (!cancelled) {
           setUrl(objectUrl);
           setLoading(false);
@@ -57,7 +60,8 @@ export function useTempImageCache(
       cancelled = true;
       if (url) URL.revokeObjectURL(url);
     };
-  }, [src, ttlSeconds, cacheKey]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- url is handled in cleanup
+  }, [src, ttlSeconds, cacheKey, url]);
 
   // Periodic cleanup of expired entries (runs on mount)
   useEffect(() => {
@@ -66,8 +70,8 @@ export function useTempImageCache(
       const now = Date.now();
       for (const key of keys) {
         if (!key.startsWith('img_')) continue;
-        const entry = await localforage.getItem<any>(key);
-        if (entry?.expires <= now) {
+        const entry = await localforage.getItem<CacheEntry>(key);
+        if (entry && entry.expires <= now) {
           await localforage.removeItem(key);
         }
       }

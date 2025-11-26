@@ -1,5 +1,6 @@
 "use client";
-import { Skeleton } from '@/components/ui/skeleton';
+import { Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import Image, { ImageProps } from 'next/image';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -50,7 +51,7 @@ const RetryableImage: React.FC<Props> = ({
   }, []);
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative bg-muted/10">
       <Image
         {...rest}
         src={srcWithBust}
@@ -59,12 +60,19 @@ const RetryableImage: React.FC<Props> = ({
           setFailed(false);
           setIsLoaded(true);
         }}
+        className={cn("transition-opacity duration-300", isLoaded ? "opacity-100" : "opacity-0", rest.className)}
       />
-      {!isLoaded && attempt > 0 && attempt < maxRetries && (
-        <Skeleton className="absolute inset-0 w-full h-full" />
+      {!isLoaded && !failed && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-muted-foreground">
+          <Loader2 className="h-12 w-12 animate-spin" />
+          <span className="text-xs font-medium">
+            Loading... {Math.round((Math.min(attempt + 1, maxRetries) / maxRetries) * 100)}%
+          </span>
+        </div>
       )}
       {failed && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+        <div className="absolute inset-0 flex items-center justify-center bg-muted/30 text-xs text-muted-foreground">
+          Failed
         </div>
       )}
     </div>

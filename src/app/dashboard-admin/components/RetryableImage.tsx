@@ -19,12 +19,17 @@ const RetryableImage: React.FC<Props> = ({
 }) => {
   const [attempt, setAttempt] = useState(0);
   const [failed, setFailed] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const timerRef = useRef<number | null>(null);
 
   const srcWithBust = useMemo(() => {
     const bust = `v=${Date.now()}-${attempt}`;
     return src.includes('?') ? `${src}&${bust}` : `${src}?${bust}`;
   }, [src, attempt]);
+
+  useEffect(() => {
+    setIsLoaded(false);
+  }, [srcWithBust]);
 
   const scheduleRetry = useCallback(() => {
     if (attempt >= maxRetries) {
@@ -50,9 +55,12 @@ const RetryableImage: React.FC<Props> = ({
         {...rest}
         src={srcWithBust}
         onError={() => scheduleRetry()}
-        onLoadingComplete={() => setFailed(false)}
+        onLoadingComplete={() => {
+          setFailed(false);
+          setIsLoaded(true);
+        }}
       />
-      {attempt > 0 && attempt < maxRetries && (
+      {!isLoaded && attempt > 0 && attempt < maxRetries && (
         <Skeleton className="absolute inset-0 w-full h-full" />
       )}
       {failed && (

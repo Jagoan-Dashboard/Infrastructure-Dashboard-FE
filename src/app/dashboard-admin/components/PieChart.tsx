@@ -78,7 +78,7 @@ export const PieChartComponent = ({ statusData }: StatusChartProps) => {
           <BiSolidPieChart className="h-6 w-6 text-blue-500" />
         </div>
         <h2 className="text-lg font-semibold text-gray-900">
-          Kategori Prioritas Penaganan
+          Kategori Prioritas Penanganan
         </h2>
       </div>
 

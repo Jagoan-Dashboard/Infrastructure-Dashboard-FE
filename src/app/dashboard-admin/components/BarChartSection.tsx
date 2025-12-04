@@ -32,14 +32,6 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   return null;
 };
 
-// Custom bar colors - highlight the highest value
-const getBarColor = (value: number, maxValue: number) => {
-  if (value === maxValue) {
-    return '#4F46E5'; // Darker blue for highest value
-  }
-  return '#A5B4FC'; // Lighter blue for other values
-};
-
 interface XAxisTickProps {
   x: number;
   y: number;
@@ -96,9 +88,9 @@ export const CommodityChartSection = ({ commodityData, title }: CommodityChartSe
               }}
               barCategoryGap="20%"
             >
-              <CartesianGrid 
-                strokeDasharray="3 3" 
-                stroke="#E5E7EB" 
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#E5E7EB"
                 horizontal={true}
                 vertical={false}
               />
@@ -123,9 +115,9 @@ export const CommodityChartSection = ({ commodityData, title }: CommodityChartSe
                 maxBarSize={60}
               >
                 {commodityData?.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={getBarColor(entry.value, maxValue)}
+                  <Cell
+                    key={`cell-${index}`}
+                    fill="#4F46E5"
                   />
                 ))}
               </Bar>

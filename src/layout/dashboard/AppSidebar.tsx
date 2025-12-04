@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { FaChevronDown } from "react-icons/fa6";
 import { HiDotsHorizontal } from "react-icons/hi";
-// import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { useSidebar } from "@/context/SidebarContext";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
@@ -80,6 +80,19 @@ const mainNavItems: NavItem[] = [
     path: "/dashboard-admin/binamarga",
     // permission: PERMISSIONS.DASHBOARD_INDEX,
   },
+  {
+    icon: (
+      <Icon
+        icon="icon-park-outline:user"
+        width="20"
+        height="20"
+        color="#3355FF"
+      />
+    ),
+    name: "Manajemen Pengguna",
+    path: "/dashboard-admin/user-management",
+    // permission: PERMISSIONS.DASHBOARD_INDEX,
+  },
 ];
 
 const bottomNavItems: NavItem[] = [
@@ -99,7 +112,7 @@ const bottomNavItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
-  // const { logout } = useAuth();
+  const { user } = useAuth();
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others" | "bottom";
     index: number;
@@ -436,7 +449,18 @@ const AppSidebar: React.FC = () => {
                     <HiDotsHorizontal className="size-6" />
                   )}
                 </h2>
-                {renderMenuItems(mainNavItems, "main")}
+                <nav className="mt-4 space-y-1">
+                  {renderMenuItems(
+                    mainNavItems.filter(
+                      (item) =>
+                        !(
+                          item.path === "/dashboard-admin/user-management" &&
+                          user?.role !== "SUPERADMIN"
+                        )
+                    ),
+                    "main"
+                  )}
+                </nav>
               </div>
             </div>
           </nav>
